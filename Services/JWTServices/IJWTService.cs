@@ -8,8 +8,8 @@ namespace Services.JWTServices
 {
     public class IJWTService
     {
-        string GenerateJWT<T>(T entity) where T : class;
-        string GenerateRefreshToken();
-        string decodeToken(string jwtToken, string nameClaim);
+        //string GenerateJWT<T>(T entity) where T : class;
+        //string GenerateRefreshToken();
+        //string decodeToken(string jwtToken, string nameClaim);
     }
 }
