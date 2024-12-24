@@ -28,16 +28,19 @@ namespace Repositories.ProductRepos
                 var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
 
                 return await _context.Products
+                    .Include(p => p.Category)
+                    .Include(p => p.Brand)
+                    .Include(p => p.Store)
                     .Skip((pageIndex - 1) * sizeIndex)
                     .Take(sizeIndex)
                     .ToListAsync();
-
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+
 
     }
 }

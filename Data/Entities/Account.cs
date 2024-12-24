@@ -45,5 +45,7 @@ public partial class Account
 
     public virtual ICollection<Order> OrderStaffs { get; set; } = new List<Order>();
 
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
     public virtual Store? Store { get; set; }
 }

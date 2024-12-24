@@ -1,60 +1,30 @@
 ﻿using AutoMapper;
 using BuildLease.Data.DTOs.Product;
 using Data.Entities;
-using System;
+using Repositories.ProductRepos;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Services.ProductServices
 {
-    public class ProductService//:IProductService
+    public class ProductService : IProductService
     {
-
         private readonly IMapper _mapper;
-        //private readonly IDecodeTokenHandler _decodeToken;
+        private readonly IProductRepo _productRepo;
 
-        //public async Task<List<ProductResponseDTO>> GetCourses(string? token, int? page, int? size, string? sortBy)
-        //{
+        public ProductService(IMapper mapper, IProductRepo productRepo)
+        {
+            _mapper = mapper;
+            _productRepo = productRepo;
+        }
 
-        //    List<Product> courses = new List<Product>();
+        public async Task<List<ProductResponseDTO>> GetProducts(int? page, int? size)
+        {
+            // Gọi repository để lấy dữ liệu sản phẩm có phân trang
+            var products = await _productRepo.GetProducts(page, size);
 
-        //    if (!string.IsNullOrEmpty(token))
-        //    {
-        //        var decode = _decodeToken.decode(token);
-
-        //        var currentCustomer = await _customerRepository.GetCustomerByUsername(decode.username);
-
-        //        if (currentCustomer != null)
-        //        {
-        //            var customerCourse = await _customerCourseRepository.GetCustomerCoursesByCustomerId(currentCustomer.CustomerId);
-
-        //            courses = await _courseRepository.GetCourses(page, size);
-
-        //            courses = sortCourse(courses, sortBy);
-
-        //            return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())
-        //            && !customerCourse.Select(uc => uc.CourseId).ToList().Contains(x.CourseId)).ToList());
-        //        }
-        //        else
-        //        {
-        //            courses = await _courseRepository.GetCourses(page, size);
-
-        //            courses = sortCourse(courses, sortBy);
-
-        //            return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
-        //        }
-        //    }
-        //    else
-        //    {
-        //        courses = await _courseRepository.GetCourses(page, size);
-
-        //        courses = sortCourse(courses, sortBy);
-
-        //        return _mapper.Map<List<CourseViewListResModel>>(courses.Where(x => x.Status.Equals(StatusEnums.Available.ToString())).ToList());
-        //    }
-        //}
-
+            // Map từ Product entity sang ProductResponseDTO
+            return _mapper.Map<List<ProductResponseDTO>>(products);
+        }
     }
 }
