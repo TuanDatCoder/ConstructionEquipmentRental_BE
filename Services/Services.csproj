@@ -7,7 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
+  </ItemGroup>
+	  
+  <ItemGroup>   
+	<Folder Include="Helper\CustomExceptions\" />
+    <Folder Include="Helper\DecodeTokenHandler\" />
+    <Folder Include="Helper\MapperProfiles\" />
+    <Folder Include="Helper\VerifyCode\" />
+    <Folder Include="Helper\Resolver\" />
   </ItemGroup>
 
 </Project>
