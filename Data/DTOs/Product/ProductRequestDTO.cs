@@ -17,7 +17,7 @@ namespace BuildLease.Data.DTOs.Product
         public string DefaultImage { get; set; }
         public decimal Price { get; set; }
         public int Stock { get; set; }
-        public ProductStatusEnum Status { get; set; }
+       // public ProductStatusEnum Status { get; set; }
 
     }
 }
