@@ -17,6 +17,13 @@ namespace Services.Helper.MapperProfiles
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
             .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.Name))
             .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name));
+
+            CreateMap<ProductRequestDTO, Product>();
+
+            CreateMap<ProductUpdateRequestDTO, Product>()
+             .ForMember(dest => dest.DiscountStartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountStartDate)))
+             .ForMember(dest => dest.DiscountEndDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountEndDate)))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
         }
     }
 }

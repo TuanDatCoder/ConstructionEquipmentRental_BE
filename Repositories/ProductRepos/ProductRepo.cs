@@ -2,11 +2,7 @@
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repositories.GenericRepos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Repositories.ProductRepos
 {
@@ -39,6 +35,48 @@ namespace Repositories.ProductRepos
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<Product> GetByIdAsync(int id)
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Brand)
+                .Include(p => p.Store)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+
+        public async Task Add(Product product)
+        {
+            try
+            {
+                await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error when adding product: {ex.Message}");
+            }
+        }
+
+        public async Task Update(Product product)
+        {
+            try
+            {
+                _context.Products.Update(product);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error when updating product: {ex.Message}");
+            }
+        }
+
+        public async Task Delete(Product product)
+        {
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
         }
 
 

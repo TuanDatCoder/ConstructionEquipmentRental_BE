@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BuildLease.Data.DTOs.Product;
+using BuildLease.Data.Models.Enums;
 using Data.Entities;
 using Repositories.ProductRepos;
 using System.Collections.Generic;
@@ -20,11 +21,63 @@ namespace Services.ProductServices
 
         public async Task<List<ProductResponseDTO>> GetProducts(int? page, int? size)
         {
-            // Gọi repository để lấy dữ liệu sản phẩm có phân trang
             var products = await _productRepo.GetProducts(page, size);
-
-            // Map từ Product entity sang ProductResponseDTO
             return _mapper.Map<List<ProductResponseDTO>>(products);
         }
+
+        public async Task<ProductResponseDTO> GetProductById(int productId)
+        {
+            
+            var product = await _productRepo.GetByIdAsync(productId);
+
+            if (product == null)
+            {
+                throw new Exception($"Product with ID {productId} not found.");
+            }
+
+            return _mapper.Map<ProductResponseDTO>(product);
+        }
+
+
+        public async Task<ProductResponseDTO> CreateProduct(ProductRequestDTO request)
+        {
+            var product = _mapper.Map<Product>(request);
+            product.Status = ProductStatusEnum.AVAILABLE.ToString();
+            product.CreatedAt = DateTime.UtcNow;
+            product.UpdatedAt = DateTime.UtcNow;
+            await _productRepo.Add(product);
+            return _mapper.Map<ProductResponseDTO>(product);
+        }
+
+        public async Task<ProductResponseDTO> UpdateProduct(int productId, ProductUpdateRequestDTO request)
+        {
+            // Tìm sản phẩm theo ID
+            var product = await _productRepo.GetByIdAsync(productId);
+
+            if (product == null)
+            {
+                throw new Exception($"Product with ID {productId} not found.");
+            }
+
+            _mapper.Map(request, product);
+
+            product.UpdatedAt = DateTime.UtcNow;
+
+            await _productRepo.Update(product);
+
+            return _mapper.Map<ProductResponseDTO>(product);
+        }
+        public async Task DeleteProduct(int productId)
+        {
+            var product = await _productRepo.GetByIdAsync(productId);
+
+            if (product == null)
+            {
+                throw new Exception($"Product with ID {productId} not found.");
+            }
+
+            await _productRepo.Delete(product); 
+        }
+
     }
 }
