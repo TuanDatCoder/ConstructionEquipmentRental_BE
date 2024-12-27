@@ -1,9 +1,13 @@
 using Data;
 using Microsoft.EntityFrameworkCore;
+using Repositories.OrderItemRepos;
+using Repositories.OrderRepos;
 using Repositories.ProductRepos;
 using Repositories.RefreshTokenRepos;
 using Services.Helper.MapperProfiles;
 using Services.JWTServices;
+using Services.OrderItemServices;
+using Services.OrderServices;
 using Services.ProductServices;
 
 namespace ConstructionEquipmentRental.API
@@ -21,9 +25,13 @@ namespace ConstructionEquipmentRental.API
 
             //------------------------------------REPOSITORIES-----------------------------------------
             builder.Services.AddScoped<IProductRepo, ProductRepo>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>(); 
             //------------------------------------SERVICES-----------------------------------------
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IOrderItemService, OrderItemService>();
             builder.Services.AddScoped<IJWTService, JWTService>();
 
             //-----------------------------------------DB-----------------------------------------
