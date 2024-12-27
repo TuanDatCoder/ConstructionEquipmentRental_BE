@@ -59,7 +59,7 @@ namespace Repositories.OrderRepos
         public async Task<Order> GetOrderByIdAsync(int orderId)
         {
             return await _context.Orders
-                .Include(o => o.Customer) // Bao gồm thông tin liên quan, nếu cần
+                .Include(o => o.Customer)
                 .Include(o => o.Staff)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }

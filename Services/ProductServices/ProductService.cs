@@ -11,24 +11,24 @@ namespace Services.ProductServices
     public class ProductService : IProductService
     {
         private readonly IMapper _mapper;
-        private readonly IProductRepo _productRepo;
+        private readonly IProductRepository _productRepository;
 
-        public ProductService(IMapper mapper, IProductRepo productRepo)
+        public ProductService(IMapper mapper, IProductRepository productRepository)
         {
             _mapper = mapper;
-            _productRepo = productRepo;
+            _productRepository = productRepository;
         }
 
         public async Task<List<ProductResponseDTO>> GetProducts(int? page, int? size)
         {
-            var products = await _productRepo.GetProducts(page, size);
+            var products = await _productRepository.GetProducts(page, size);
             return _mapper.Map<List<ProductResponseDTO>>(products);
         }
 
         public async Task<ProductResponseDTO> GetProductById(int productId)
         {
             
-            var product = await _productRepo.GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(productId);
 
             if (product == null)
             {
@@ -45,14 +45,14 @@ namespace Services.ProductServices
             product.Status = ProductStatusEnum.AVAILABLE.ToString();
             product.CreatedAt = DateTime.UtcNow;
             product.UpdatedAt = DateTime.UtcNow;
-            await _productRepo.Add(product);
+            await _productRepository.Add(product);
             return _mapper.Map<ProductResponseDTO>(product);
         }
 
         public async Task<ProductResponseDTO> UpdateProduct(int productId, ProductUpdateRequestDTO request)
         {
-            // Tìm sản phẩm theo ID
-            var product = await _productRepo.GetByIdAsync(productId);
+           
+            var product = await _productRepository.GetByIdAsync(productId);
 
             if (product == null)
             {
@@ -63,21 +63,38 @@ namespace Services.ProductServices
 
             product.UpdatedAt = DateTime.UtcNow;
 
-            await _productRepo.Update(product);
+            await _productRepository.Update(product);
 
             return _mapper.Map<ProductResponseDTO>(product);
         }
         public async Task DeleteProduct(int productId)
         {
-            var product = await _productRepo.GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(productId);
 
             if (product == null)
             {
                 throw new Exception($"Product with ID {productId} not found.");
             }
 
-            await _productRepo.Delete(product); 
+            await _productRepository.Delete(product); 
         }
+
+        public async Task<ProductResponseDTO> ChangeProductStatus(int productId, ProductStatusEnum newStatus)
+        {
+            var existingProduct = await _productRepository.GetByIdAsync(productId);
+            if (existingProduct == null)
+            {
+                throw new KeyNotFoundException($"Product with ID {productId} not found.");
+            }
+
+            
+            existingProduct.Status = newStatus.ToString();
+
+            await _productRepository.Update(existingProduct);
+
+            return _mapper.Map<ProductResponseDTO>(existingProduct);
+        }
+
 
     }
 }
