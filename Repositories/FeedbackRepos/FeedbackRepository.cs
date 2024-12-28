@@ -55,7 +55,7 @@ namespace Repositories.FeedbackRepos
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error when adding product: {ex.Message}");
+                throw new Exception($"Error when adding feedback: {ex.Message}");
             }
         }
 
@@ -68,7 +68,7 @@ namespace Repositories.FeedbackRepos
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error when updating product: {ex.Message}");
+                throw new Exception($"Error when updating feedback: {ex.Message}");
             }
         }
 

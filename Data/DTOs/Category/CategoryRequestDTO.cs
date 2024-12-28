@@ -8,5 +8,10 @@ namespace Data.DTOs.Category
 {
     public class CategoryRequestDTO
     {
+
+        public string? Name { get; set; }
+
+        public string? Description { get; set; }
+
     }
 }

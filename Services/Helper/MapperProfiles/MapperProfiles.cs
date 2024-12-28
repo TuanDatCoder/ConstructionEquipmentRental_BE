@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data.DTOs.Feedback;
+using Data.DTOs.Category;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -53,8 +54,12 @@ namespace Services.Helper.MapperProfiles
             CreateMap<Feedback, FeedbackResponseDTO>()
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null))
             .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
-
             CreateMap<FeedbackRequestDTO, Feedback>();
+
+            //Category
+            CreateMap<Category, CategoryResponseDTO>();
+            CreateMap<CategoryRequestDTO, Category>();
+
         }
     }
 }
