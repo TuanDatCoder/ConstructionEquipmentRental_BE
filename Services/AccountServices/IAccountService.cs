@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.AccountServices
 {
-    internal class IAccountService
+    public interface IAccountService
     {
     }
 }

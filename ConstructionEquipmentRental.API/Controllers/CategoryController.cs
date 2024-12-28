@@ -1,50 +1,55 @@
 ﻿using Data.DTOs.Product;
-using Data.Models.Enums;
 using Data.DTOs;
+using Data.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;
 using System.Net;
+using Services.CategoryServices;
+using Data.Entities;
+using Data.DTOs.Category;
+using Data.Enums;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductController : ControllerBase
+    public class CategoryController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
 
-        public ProductController(IProductService productService)
+        public CategoryController(ICategoryService categoryService)
         {
-            _productService = productService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProducts(int? page = 1, int? size = 10)
         {
-            var result = await _productService.GetProducts(page, size);
+            var result = await _categoryService.GetCategories(page, size);
 
             return Ok(new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "View products successfully",
+                Message = "View categories successfully",
                 Data = result
             });
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(int id)
+        public async Task<IActionResult> GetCategoryById(int id)
         {
             try
             {
-                var product = await _productService.GetProductById(id);
+                var category = await _categoryService.GetCategoryById(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product retrieved successfully",
-                    Data = product
+                    Message = "Category retrieved successfully",
+                    Data = category
                 });
             }
             catch (KeyNotFoundException ex)
@@ -68,7 +73,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO request)
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
@@ -76,34 +81,34 @@ namespace ConstructionEquipmentRental.API.Controllers
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid product data"
+                    Message = "Invalid category data"
                 });
             }
 
-            var result = await _productService.CreateProduct(request);
+            var result = await _categoryService.CreateCategory(request);
 
             return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.Created,
-                Message = "Product created successfully",
+                Message = "Category created successfully",
                 Data = result
             });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateRequestDTO request)
+        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryRequestDTO request)
         {
             try
             {
-                var updatedProduct = await _productService.UpdateProduct(id, request);
+                var updatedCategory = await _categoryService.UpdateCategory(id, request);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product updated successfully",
-                    Data = updatedProduct
+                    Message = "Category updated successfully",
+                    Data = updatedCategory
                 });
             }
             catch (KeyNotFoundException ex)
@@ -127,17 +132,17 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteCategory(int id)
         {
             try
             {
-                await _productService.DeleteProduct(id);
+                await _categoryService.DeleteCategory(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product deleted successfully"
+                    Message = "Category deleted successfully"
                 });
             }
             catch (KeyNotFoundException ex)
@@ -161,18 +166,18 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> ChangeProductStatus(int id, [FromBody] ProductImageStatusEnum newStatus)
+        public async Task<IActionResult> ChangeCategoryStatus(int id, [FromBody] CategoryStatusEnum newStatus)
         {
             try
             {
-                var updatedProduct = await _productService.ChangeProductStatus(id, newStatus);
+                var updatedCategory = await _categoryService.ChangeCategoryStatus(id, newStatus);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product status updated successfully",
-                    Data = updatedProduct
+                    Message = "Category status updated successfully",
+                    Data = updatedCategory
                 });
             }
             catch (KeyNotFoundException ex)

@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Models.Enums
+namespace Data.Enums
 {
-    public enum PaymentMethodEnum
+    public enum ImageStatusEnum
     {
-        CASH, TRANSFER, VNPAY, BANK_TRANSFER
+          ACTIVE,
+          INACTIVE,
+          DELETED
+
     }
 }
