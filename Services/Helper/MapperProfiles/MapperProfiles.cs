@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Data.DTOs.Feedback;
 using Data.DTOs.Category;
 using Data.DTOs.ProductImage;
+using Data.DTOs.OrderReport;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -28,6 +29,7 @@ namespace Services.Helper.MapperProfiles
 
 
             CreateMap<ProductRequestDTO, Product>();
+
             CreateMap<ProductUpdateRequestDTO, Product>()
              .ForMember(dest => dest.DiscountStartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountStartDate)))
              .ForMember(dest => dest.DiscountEndDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountEndDate)))
@@ -42,9 +44,11 @@ namespace Services.Helper.MapperProfiles
                 .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.Username)) 
                 .ForMember(dest => dest.StaffId, opt => opt.MapFrom(src => src.Staff.Id));
 
+            //Order Item
             CreateMap<OrderItem, OrderItemResponseDTO>()
                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
 
+            CreateMap<OrderItemRequestDTO, OrderItem>();
 
             // Brand
             CreateMap<Brand, BrandResponseDTO>();
@@ -68,6 +72,13 @@ namespace Services.Helper.MapperProfiles
 
 
             CreateMap<ProductImageRequestDTO, ProductImage>();
+
+            //Order Report
+            CreateMap<OrderReport, OrderReportResponseDTO>();
+            CreateMap<OrderReportRequestDTO, OrderReport>()
+                .ForMember(dest => dest.Status, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+
 
         }
     }
