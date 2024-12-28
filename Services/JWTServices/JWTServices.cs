@@ -1,4 +1,4 @@
-﻿using BuildLease.Data.Models.Enums;
+﻿using Data.Models.Enums;
 using Data.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

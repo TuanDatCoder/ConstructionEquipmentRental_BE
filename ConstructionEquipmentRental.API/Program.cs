@@ -12,6 +12,8 @@ using Services.JWTServices;
 using Services.OrderItemServices;
 using Services.OrderServices;
 using Services.ProductServices;
+using Repositories.FeedbackRepos;
+using Services.FeedbackServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -27,18 +29,24 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddAutoMapper(typeof(MapperProfiles).Assembly);
 
             //------------------------------------REPOSITORIES-----------------------------------------
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>(); 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+            builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+
+
+
             //------------------------------------SERVICES-----------------------------------------
-            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IOrderItemService, OrderItemService>();
-            builder.Services.AddScoped<IJWTService, JWTService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
+
 
             //-----------------------------------------DB-----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>

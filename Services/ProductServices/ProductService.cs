@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using BuildLease.Data.DTOs.Product;
-using BuildLease.Data.Models.Enums;
+using Data.DTOs.Product;
+using Data.Models.Enums;
 using Data.Entities;
 using Repositories.ProductRepos;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace Services.ProductServices
 {
@@ -25,14 +24,14 @@ namespace Services.ProductServices
             return _mapper.Map<List<ProductResponseDTO>>(products);
         }
 
-        public async Task<ProductResponseDTO> GetProductById(int productId)
+        public async Task<ProductResponseDTO> GetProductById(int id)
         {
             
-            var product = await _productRepository.GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(id);
 
             if (product == null)
             {
-                throw new Exception($"Product with ID {productId} not found.");
+                throw new Exception($"Product with ID {id} not found.");
             }
 
             return _mapper.Map<ProductResponseDTO>(product);
@@ -49,14 +48,14 @@ namespace Services.ProductServices
             return _mapper.Map<ProductResponseDTO>(product);
         }
 
-        public async Task<ProductResponseDTO> UpdateProduct(int productId, ProductUpdateRequestDTO request)
+        public async Task<ProductResponseDTO> UpdateProduct(int id, ProductUpdateRequestDTO request)
         {
            
-            var product = await _productRepository.GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(id);
 
             if (product == null)
             {
-                throw new Exception($"Product with ID {productId} not found.");
+                throw new Exception($"Product with ID {id} not found.");
             }
 
             _mapper.Map(request, product);
@@ -67,24 +66,24 @@ namespace Services.ProductServices
 
             return _mapper.Map<ProductResponseDTO>(product);
         }
-        public async Task DeleteProduct(int productId)
+        public async Task DeleteProduct(int id)
         {
-            var product = await _productRepository.GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(id);
 
             if (product == null)
             {
-                throw new Exception($"Product with ID {productId} not found.");
+                throw new Exception($"Product with ID {id} not found.");
             }
 
             await _productRepository.Delete(product); 
         }
 
-        public async Task<ProductResponseDTO> ChangeProductStatus(int productId, ProductStatusEnum newStatus)
+        public async Task<ProductResponseDTO> ChangeProductStatus(int id, ProductStatusEnum newStatus)
         {
-            var existingProduct = await _productRepository.GetByIdAsync(productId);
+            var existingProduct = await _productRepository.GetByIdAsync(id);
             if (existingProduct == null)
             {
-                throw new KeyNotFoundException($"Product with ID {productId} not found.");
+                throw new KeyNotFoundException($"Product with ID {id} not found.");
             }
 
             

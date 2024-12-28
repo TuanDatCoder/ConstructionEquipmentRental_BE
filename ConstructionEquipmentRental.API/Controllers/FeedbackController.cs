@@ -1,49 +1,51 @@
 ﻿using Data.DTOs.Product;
-using Data.Models.Enums;
 using Data.DTOs;
+using Data.Entities;
+using Data.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
-using Services.ProductServices;
+using Services.FeedbackServices;
 using System.Net;
+using Data.DTOs.Feedback;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class ProductController : ControllerBase
+    [ApiController]
+    public class FeedbackController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly IFeedbackService _feedbackService;
 
-        public ProductController(IProductService productService)
+        public FeedbackController(IFeedbackService feedbackService)
         {
-            _productService = productService;
+            _feedbackService = feedbackService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetFeedbacks(int? page = 1, int? size = 10)
         {
-            var result = await _productService.GetProducts(page, size);
+            var result = await _feedbackService.GetFeedbacks(page, size);
 
             return Ok(new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "View products successfully",
+                Message = "View feedbacks successfully",
                 Data = result
             });
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(int id)
+        public async Task<IActionResult> GetFeedbackById(int id)
         {
             try
             {
-                var product = await _productService.GetProductById(id);
+                var product = await _feedbackService.GetFeedbackById(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product retrieved successfully",
+                    Message = "Feedback retrieved successfully",
                     Data = product
                 });
             }
@@ -68,7 +70,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO request)
+        public async Task<IActionResult> CreateFeedback([FromBody] FeedbackRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
@@ -76,34 +78,34 @@ namespace ConstructionEquipmentRental.API.Controllers
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid product data"
+                    Message = "Invalid feedback data"
                 });
             }
 
-            var result = await _productService.CreateProduct(request);
+            var result = await _feedbackService.CreateFeedback(request);
 
             return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.Created,
-                Message = "Product created successfully",
+                Message = "Feedback created successfully",
                 Data = result
             });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateRequestDTO request)
+        public async Task<IActionResult> UpdateFeedback(int id, [FromBody] FeedbackRequestDTO request)
         {
             try
             {
-                var updatedProduct = await _productService.UpdateProduct(id, request);
+                var updatedFeedback = await _feedbackService.UpdateFeedback(id, request);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product updated successfully",
-                    Data = updatedProduct
+                    Message = "Feedback updated successfully",
+                    Data = updatedFeedback
                 });
             }
             catch (KeyNotFoundException ex)
@@ -127,17 +129,17 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteFeedback(int id)
         {
             try
             {
-                await _productService.DeleteProduct(id);
+                await _feedbackService.DeleteFeedback(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product deleted successfully"
+                    Message = "Feedback deleted successfully"
                 });
             }
             catch (KeyNotFoundException ex)
@@ -160,39 +162,41 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
-        [HttpPatch("{id}/status")]
-        public async Task<IActionResult> ChangeProductStatus(int id, [FromBody] ProductStatusEnum newStatus)
-        {
-            try
-            {
-                var updatedProduct = await _productService.ChangeProductStatus(id, newStatus);
+        //[HttpPatch("{id}/status")]
+        //public async Task<IActionResult> ChangeFeedbackStatus(int id, [FromBody] FeedbackStatusEnum newStatus)
+        //{
+        //    try
+        //    {
+        //        var updatedFeedback = await _feedbackService.ChangeFeedbackStatus(id, newStatus);
 
-                return Ok(new ApiResponseDTO
-                {
-                    IsSuccess = true,
-                    Code = (int)HttpStatusCode.OK,
-                    Message = "Product status updated successfully",
-                    Data = updatedProduct
-                });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new ApiResponseDTO
-                {
-                    IsSuccess = false,
-                    Code = (int)HttpStatusCode.NotFound,
-                    Message = ex.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponseDTO
-                {
-                    IsSuccess = false,
-                    Code = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message
-                });
-            }
-        }
+        //        return Ok(new ApiResponseDTO
+        //        {
+        //            IsSuccess = true,
+        //            Code = (int)HttpStatusCode.OK,
+        //            Message = "Feedback status updated successfully",
+        //            Data = updatedFeedback
+        //        });
+        //    }
+        //    catch (KeyNotFoundException ex)
+        //    {
+        //        return NotFound(new ApiResponseDTO
+        //        {
+        //            IsSuccess = false,
+        //            Code = (int)HttpStatusCode.NotFound,
+        //            Message = ex.Message
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new ApiResponseDTO
+        //        {
+        //            IsSuccess = false,
+        //            Code = (int)HttpStatusCode.BadRequest,
+        //            Message = ex.Message
+        //        });
+        //    }
+        //}
+
+
     }
 }
