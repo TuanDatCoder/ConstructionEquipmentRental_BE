@@ -8,5 +8,9 @@ namespace Data.DTOs.ProductImage
 {
     public class ProductImageRequestDTO
     {
+        public int ProductId { get; set; }
+
+        public string? ImageUrl { get; set; }
+
     }
 }

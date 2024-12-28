@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Models.Enums
+namespace Data.Enums
 {
-    public enum ProductImageStatusEnum
+    public enum ImageStatusEnum
     {
-        AVAILABLE, OUT_OF_STOCK, DELETED
+          ACTIVE,
+          INACTIVE,
+          DELETED
+
     }
 }

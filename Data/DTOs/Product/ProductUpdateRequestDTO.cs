@@ -19,7 +19,7 @@ namespace Data.DTOs.Product
         public decimal Discount { get; set; }
         public decimal PriceSale { get; set; }
         public int Stock { get; set; }
-        public ProductStatusEnum Status { get; set; }
+        public ProductImageStatusEnum Status { get; set; }
         public DateTime DiscountStartDate { get; set; }
         public DateTime DiscountEndDate { get; set; }
     }

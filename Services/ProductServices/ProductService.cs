@@ -41,7 +41,7 @@ namespace Services.ProductServices
         public async Task<ProductResponseDTO> CreateProduct(ProductRequestDTO request)
         {
             var product = _mapper.Map<Product>(request);
-            product.Status = ProductStatusEnum.AVAILABLE.ToString();
+            product.Status = ProductImageStatusEnum.AVAILABLE.ToString();
             product.CreatedAt = DateTime.UtcNow;
             product.UpdatedAt = DateTime.UtcNow;
             await _productRepository.Add(product);
@@ -78,7 +78,7 @@ namespace Services.ProductServices
             await _productRepository.Delete(product); 
         }
 
-        public async Task<ProductResponseDTO> ChangeProductStatus(int id, ProductStatusEnum newStatus)
+        public async Task<ProductResponseDTO> ChangeProductStatus(int id, ProductImageStatusEnum newStatus)
         {
             var existingProduct = await _productRepository.GetByIdAsync(id);
             if (existingProduct == null)

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Data.DTOs.Feedback;
 using Data.DTOs.Category;
+using Data.DTOs.ProductImage;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -59,6 +60,14 @@ namespace Services.Helper.MapperProfiles
             //Category
             CreateMap<Category, CategoryResponseDTO>();
             CreateMap<CategoryRequestDTO, Category>();
+
+            //ProductImage
+            CreateMap<ProductImage, ProductImageResponseDTO>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null));
+
+
+
+            CreateMap<ProductImageRequestDTO, ProductImage>();
 
         }
     }
