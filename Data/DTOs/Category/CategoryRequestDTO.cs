@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.AccountServices
+namespace Data.DTOs.Category
 {
-    public interface IAccountService
+    public class CategoryRequestDTO
     {
     }
 }

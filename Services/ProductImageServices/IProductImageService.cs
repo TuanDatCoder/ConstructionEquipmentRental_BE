@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.AccountServices
+namespace Services.ProductImageServices
 {
-    public interface IAccountService
+    public interface IProductImageService
     {
     }
 }

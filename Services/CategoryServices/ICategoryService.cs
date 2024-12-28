@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.AccountServices
+namespace Services.CategoryServices
 {
-    public interface IAccountService
+    public interface ICategoryService
     {
     }
 }

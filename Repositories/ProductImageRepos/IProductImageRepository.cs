@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.AccountServices
+namespace Repositories.ProductImageRepos
 {
-    public interface IAccountService
+    public interface IProductImageRepository
     {
     }
 }

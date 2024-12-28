@@ -1,24 +1,23 @@
 ﻿using Data.Entities;
 using Data;
+using Repositories.FeedbackRepos;
 using Repositories.GenericRepos;
-using Repositories.ProductImageRepos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.AccountRepos
+namespace Repositories.ProductImageRepos
 {
-    public class AccountRepository : GenericRepository<Account>, IAccountRepository
+    public class ProductImageRepository : GenericRepository<ProductImage>, IProductImageRepository
     {
         private readonly ConstructionEquipmentRentalDbContext _context;
 
-        public AccountRepository(ConstructionEquipmentRentalDbContext context) : base(context)
+        public ProductImageRepository(ConstructionEquipmentRentalDbContext context) : base(context)
         {
             _context = context;
         }
-
-
+    
     }
 }
