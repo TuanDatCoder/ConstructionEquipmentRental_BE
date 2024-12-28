@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BuildLease.Data.DTOs.Product;
+using Data.DTOs.Product;
 using Data.DTOs.Order;
 using Data.DTOs.OrderItem;
 using Data.DTOs.Brand;
@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Data.DTOs.Feedback;
+using Data.DTOs.Category;
+using Data.DTOs.ProductImage;
 using Data.DTOs.OrderReport;
 
 namespace Services.Helper.MapperProfiles
@@ -20,9 +23,10 @@ namespace Services.Helper.MapperProfiles
 
             // Product
             CreateMap<Product, ProductResponseDTO>()
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-            .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.Name))
-            .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store.Name));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand != null ? src.Brand.Name : null))
+                .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store != null ? src.Store.Name : null));
+
 
             CreateMap<ProductRequestDTO, Product>();
 
@@ -49,6 +53,25 @@ namespace Services.Helper.MapperProfiles
             // Brand
             CreateMap<Brand, BrandResponseDTO>();
             CreateMap<BrandRequestDTO, Brand>();
+
+            //FeedBack
+            
+            CreateMap<Feedback, FeedbackResponseDTO>()
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null))
+            .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
+            CreateMap<FeedbackRequestDTO, Feedback>();
+
+            //Category
+            CreateMap<Category, CategoryResponseDTO>();
+            CreateMap<CategoryRequestDTO, Category>();
+
+            //ProductImage
+            CreateMap<ProductImage, ProductImageResponseDTO>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null));
+
+
+
+            CreateMap<ProductImageRequestDTO, ProductImage>();
 
             //Order Report
             CreateMap<OrderReport, OrderReportResponseDTO>();

@@ -12,8 +12,14 @@ using Services.JWTServices;
 using Services.OrderItemServices;
 using Services.OrderServices;
 using Services.ProductServices;
-using Services.OrderReportServices;
-using Repositories.OrderReportRepos;
+using Repositories.FeedbackRepos;
+using Services.FeedbackServices;
+using Repositories.ProductImageRepos;
+using Repositories.CategoryRepos;
+using Repositories.AccountRepos;
+using Services.CategoryServices;
+using Services.ProductImageServices;
+using Services.AccountServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -25,27 +31,39 @@ namespace ConstructionEquipmentRental.API
 
             // Add services to the container.
 
-            //--------------------------------------AUTOMAPPER-----------------------------------------
+            //------------------------------------AUTOMAPPER-------------------------------------
             builder.Services.AddAutoMapper(typeof(MapperProfiles).Assembly);
 
-            //------------------------------------REPOSITORIES-----------------------------------------
+            //----------------------------------REPOSITORIES-------------------------------------
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>(); 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+            builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
+
+            //----------------------------------SERVICES-----------------------------------------
+            builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<IOrderReportRepository, OrderReportRepository>();
 
             //------------------------------------SERVICES-----------------------------------------
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IOrderItemService, OrderItemService>();
-            builder.Services.AddScoped<IJWTService, JWTService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
+            builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IProductImageService, ProductImageService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+
             builder.Services.AddScoped<IOrderReportService, OrderReportService>();
 
-            //-----------------------------------------DB-----------------------------------------
+            //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

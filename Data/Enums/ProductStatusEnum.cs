@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildLease.Data.Models.Enums
+namespace Data.Models.Enums
 {
-    public enum ProductStatusEnum
+    public enum ProductImageStatusEnum
     {
         AVAILABLE, OUT_OF_STOCK, DELETED
     }

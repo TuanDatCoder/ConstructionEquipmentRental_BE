@@ -13,7 +13,6 @@ namespace Repositories.ProductRepos
         Task<Product> GetByIdAsync(int id);
         Task Add(Product product);
         Task Update(Product product);
-
         Task Delete(Product product);
     }
 }

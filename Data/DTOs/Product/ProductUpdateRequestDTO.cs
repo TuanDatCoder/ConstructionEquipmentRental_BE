@@ -1,11 +1,11 @@
-﻿using BuildLease.Data.Models.Enums;
+﻿using Data.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildLease.Data.DTOs.Product
+namespace Data.DTOs.Product
 {
     public class ProductUpdateRequestDTO
     {
@@ -19,7 +19,7 @@ namespace BuildLease.Data.DTOs.Product
         public decimal Discount { get; set; }
         public decimal PriceSale { get; set; }
         public int Stock { get; set; }
-        public ProductStatusEnum Status { get; set; }
+        public ProductImageStatusEnum Status { get; set; }
         public DateTime DiscountStartDate { get; set; }
         public DateTime DiscountEndDate { get; set; }
     }

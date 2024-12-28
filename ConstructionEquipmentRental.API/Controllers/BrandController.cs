@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.BrandServices;
 using System.Net;
 using System.Threading.Tasks;
-using BuildLease.Data.Models.Enums;
+using Data.Models.Enums;
 using Data.Enums;
 
 namespace ConstructionEquipmentRental.API.Controllers
