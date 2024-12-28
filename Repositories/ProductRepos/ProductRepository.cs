@@ -6,11 +6,11 @@ using Repositories.GenericRepos;
 
 namespace Repositories.ProductRepos
 {
-    public class ProductRepo : GenericRepository<Product>, IProductRepo
+    public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         private readonly ConstructionEquipmentRentalDbContext _context;
 
-        public ProductRepo(ConstructionEquipmentRentalDbContext context) : base(context)
+        public ProductRepository(ConstructionEquipmentRentalDbContext context) : base(context)
         {
             _context = context;
         }
@@ -79,6 +79,7 @@ namespace Repositories.ProductRepos
             await _context.SaveChangesAsync();
         }
 
+    
 
     }
 }

@@ -1,9 +1,12 @@
+using ConstructionEquipmentRental.API.Middlewares;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Repositories.OrderItemRepos;
 using Repositories.OrderRepos;
+using Repositories.BrandRepos;
 using Repositories.ProductRepos;
 using Repositories.RefreshTokenRepos;
+using Services.BrandServices;
 using Services.Helper.MapperProfiles;
 using Services.JWTServices;
 using Services.OrderItemServices;
@@ -24,15 +27,18 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddAutoMapper(typeof(MapperProfiles).Assembly);
 
             //------------------------------------REPOSITORIES-----------------------------------------
-            builder.Services.AddScoped<IProductRepo, ProductRepo>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>(); 
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddScoped<IBrandRepository, BrandRepository>();
             //------------------------------------SERVICES-----------------------------------------
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IOrderItemService, OrderItemService>();
             builder.Services.AddScoped<IJWTService, JWTService>();
+            builder.Services.AddScoped<IBrandService, BrandService>();
 
             //-----------------------------------------DB-----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
@@ -52,6 +58,7 @@ namespace ConstructionEquipmentRental.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
