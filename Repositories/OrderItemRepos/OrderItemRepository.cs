@@ -17,12 +17,48 @@ namespace Repositories.OrderItemRepos
         {
             _context = context;
         }
+
+        public async Task<OrderItem> CreateOrderItemAsync(OrderItem orderItem)
+        {
+            _context.Set<OrderItem>().Add(orderItem);
+            await _context.SaveChangesAsync();
+            return orderItem;
+        }
+
+        public async Task<bool> DeleteOrderItemAsync(int orderItemId)
+        {
+            var orderItem = await _context.OrderItems.FindAsync(orderItemId);
+            if (orderItem == null)
+            {
+                return false;
+            }
+
+            _context.OrderItems.Remove(orderItem);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<OrderItem>> GetAllOrderItemAsync()
         {
             return await _context.Set<OrderItem>()
                 .Include(o => o.Order)
                 .Include(o => o.Product)
                 .ToListAsync();
+        }
+
+        public async Task<OrderItem> GetOrderItemByIdAsync(int orderItemId)
+        {
+            return await _context.OrderItems
+                .Include(o => o.Order) 
+                .Include(o => o.Product)
+                .FirstOrDefaultAsync(o => o.Id == orderItemId);
+        }
+
+        public async Task<OrderItem> UpdateOrderItemAsync(OrderItem orderItem)
+        {
+            _context.OrderItems.Update(orderItem);
+            await _context.SaveChangesAsync();
+            return orderItem;
         }
     }
 }

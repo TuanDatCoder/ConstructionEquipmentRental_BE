@@ -11,9 +11,9 @@ namespace Services.OrderItemServices
     public interface IOrderItemService
     {
         Task<IEnumerable<OrderItemResponseDTO>> GetAllOrderItemsAsync();
-        //Task<OrderResponseDTO> CreateOrderAsync(OrderRequestDTO orderRequest);
-        //Task<OrderResponseDTO> UpdateOrderAsync(int orderId, OrderRequestDTO orderRequest);
-        //Task<bool> DeleteOrderAsync(int orderId);
-        //Task<OrderResponseDTO> GetOrderByIdAsync(int orderId);
+        Task<OrderItemResponseDTO> CreateOrderItemAsync(OrderItemRequestDTO orderItemRequest);
+        Task<OrderItemResponseDTO> UpdateOrderItemAsync(int orderItemId, OrderItemRequestDTO orderItemRequest);
+        Task<bool> DeleteOrderItemAsync(int orderItemId);
+        Task<OrderItemResponseDTO> GetOrderItemByIdAsync(int orderItemId);
     }
 }

@@ -40,11 +40,13 @@ namespace Services.Helper.MapperProfiles
 
             CreateMap<OrderItem, OrderItemResponseDTO>()
                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
-               
+
 
             // Brand
             CreateMap<Brand, BrandResponseDTO>();
             CreateMap<BrandRequestDTO, Brand>();
+
+            CreateMap<OrderItemRequestDTO, OrderItem>();
         }
     }
 }
