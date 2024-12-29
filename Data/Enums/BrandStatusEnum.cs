@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.AccountRepos
+namespace Data.Enums
 {
-    internal class IAccountRepo
+    public enum BrandStatusEnum
     {
+        ACTIVE,INACTIVE, DELETED
     }
 }

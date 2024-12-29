@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace Repositories.ProductRepos
 {
-    public interface IProductRepo
+    public interface IProductRepository
     {
         Task<List<Product>> GetProducts(int? page, int? size);
         Task<Product> GetByIdAsync(int id);
         Task Add(Product product);
         Task Update(Product product);
-
         Task Delete(Product product);
     }
 }

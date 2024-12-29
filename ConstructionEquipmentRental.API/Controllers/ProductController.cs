@@ -1,4 +1,5 @@
-﻿using BuildLease.Data.DTOs.Product;
+﻿using Data.DTOs.Product;
+using Data.Models.Enums;
 using Data.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;
@@ -22,15 +23,13 @@ namespace ConstructionEquipmentRental.API.Controllers
         {
             var result = await _productService.GetProducts(page, size);
 
-            var response = new ApiResponseDTO
+            return Ok(new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
                 Message = "View products successfully",
                 Data = result
-            };
-
-            return StatusCode(response.Code, response);
+            });
         }
 
         [HttpGet("{id}")]
@@ -39,21 +38,41 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 var product = await _productService.GetProductById(id);
-                return Ok(product);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Product retrieved successfully",
+                    Data = product
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return NotFound(new { message = ex.Message });
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new
+                return BadRequest(new ApiResponseDTO
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
@@ -63,15 +82,13 @@ namespace ConstructionEquipmentRental.API.Controllers
 
             var result = await _productService.CreateProduct(request);
 
-            var response = new
+            return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.Created,
                 Message = "Product created successfully",
                 Data = result
-            };
-
-            return StatusCode(response.Code, response);
+            });
         }
 
         [HttpPut("{id}")]
@@ -80,30 +97,101 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 var updatedProduct = await _productService.UpdateProduct(id, request);
-                return Ok(updatedProduct);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Product updated successfully",
+                    Data = updatedProduct
+                });
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { Message = ex.Message });
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
 
-       
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try
             {
                 await _productService.DeleteProduct(id);
-                return NoContent(); // 204 No Content: Sản phẩm đã được xóa
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Product deleted successfully"
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return NotFound(new { message = ex.Message }); // 404 Not Found
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ChangeProductStatus(int id, [FromBody] ProductImageStatusEnum newStatus)
+        {
+            try
+            {
+                var updatedProduct = await _productService.ChangeProductStatus(id, newStatus);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Product status updated successfully",
+                    Data = updatedProduct
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
     }

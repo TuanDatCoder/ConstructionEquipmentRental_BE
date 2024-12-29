@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.AccountRepos
+namespace Data.Enums
 {
-    public class AccountRepo
+    public enum FuelTypeEnum
     {
-        ///////////////////////////////////////////////
-
+        PETROL,
+        DIESEL,
+        ELECTRIC,
+        HYBRID,
+        GAS
     }
+
 }
