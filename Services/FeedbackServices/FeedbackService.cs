@@ -2,7 +2,7 @@
 using Data.DTOs.Feedback;
 using Data.DTOs.Product;
 using Data.Entities;
-using Data.Models.Enums;
+using Data.Enums;
 using Repositories.FeedbackRepos;
 using Repositories.ProductRepos;
 using Services.ProductServices;

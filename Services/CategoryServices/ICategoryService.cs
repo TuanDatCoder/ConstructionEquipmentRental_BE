@@ -1,7 +1,6 @@
 ﻿using Data.DTOs.Category;
 using Data.DTOs.Product;
 using Data.Enums;
-using Data.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.DTOs.Product;
-using Data.Models.Enums;
+using Data.Enums;
 using Data.Entities;
 using Repositories.ProductRepos;
 

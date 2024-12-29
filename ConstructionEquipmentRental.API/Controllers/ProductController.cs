@@ -1,5 +1,5 @@
 ﻿using Data.DTOs.Product;
-using Data.Models.Enums;
+using Data.Enums;
 using Data.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;

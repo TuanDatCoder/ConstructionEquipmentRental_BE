@@ -1,5 +1,5 @@
 ﻿using Data.DTOs.Product;
-using Data.Models.Enums;
+using Data.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

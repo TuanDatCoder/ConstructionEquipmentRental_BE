@@ -2,7 +2,6 @@
 using Data.DTOs.Product;
 using Data.DTOs.ProductImage;
 using Data.Entities;
-using Data.Models.Enums;
 using Repositories.ProductImageRepos;
 using Repositories.ProductRepos;
 using Services.ProductServices;

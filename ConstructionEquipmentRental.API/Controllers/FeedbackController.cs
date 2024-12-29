@@ -1,7 +1,7 @@
 ﻿using Data.DTOs.Product;
 using Data.DTOs;
 using Data.Entities;
-using Data.Models.Enums;
+using Data.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.FeedbackServices;
 using System.Net;
