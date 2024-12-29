@@ -48,12 +48,8 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IOrderReportRepository, OrderReportRepository>();
 
-
-
-            //----------------------------------SERVICES-----------------------------------------
-            builder.Services.AddScoped<IJWTService, JWTService>();
-
             //------------------------------------SERVICES-----------------------------------------
+            builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IOrderItemService, OrderItemService>();

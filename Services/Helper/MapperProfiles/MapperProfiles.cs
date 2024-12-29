@@ -69,8 +69,6 @@ namespace Services.Helper.MapperProfiles
             CreateMap<ProductImage, ProductImageResponseDTO>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null));
 
-
-
             CreateMap<ProductImageRequestDTO, ProductImage>();
 
             //Order Report
