@@ -1,4 +1,4 @@
-﻿using Data.Models.Enums;
+﻿using Data.Enums;
 using Data.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

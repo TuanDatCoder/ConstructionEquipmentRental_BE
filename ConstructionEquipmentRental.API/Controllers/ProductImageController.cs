@@ -1,6 +1,6 @@
 ﻿using Data.DTOs.Product;
 using Data.DTOs;
-using Data.Models.Enums;
+using Data.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;
 using System.Net;

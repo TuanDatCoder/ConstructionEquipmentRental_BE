@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Data.DTOs.Product;
-using Data.Models.Enums;
+using Data.Enums;
 using Data.Enums;
 
 namespace Services.BrandServices
