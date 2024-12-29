@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace Data.Enums
 {
-    public enum OrderStatusEnum
+    public enum WalletLogTypeEnum
     {
-        PENDING, COMPLETED, CANCELLED, DELETED
+        ADD,           
+        SUBTRACT,      
+        REFUND,     
+        TRANSFER,   
+        RECEIVE      
     }
 }

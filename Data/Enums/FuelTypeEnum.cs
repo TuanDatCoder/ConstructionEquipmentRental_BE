@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Data.Enums
 {
-    public enum OrderStatusEnum
+    public enum FuelTypeEnum
     {
-        PENDING, COMPLETED, CANCELLED, DELETED
+        PETROL,
+        DIESEL,
+        ELECTRIC,
+        HYBRID,
+        GAS
     }
+
 }
