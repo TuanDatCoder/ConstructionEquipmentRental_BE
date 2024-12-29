@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Models.Enums
+namespace Data.Enums
 {
-    public enum ProductImageStatusEnum
+    public enum TransactionStatusEnum
     {
-        AVAILABLE, 
-        OUT_OF_STOCK,
-        DISCONTINUED, 
+        PENDING,
+        SUCCESS,
+        FAILED,
+        REFUNDED,
         DELETED
     }
 }
