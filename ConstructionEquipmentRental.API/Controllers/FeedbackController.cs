@@ -94,7 +94,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFeedback(int id, [FromBody] FeedbackRequestDTO request)
+        public async Task<IActionResult> UpdateFeedback(int id, [FromBody] FeedbackUpdateRequestDTO request)
         {
             try
             {
@@ -162,40 +162,40 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
-        //[HttpPatch("{id}/status")]
-        //public async Task<IActionResult> ChangeFeedbackStatus(int id, [FromBody] FeedbackStatusEnum newStatus)
-        //{
-        //    try
-        //    {
-        //        var updatedFeedback = await _feedbackService.ChangeFeedbackStatus(id, newStatus);
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ChangeFeedbackStatus(int id, [FromBody] FeedbackStatusEnum newStatus)
+        {
+            try
+            {
+                var updatedFeedback = await _feedbackService.ChangeFeedbackStatus(id, newStatus);
 
-        //        return Ok(new ApiResponseDTO
-        //        {
-        //            IsSuccess = true,
-        //            Code = (int)HttpStatusCode.OK,
-        //            Message = "Feedback status updated successfully",
-        //            Data = updatedFeedback
-        //        });
-        //    }
-        //    catch (KeyNotFoundException ex)
-        //    {
-        //        return NotFound(new ApiResponseDTO
-        //        {
-        //            IsSuccess = false,
-        //            Code = (int)HttpStatusCode.NotFound,
-        //            Message = ex.Message
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new ApiResponseDTO
-        //        {
-        //            IsSuccess = false,
-        //            Code = (int)HttpStatusCode.BadRequest,
-        //            Message = ex.Message
-        //        });
-        //    }
-        //}
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Feedback status updated successfully",
+                    Data = updatedFeedback
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
 
 
     }

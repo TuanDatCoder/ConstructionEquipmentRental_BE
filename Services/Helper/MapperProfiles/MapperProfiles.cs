@@ -31,9 +31,9 @@ namespace Services.Helper.MapperProfiles
             CreateMap<ProductRequestDTO, Product>();
 
             CreateMap<ProductUpdateRequestDTO, Product>()
-             .ForMember(dest => dest.DiscountStartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountStartDate)))
-             .ForMember(dest => dest.DiscountEndDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountEndDate)))
-             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+  
 
             //Order
             CreateMap<OrderRequestDTO, Order>()
@@ -41,8 +41,7 @@ namespace Services.Helper.MapperProfiles
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()); 
 
             CreateMap<Order, OrderResponseDTO>()
-                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.Username)) 
-                .ForMember(dest => dest.StaffId, opt => opt.MapFrom(src => src.Staff.Id));
+                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.Username));
 
             //Order Item
             CreateMap<OrderItem, OrderItemResponseDTO>()
@@ -61,6 +60,9 @@ namespace Services.Helper.MapperProfiles
             .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
             CreateMap<FeedbackRequestDTO, Feedback>();
 
+            CreateMap<FeedbackUpdateRequestDTO, Feedback>()
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
             //Category
             CreateMap<Category, CategoryResponseDTO>();
             CreateMap<CategoryRequestDTO, Category>();
@@ -70,6 +72,9 @@ namespace Services.Helper.MapperProfiles
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null));
 
             CreateMap<ProductImageRequestDTO, ProductImage>();
+
+            CreateMap<ProductImageUpdateRequestDTO, ProductImage>()
+          .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 
             //Order Report
             CreateMap<OrderReport, OrderReportResponseDTO>();

@@ -2,6 +2,7 @@
 using Data.DTOs.Product;
 using Data.DTOs.ProductImage;
 using Data.Entities;
+using Data.Enums;
 using Repositories.ProductImageRepos;
 using Repositories.ProductRepos;
 using Services.ProductServices;
@@ -46,13 +47,13 @@ namespace Services.ProductImageServices
         public async Task<ProductImageResponseDTO> CreateProductImage(ProductImageRequestDTO request)
         {
             var productImages = _mapper.Map<ProductImage>(request);
-            //product.Status = ProductImageStatusEnum.AVAILABLE.ToString();
+            productImages.Status = ProductImageStatusEnum.AVAILABLE.ToString();
            
             await _productImageRepository.Add(productImages);
             return _mapper.Map<ProductImageResponseDTO>(productImages);
         }
 
-        public async Task<ProductImageResponseDTO> UpdateProductImage(int id, ProductImageRequestDTO request)
+        public async Task<ProductImageResponseDTO> UpdateProductImage(int id, ProductImageUpdateRequestDTO request)
         {
 
             var productImages = await _productImageRepository.GetByIdAsync(id);
@@ -81,21 +82,21 @@ namespace Services.ProductImageServices
             await _productImageRepository.Delete(product);
         }
 
-        //public async Task<ProductResponseDTO> ChangeProductStatus(int id, ProductImageStatusEnum newStatus)
-        //{
-        //    var existingProduct = await _productImageRepository.GetByIdAsync(id);
-        //    if (existingProduct == null)
-        //    {
-        //        throw new KeyNotFoundException($"ProductImage with ID {id} not found.");
-        //    }
+        public async Task<ProductImageResponseDTO> ChangeProductImageStatus(int id, ProductImageStatusEnum newStatus)
+        {
+            var existingProductImage = await _productImageRepository.GetByIdAsync(id);
+            if (existingProductImage == null)
+            {
+                throw new KeyNotFoundException($"ProductImage with ID {id} not found.");
+            }
 
 
-        //    existingProduct.Status = newStatus.ToString();
+            existingProductImage.Status = newStatus.ToString();
 
-        //    await _productImageRepository.Update(existingProduct);
+            await _productImageRepository.Update(existingProductImage);
 
-        //    return _mapper.Map<ProductResponseDTO>(existingProduct);
-        //}
+            return _mapper.Map<ProductImageResponseDTO>(existingProductImage);
+        }
 
 
     }

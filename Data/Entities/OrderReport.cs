@@ -13,13 +13,13 @@ public partial class OrderReport
 
     public int? HandlerId { get; set; }
 
-    public string? Reason { get; set; }
+    public string Reason { get; set; } = null!;
 
     public string? Details { get; set; }
 
-    public string? Status { get; set; }
+    public string Status { get; set; } = null!;
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public DateTime? ResolvedAt { get; set; }
 

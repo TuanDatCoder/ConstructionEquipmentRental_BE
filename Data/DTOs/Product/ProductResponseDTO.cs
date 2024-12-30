@@ -1,4 +1,5 @@
 ﻿using Data.Enums;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,12 @@ namespace Data.DTOs.Product
         public string CategoryName { get; set; }
         public string BrandName { get; set; }
         public string StoreName { get; set; }
+        public decimal? Weight { get; set; }
+
+        public string? Dimensions { get; set; }
+
+        public FuelTypeEnum FuelType { get; set; }
+
 
     }
 }
