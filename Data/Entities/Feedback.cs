@@ -13,13 +13,17 @@ public partial class Feedback
 
     public int OrderId { get; set; }
 
-    public int? Rating { get; set; }
+    public int Rating { get; set; }
 
     public string? Comment { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public bool HideName { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public string Status { get; set; } = null!;
 
     public virtual Account Account { get; set; } = null!;
 

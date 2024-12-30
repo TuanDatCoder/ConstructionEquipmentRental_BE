@@ -21,11 +21,9 @@ namespace Repositories.OrderRepos
         {
             return await _context.Set<Order>()
                 .Include(o => o.Customer)
-                .Include(o => o.Staff)
                 .Include(o => o.OrderItems)
                 .Include(o => o.Feedbacks)
                 .Include(o => o.OrderReports)
-                .Include(o => o.Transactions)
                 .ToListAsync();
         }
 
@@ -60,7 +58,6 @@ namespace Repositories.OrderRepos
         {
             return await _context.Orders
                 .Include(o => o.Customer)
-                .Include(o => o.Staff)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }
 

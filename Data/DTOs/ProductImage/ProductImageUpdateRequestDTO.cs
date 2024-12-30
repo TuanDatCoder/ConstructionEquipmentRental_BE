@@ -6,16 +6,13 @@ using System.Threading.Tasks;
 
 namespace Data.DTOs.ProductImage
 {
-    public class ProductImageResponseDTO
+    public class ProductImageUpdateRequestDTO
     {
-        public int Id { get; set; }
-
         public int ProductId { get; set; }
 
         public string? ImageUrl { get; set; }
+        public string Status { get; set; } = null!;
 
-        public string? ProductName { get; set; }
-        public string? Status { get; set; }
 
     }
 }
