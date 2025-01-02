@@ -14,6 +14,7 @@ using Data.DTOs.Category;
 using Data.DTOs.ProductImage;
 using Data.DTOs.OrderReport;
 using Data.DTOs.Transaction;
+using Data.DTOs.Wallet;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -85,9 +86,12 @@ namespace Services.Helper.MapperProfiles
 
             //Transaction
             CreateMap<Transaction, TransactionResponseDTO>();
-            
-
             CreateMap<TransactionRequestDTO, Transaction>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+
+            //Wallet
+            CreateMap<Wallet, WalletResponseDTO>();
+            CreateMap<WalletRequestDTO, Wallet>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
         }
     }
