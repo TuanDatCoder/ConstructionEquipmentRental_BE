@@ -66,6 +66,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IProductImageService, ProductImageService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IOrderReportService, OrderReportService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IWalletService, WalletService>();
 
             //-----------------------------------------DB----------------------------------------
