@@ -2,61 +2,58 @@
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repositories.GenericRepos;
+using Repositories.TransactionRepos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.TransactionRepos
+namespace Repositories.WalletRepos
 {
-    public class TransactionRepository : GenericRepository<Transaction>, ITransactionRepository
+    public class WalletRepository : GenericRepository<Wallet>, IWalletRepository
     {
         private readonly ConstructionEquipmentRentalDbContext _context;
 
-        public TransactionRepository(ConstructionEquipmentRentalDbContext context) : base(context)
+        public WalletRepository(ConstructionEquipmentRentalDbContext context) : base(context)
         {
             _context = context;
         }
-        public async Task Add(Transaction transaction)
+        public async Task Add(Wallet wallet)
         {
             try
             {
-                await _context.Transactions.AddAsync(transaction);
+                await _context.Wallets.AddAsync(wallet);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error when adding transaction: {ex.Message}");
+                throw new Exception($"Error when adding wallet: {ex.Message}");
             }
         }
 
-        public async Task Delete(Transaction transaction)
+        public async Task Delete(Wallet wallet)
         {
-            _context.Transactions.Remove(transaction);
+            _context.Wallets.Remove(wallet);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Transaction> GetByIdAsync(int id)
+        public async Task<Wallet> GetByIdAsync(int id)
         {
-            return await _context.Transactions
+            return await _context.Wallets
                     .Include(p => p.Account)
-                    .Include(p => p.Order)
-                    .Include(p => p.WalletLog)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<List<Transaction>> GetTransactions(int? page, int? size)
+        public async Task<List<Wallet>> GetWallets(int? page, int? size)
         {
             try
             {
                 var pageIndex = (page.HasValue && page > 0) ? page.Value : 1;
                 var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
 
-                return await _context.Transactions
+                return await _context.Wallets
                     .Include(p => p.Account)
-                    .Include(p => p.Order)
-                    .Include(p => p.WalletLog)
                     .Skip((pageIndex - 1) * sizeIndex)
                     .Take(sizeIndex)
                     .ToListAsync();
@@ -67,16 +64,16 @@ namespace Repositories.TransactionRepos
             }
         }
 
-        public async Task Update(Transaction transaction)
+        public async Task Update(Wallet wallet)
         {
             try
             {
-                _context.Transactions.Update(transaction);
+                _context.Wallets.Update(wallet);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error when updating transaction: {ex.Message}");
+                throw new Exception($"Error when updating wallet: {ex.Message}");
             }
         }
     }
