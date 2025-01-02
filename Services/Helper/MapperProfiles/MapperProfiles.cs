@@ -13,6 +13,7 @@ using Data.DTOs.Feedback;
 using Data.DTOs.Category;
 using Data.DTOs.ProductImage;
 using Data.DTOs.OrderReport;
+using Data.DTOs.Transaction;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -82,7 +83,12 @@ namespace Services.Helper.MapperProfiles
                 .ForMember(dest => dest.Status, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 
+            //Transaction
+            CreateMap<Transaction, TransactionResponseDTO>();
+            
 
+            CreateMap<TransactionRequestDTO, Transaction>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
         }
     }
 }

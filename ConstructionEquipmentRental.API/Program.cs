@@ -22,6 +22,8 @@ using Services.ProductImageServices;
 using Services.AccountServices;
 using Services.OrderReportServices;
 using Repositories.OrderReportRepos;
+using Services.TransactionServices;
+using Repositories.TransactionRepos;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -47,6 +49,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IOrderReportRepository, OrderReportRepository>();
+            builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             //------------------------------------SERVICES-----------------------------------------
             builder.Services.AddScoped<IJWTService, JWTService>();
@@ -60,6 +63,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IProductImageService, ProductImageService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IOrderReportService, OrderReportService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
 
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
