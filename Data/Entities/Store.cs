@@ -31,3 +31,4 @@ public partial class Store
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }
+lp
