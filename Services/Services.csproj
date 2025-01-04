@@ -12,7 +12,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MailKit" Version="4.9.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.3.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
   </ItemGroup>
 
@@ -21,7 +23,6 @@
   </ItemGroup>
 	  
   <ItemGroup>
-    <Folder Include="Helper\VerifyCode\" />
     <Folder Include="Helper\Resolver\" />
   </ItemGroup>
 
