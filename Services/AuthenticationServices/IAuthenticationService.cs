@@ -21,5 +21,6 @@ namespace Services.AuthenticationServices
         string GenerateOTP();
         Task<LoginResponseDTO> LoginGoogle(LoginGoogleRequestDTO loginGoogleRequestDTO);
         Task VerifyAccount(string token);
+        Task AccountRegister(AccountRequestDTO accountRequestDTO);
     }
 }

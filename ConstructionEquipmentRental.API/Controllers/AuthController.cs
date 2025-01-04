@@ -32,8 +32,8 @@ namespace ConstructionEquipmentRental.API.Controllers
         public async Task<IActionResult> RegisterAccount(AccountRequestDTO accountRequestDTO)
         {
 
-            await _accountService.AccountRegister(accountRequestDTO);
-
+            // await _accountService.AccountRegister(accountRequestDTO);
+            await _authenticationService.AccountRegister(accountRequestDTO);
             ApiResponseDTO response = new ApiResponseDTO
             {
                 IsSuccess = true,
@@ -168,11 +168,11 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
 
-        [HttpPost]
+        [HttpGet]  // Sử dụng GET vì đây là yêu cầu xác nhận qua URL
         [Route("verify")]
-        public async Task<IActionResult> VerifyAccount([FromBody] VerifyAccountRequestDTO request)
+        public async Task<IActionResult> VerifyAccount([FromQuery] string token)
         {
-            await _authenticationService.VerifyAccount(request.Token);
+            await _authenticationService.VerifyAccount(token);
 
             ApiResponseDTO response = new ApiResponseDTO
             {

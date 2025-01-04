@@ -349,6 +349,7 @@ namespace Services.AuthenticationServices
             await _accountRepository.Update(currentAccount);
         }
 
+
         public async Task AccountRegister(AccountRequestDTO accountRequestDTO)
         {
             if (await checkUsernameExisted(accountRequestDTO.Username))
@@ -369,12 +370,16 @@ namespace Services.AuthenticationServices
 
             var accountId = await _accountRepository.AddAccount(account);
 
+            var accountDone = await _accountRepository.GetAccountByUsername(account.Username);
+
+            var token = _jWTService.GenerateJWT(accountDone);
+
             // Generate verification code
-            var verificationCode = Guid.NewGuid().ToString();
-            verificationCodeCache.Put(account.Email, verificationCode, 30); // Expire in 30 minutes
+           // var verificationCode = Guid.NewGuid().ToString();
+            verificationCodeCache.Put(account.Email, token, 30); // Expire in 30 minutes
 
             // Send email with verification link
-            var verificationLink = $"{_config["AppSettings:BaseUrl"]}/api/account/verify?email={account.Email}&code={verificationCode}";
+            var verificationLink = $"https://localhost:7160/api/auth/verify?token={token}";
             await _emailService.SendRegistrationEmail(account.Username, account.Email, verificationLink);
         }
 
