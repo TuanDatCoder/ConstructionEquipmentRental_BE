@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helper\Resolver\**" />
+    <EmbeddedResource Remove="Helper\Resolver\**" />
+    <None Remove="Helper\Resolver\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Helper\MapperProfiles\MapperProfile.cs" />
   </ItemGroup>
 
@@ -20,10 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
-  </ItemGroup>
-	  
-  <ItemGroup>
-    <Folder Include="Helper\Resolver\" />
   </ItemGroup>
 
 </Project>

@@ -32,6 +32,8 @@ using Services.Helper.DecodeTokenHandler;
 using Services.EmailServices;
 using Services.AuthenticationServices;
 using Services.Helper.VerifyCode;
+using Repositories.StoreRepos;
+using Services.StoreServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -57,6 +59,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IOrderReportRepository, OrderReportRepository>();
+            builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 
             //------------------------------------SERVICES-----------------------------------------
             builder.Services.AddScoped<IJWTService, JWTService>();
@@ -73,7 +76,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
             builder.Services.AddScoped<IEmailService, EmailService>();
-      
+            builder.Services.AddScoped<IStoreService, StoreService>();
 
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>

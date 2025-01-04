@@ -14,6 +14,7 @@ using Data.DTOs.Category;
 using Data.DTOs.ProductImage;
 using Data.DTOs.OrderReport;
 using Data.DTOs.Account;
+using Data.DTOs.Store;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -83,6 +84,17 @@ namespace Services.Helper.MapperProfiles
                 .ForMember(dest => dest.Status, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 
+            //Store
+
+            CreateMap<Store, StoreResponseDTO>()
+               .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
+
+            CreateMap<StoreRequestDTO, Store>();
+
+            CreateMap<StoreUpdateRequestDTO, Store>()
+          .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+
             //Account 
             CreateMap<AccountRequestDTO, Account>()
            .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -92,6 +104,8 @@ namespace Services.Helper.MapperProfiles
            .ForMember(dest => dest.Status, opt => opt.Ignore())
            .ForMember(dest => dest.Points, opt => opt.Ignore())
            .ForMember(dest => dest.Password, opt => opt.Ignore());
+
+            
         }
     }
 }
