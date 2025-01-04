@@ -22,6 +22,12 @@ using Services.ProductImageServices;
 using Services.AccountServices;
 using Services.OrderReportServices;
 using Repositories.OrderReportRepos;
+using Services.TransactionServices;
+using Repositories.TransactionRepos;
+using Repositories.WalletRepos;
+using Services.WalletServices;
+using Repositories.WalletLogRepos;
+using Services.WalletLogServices;
 
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -59,6 +65,9 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
             builder.Services.AddScoped<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IOrderReportRepository, OrderReportRepository>();
+            builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+            builder.Services.AddScoped<IWalletRepository, WalletRepository>();
+            builder.Services.AddScoped<IWalletLogRepository, WalletLogRepository>();
             builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 
             //------------------------------------SERVICES-----------------------------------------
@@ -77,6 +86,9 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IStoreService, StoreService>();
+            builder.Services.AddScoped<ITransactionService, TransactionService>();
+            builder.Services.AddScoped<IWalletService, WalletService>();
+            builder.Services.AddScoped<IWalletLogService, WalletLogService>();
 
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
