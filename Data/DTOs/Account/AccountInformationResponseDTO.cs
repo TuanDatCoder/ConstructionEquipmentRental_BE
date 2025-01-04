@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Data.DTOs.Account
 {
-    public class AccountResponse
+    public class AccountInformationResponseDTO
     {
-
         public int? StoreId { get; set; }
 
         public string? Username { get; set; }
@@ -23,16 +22,7 @@ namespace Data.DTOs.Account
 
         public string? Picture { get; set; }
 
-        public string? GoogleId { get; set; }
-
         public string? Role { get; set; }
 
-        public string? Status { get; set; }
-
-        public int? Points { get; set; }
-
-        public DateTime? CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace Data.Enums
 {
     public enum AccountStatusEnum
     {
-        ACTIVE, INACTIVE, BANNED,DELETED
+        ACTIVE, INACTIVE, VERIFIED, UNVERIFIED,BANNED,DELETED
     }
 }

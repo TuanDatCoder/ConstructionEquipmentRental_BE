@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Enums
+namespace Data.DTOs.Password
 {
-    public enum StoreStatusEnum
+    public class ForgotPasswordRequestDTO
     {
-        ACTIVE, PENDING, INACTIVE, DELETED
+        public required string email { get; set; }
     }
 }

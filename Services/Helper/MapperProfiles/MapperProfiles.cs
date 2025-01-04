@@ -16,6 +16,8 @@ using Data.DTOs.OrderReport;
 using Data.DTOs.Transaction;
 using Data.DTOs.Wallet;
 using Data.DTOs.WalletLog;
+using Data.DTOs.Account;
+using Data.DTOs.Store;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -99,6 +101,28 @@ namespace Services.Helper.MapperProfiles
             CreateMap<WalletLog, WalletLogResponseDTO>();
             CreateMap<WalletLogRequestDTO, WalletLog>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+            //Store
+
+            CreateMap<Store, StoreResponseDTO>()
+               .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
+
+            CreateMap<StoreRequestDTO, Store>();
+
+            CreateMap<StoreUpdateRequestDTO, Store>()
+          .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+
+            //Account 
+            CreateMap<AccountRequestDTO, Account>()
+           .ForMember(dest => dest.Id, opt => opt.Ignore())
+           .ForMember(dest => dest.StoreId, opt => opt.Ignore())
+           .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+           .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+           .ForMember(dest => dest.Status, opt => opt.Ignore())
+           .ForMember(dest => dest.Points, opt => opt.Ignore())
+           .ForMember(dest => dest.Password, opt => opt.Ignore());
+
+            
         }
     }
 }

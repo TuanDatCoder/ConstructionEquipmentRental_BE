@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Enums
+namespace Data.DTOs.Auth
 {
-    public enum StoreStatusEnum
+    public class VerifyAccountRequestDTO
     {
-        ACTIVE, PENDING, INACTIVE, DELETED
+        public string Token { get; set; }
     }
 }

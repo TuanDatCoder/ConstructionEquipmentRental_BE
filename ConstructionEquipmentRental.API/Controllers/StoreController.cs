@@ -1,49 +1,51 @@
 ﻿using Data.DTOs.Product;
-using Data.Enums;
 using Data.DTOs;
+using Data.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;
 using System.Net;
+using Services.StoreServices;
+using Data.DTOs.Store;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductController : ControllerBase
+    public class StoreController : ControllerBase
     {
-        private readonly IProductService _productService;
+        private readonly IStoreService _storeService;
 
-        public ProductController(IProductService productService)
+        public StoreController(IStoreService storeService)
         {
-            _productService = productService;
+            _storeService = storeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetStores(int? page = 1, int? size = 10)
         {
-            var result = await _productService.GetProducts(page, size);
+            var result = await _storeService.GetStores(page, size);
 
             return Ok(new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "View products successfully",
+                Message = "View stores successfully",
                 Data = result
             });
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(int id)
+        public async Task<IActionResult> GetStoreById(int id)
         {
             try
             {
-                var product = await _productService.GetProductById(id);
+                var product = await _storeService.GetStoreById(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product retrieved successfully",
+                    Message = "Store retrieved successfully",
                     Data = product
                 });
             }
@@ -68,7 +70,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO request)
+        public async Task<IActionResult> CreateStore([FromBody] StoreRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
@@ -76,34 +78,34 @@ namespace ConstructionEquipmentRental.API.Controllers
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid product data"
+                    Message = "Invalid store data"
                 });
             }
 
-            var result = await _productService.CreateProduct(request);
+            var result = await _storeService.CreateStore(request);
 
             return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.Created,
-                Message = "Product created successfully",
+                Message = "Store created successfully",
                 Data = result
             });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateRequestDTO request)
+        public async Task<IActionResult> UpdateStore(int id, [FromBody] StoreUpdateRequestDTO request)
         {
             try
             {
-                var updatedProduct = await _productService.UpdateProduct(id, request);
+                var updatedStore = await _storeService.UpdateStore(id, request);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product updated successfully",
-                    Data = updatedProduct
+                    Message = "Store updated successfully",
+                    Data = updatedStore
                 });
             }
             catch (KeyNotFoundException ex)
@@ -127,17 +129,17 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+        public async Task<IActionResult> DeleteStore(int id)
         {
             try
             {
-                await _productService.DeleteProduct(id);
+                await _storeService.DeleteStore(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product deleted successfully"
+                    Message = "Store deleted successfully"
                 });
             }
             catch (KeyNotFoundException ex)
@@ -161,17 +163,17 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> ChangeProductStatus(int id, [FromBody] ProductStatusEnum newStatus)
+        public async Task<IActionResult> ChangeStoreStatus(int id, [FromBody] StoreStatusEnum newStatus)
         {
             try
             {
-                var updatedProduct = await _productService.ChangeProductStatus(id, newStatus);
+                var updatedProduct = await _storeService.ChangeStoreStatus(id, newStatus);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Product status updated successfully",
+                    Message = "Store status updated successfully",
                     Data = updatedProduct
                 });
             }

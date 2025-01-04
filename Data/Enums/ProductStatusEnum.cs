@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace Data.Enums
 {
-    public enum StoreStatusEnum
+    public enum ProductStatusEnum
     {
-        ACTIVE, PENDING, INACTIVE, DELETED
+        AVAILABLE,
+          ACTIVE,
+          PENDING,
+          INACTIVE,
+          DELETED
+
     }
 }

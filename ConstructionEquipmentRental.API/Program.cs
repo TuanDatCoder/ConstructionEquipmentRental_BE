@@ -29,6 +29,18 @@ using Services.WalletServices;
 using Repositories.WalletLogRepos;
 using Services.WalletLogServices;
 
+using Microsoft.OpenApi.Models;
+using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Services.Helper.DecodeTokenHandler;
+using Services.EmailServices;
+using Services.AuthenticationServices;
+using Services.Helper.VerifyCode;
+using Repositories.StoreRepos;
+using Services.StoreServices;
+
 namespace ConstructionEquipmentRental.API
 {
     public class Program
@@ -56,6 +68,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
             builder.Services.AddScoped<IWalletRepository, WalletRepository>();
             builder.Services.AddScoped<IWalletLogRepository, WalletLogRepository>();
+            builder.Services.AddScoped<IStoreRepository, StoreRepository>();
 
             //------------------------------------SERVICES-----------------------------------------
             builder.Services.AddScoped<IJWTService, JWTService>();
@@ -69,6 +82,10 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IProductImageService, ProductImageService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IOrderReportService, OrderReportService>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<IDecodeTokenHandler, DecodeTokenHandler>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IStoreService, StoreService>();
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IWalletService, WalletService>();
             builder.Services.AddScoped<IWalletLogService, WalletLogService>();
@@ -77,25 +94,107 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddControllers();
+           
 
+
+            //-----------------------------------------CORS-----------------------------------------
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowAll",
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
+                                  });
+            });
+
+            builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+
+
+            //-----------------------------------------AUTHENTICATION-----------------------------------------
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                        ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:JwtKey"])),
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                    };
+                });
+
+            //-----------------------------------------AUTHORIZATION-----------------------------------------
+            builder.Services.AddAuthorization();
+
+
+            //----------------------------------------------------------------------------------
+
+
+            builder.Services.AddScoped<VerificationCodeCache>();
+
+
+            builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+           builder.Services.AddSwaggerGen();
+
+
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+     {
+         {
+            new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+            new string[] {}
+         }
+     });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                options.IncludeXmlComments(xmlPath);
+            });
+
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
             app.UseAuthorization();
-
+            app.UseAuthentication();
             app.MapControllers();
             app.Run();
         }
