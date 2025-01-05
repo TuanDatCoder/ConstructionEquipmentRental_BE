@@ -40,6 +40,7 @@ using Services.AuthenticationServices;
 using Services.Helper.VerifyCode;
 using Repositories.StoreRepos;
 using Services.StoreServices;
+using Services.AdminServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -89,6 +90,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<ITransactionService, TransactionService>();
             builder.Services.AddScoped<IWalletService, WalletService>();
             builder.Services.AddScoped<IWalletLogService, WalletLogService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
 
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
@@ -193,8 +195,9 @@ namespace ConstructionEquipmentRental.API
             app.UseCors("AllowAll");
 
             app.UseHttpsRedirection();
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapControllers();
             app.Run();
         }
