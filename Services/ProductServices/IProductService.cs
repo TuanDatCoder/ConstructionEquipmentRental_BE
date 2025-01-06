@@ -1,5 +1,5 @@
 ﻿using Data.DTOs.Product;
-using Data.Models.Enums;
+using Data.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace Services.ProductServices
         Task<ProductResponseDTO> CreateProduct(ProductRequestDTO request);
         Task<ProductResponseDTO> UpdateProduct(int id, ProductUpdateRequestDTO request);
         Task DeleteProduct(int id);
-        Task<ProductResponseDTO> ChangeProductStatus(int id, ProductImageStatusEnum newStatus);
+        Task<ProductResponseDTO> ChangeProductStatus(int id, ProductStatusEnum newStatus);
 
     }
 }

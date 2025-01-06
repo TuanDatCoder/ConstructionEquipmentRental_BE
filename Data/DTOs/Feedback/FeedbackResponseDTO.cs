@@ -28,7 +28,8 @@ namespace Data.DTOs.Feedback
 
         public string? ProductName { get; set; }
 
-        
+        public bool HideName { get; set; }
+        public string? Status { get; set; }
 
     }
 }

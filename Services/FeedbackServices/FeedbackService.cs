@@ -2,7 +2,7 @@
 using Data.DTOs.Feedback;
 using Data.DTOs.Product;
 using Data.Entities;
-using Data.Models.Enums;
+using Data.Enums;
 using Repositories.FeedbackRepos;
 using Repositories.ProductRepos;
 using Services.ProductServices;
@@ -48,14 +48,14 @@ namespace Services.FeedbackServices
         public async Task<FeedbackResponseDTO> CreateFeedback(FeedbackRequestDTO request)
         {
             var feeckback = _mapper.Map<Feedback>(request);
-            //feeckback.Status = FeedbackStatusEnum.AVAILABLE.ToString();
+            feeckback.Status = FeedbackStatusEnum.PENDING.ToString();
             feeckback.CreatedAt = DateTime.UtcNow;
             feeckback.UpdatedAt = DateTime.UtcNow;
             await _feedbackRepository.Add(feeckback);
             return _mapper.Map<FeedbackResponseDTO>(feeckback);
         }
 
-        public async Task<FeedbackResponseDTO> UpdateFeedback(int id, FeedbackRequestDTO request)
+        public async Task<FeedbackResponseDTO> UpdateFeedback(int id, FeedbackUpdateRequestDTO request)
         {
 
             var feeckback = await _feedbackRepository.GetByIdAsync(id);
@@ -85,21 +85,21 @@ namespace Services.FeedbackServices
             await _feedbackRepository.Delete(feeckback);
         }
 
-        //public async Task<ProductResponseDTO> ChangeProductStatus(int productId, ProductStatusEnum newStatus)
-        //{
-        //    var existingProduct = await _feedbackRepository.GetByIdAsync(productId);
-        //    if (existingProduct == null)
-        //    {
-        //        throw new KeyNotFoundException($"Product with ID {productId} not found.");
-        //    }
+        public async Task<FeedbackResponseDTO> ChangeFeedbackStatus(int id, FeedbackStatusEnum newStatus)
+        {
+            var existingFeedback = await _feedbackRepository.GetByIdAsync(id);
+            if (existingFeedback == null)
+            {
+                throw new KeyNotFoundException($"Feedback with ID {id} not found.");
+            }
 
 
-        //    existingProduct.Status = newStatus.ToString();
+            existingFeedback.Status = newStatus.ToString();
 
-        //    await _feedbackRepository.Update(existingProduct);
+            await _feedbackRepository.Update(existingFeedback);
 
-        //    return _mapper.Map<ProductResponseDTO>(existingProduct);
-        //}
+            return _mapper.Map<FeedbackResponseDTO>(existingFeedback);
+        }
 
     }
 }

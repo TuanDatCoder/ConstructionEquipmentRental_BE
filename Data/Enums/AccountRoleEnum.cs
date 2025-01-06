@@ -8,6 +8,6 @@ namespace Data.Enums
 {
     public enum AccountRoleEnum
     {
-        CUSTOMER, STAFF, ADMIN, LESSOR
+        CUSTOMER, STAFF, LESSOR,  ADMIN
     }
 }

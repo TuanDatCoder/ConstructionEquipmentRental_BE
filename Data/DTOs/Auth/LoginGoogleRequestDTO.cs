@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.DTOs.Account
+namespace Data.DTOs.Auth
 {
-    public class AccountRequest
+    public class LoginGoogleRequestDTO
     {
-
-       
+        public required string Token { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace Data.Enums
 {
     public enum ProductImageStatusEnum
     {
+        AVAILABLE,
           ACTIVE,
           INACTIVE,
           DELETED

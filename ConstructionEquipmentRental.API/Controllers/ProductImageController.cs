@@ -1,6 +1,6 @@
 ﻿using Data.DTOs.Product;
 using Data.DTOs;
-using Data.Models.Enums;
+using Data.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;
 using System.Net;
@@ -95,7 +95,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProductImage(int id, [FromBody] ProductImageRequestDTO request)
+        public async Task<IActionResult> UpdateProductImage(int id, [FromBody] ProductImageUpdateRequestDTO request)
         {
             try
             {
@@ -163,39 +163,39 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
-        //[HttpPatch("{id}/status")]
-        //public async Task<IActionResult> ChangeProductImageStatus(int id, [FromBody] ProductImageStatusEnum newStatus)
-        //{
-        //    try
-        //    {
-        //        var updatedProductImage = await _productService.ChangeProductImageStatus(id, newStatus);
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ChangeProductImageStatus(int id, [FromBody] ProductImageStatusEnum newStatus)
+        {
+            try
+            {
+                var updatedProductImage = await _productImageService.ChangeProductImageStatus(id, newStatus);
 
-        //        return Ok(new ApiResponseDTO
-        //        {
-        //            IsSuccess = true,
-        //            Code = (int)HttpStatusCode.OK,
-        //            Message = "ProductImage status updated successfully",
-        //            Data = updatedProductImage
-        //        });
-        //    }
-        //    catch (KeyNotFoundException ex)
-        //    {
-        //        return NotFound(new ApiResponseDTO
-        //        {
-        //            IsSuccess = false,
-        //            Code = (int)HttpStatusCode.NotFound,
-        //            Message = ex.Message
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new ApiResponseDTO
-        //        {
-        //            IsSuccess = false,
-        //            Code = (int)HttpStatusCode.BadRequest,
-        //            Message = ex.Message
-        //        });
-        //    }
-        //}
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "ProductImage status updated successfully",
+                    Data = updatedProductImage
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }

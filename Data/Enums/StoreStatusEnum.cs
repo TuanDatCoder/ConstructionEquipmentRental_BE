@@ -8,6 +8,6 @@ namespace Data.Enums
 {
     public enum StoreStatusEnum
     {
-        ACTIVE, INACTIVE, DELETED
+        ACTIVE, PENDING, INACTIVE, DELETED
     }
 }

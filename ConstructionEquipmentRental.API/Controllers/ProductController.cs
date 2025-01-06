@@ -1,5 +1,5 @@
 ﻿using Data.DTOs.Product;
-using Data.Models.Enums;
+using Data.Enums;
 using Data.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;
@@ -161,7 +161,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> ChangeProductStatus(int id, [FromBody] ProductImageStatusEnum newStatus)
+        public async Task<IActionResult> ChangeProductStatus(int id, [FromBody] ProductStatusEnum newStatus)
         {
             try
             {

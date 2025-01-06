@@ -13,6 +13,11 @@ using Data.DTOs.Feedback;
 using Data.DTOs.Category;
 using Data.DTOs.ProductImage;
 using Data.DTOs.OrderReport;
+using Data.DTOs.Transaction;
+using Data.DTOs.Wallet;
+using Data.DTOs.WalletLog;
+using Data.DTOs.Account;
+using Data.DTOs.Store;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -31,9 +36,9 @@ namespace Services.Helper.MapperProfiles
             CreateMap<ProductRequestDTO, Product>();
 
             CreateMap<ProductUpdateRequestDTO, Product>()
-             .ForMember(dest => dest.DiscountStartDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountStartDate)))
-             .ForMember(dest => dest.DiscountEndDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.DiscountEndDate)))
-             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+  
 
             //Order
             CreateMap<OrderRequestDTO, Order>()
@@ -41,8 +46,7 @@ namespace Services.Helper.MapperProfiles
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()); 
 
             CreateMap<Order, OrderResponseDTO>()
-                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.Username)) 
-                .ForMember(dest => dest.StaffId, opt => opt.MapFrom(src => src.Staff.Id));
+                .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.Username));
 
             //Order Item
             CreateMap<OrderItem, OrderItemResponseDTO>()
@@ -61,6 +65,9 @@ namespace Services.Helper.MapperProfiles
             .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
             CreateMap<FeedbackRequestDTO, Feedback>();
 
+            CreateMap<FeedbackUpdateRequestDTO, Feedback>()
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
             //Category
             CreateMap<Category, CategoryResponseDTO>();
             CreateMap<CategoryRequestDTO, Category>();
@@ -71,12 +78,53 @@ namespace Services.Helper.MapperProfiles
 
             CreateMap<ProductImageRequestDTO, ProductImage>();
 
+            CreateMap<ProductImageUpdateRequestDTO, ProductImage>()
+          .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
             //Order Report
             CreateMap<OrderReport, OrderReportResponseDTO>();
             CreateMap<OrderReportRequestDTO, OrderReport>()
                 .ForMember(dest => dest.Status, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
 
+            //Transaction
+            CreateMap<Transaction, TransactionResponseDTO>();
+            CreateMap<TransactionRequestDTO, Transaction>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+
+            //Wallet
+            CreateMap<Wallet, WalletResponseDTO>();
+            CreateMap<WalletRequestDTO, Wallet>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+
+            //WalletLog
+            CreateMap<WalletLog, WalletLogResponseDTO>();
+            CreateMap<WalletLogRequestDTO, WalletLog>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+            //Store
+
+            CreateMap<Store, StoreResponseDTO>()
+               .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
+
+            CreateMap<StoreRequestDTO, Store>();
+
+            CreateMap<StoreUpdateRequestDTO, Store>()
+          .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+
+            //Account 
+            CreateMap<AccountRequestDTO, Account>()
+           .ForMember(dest => dest.Id, opt => opt.Ignore())
+           .ForMember(dest => dest.StoreId, opt => opt.Ignore())
+           .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+           .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
+           .ForMember(dest => dest.Status, opt => opt.Ignore())
+           .ForMember(dest => dest.Points, opt => opt.Ignore())
+           .ForMember(dest => dest.Password, opt => opt.Ignore());
+
+            CreateMap<Account, AccountResponseDTO>()
+          .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store != null ? src.Store.Name : null));
+      
 
         }
     }

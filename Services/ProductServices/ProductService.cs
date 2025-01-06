@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Data.DTOs.Product;
-using Data.Models.Enums;
+using Data.Enums;
 using Data.Entities;
 using Repositories.ProductRepos;
 
@@ -78,7 +78,7 @@ namespace Services.ProductServices
             await _productRepository.Delete(product); 
         }
 
-        public async Task<ProductResponseDTO> ChangeProductStatus(int id, ProductImageStatusEnum newStatus)
+        public async Task<ProductResponseDTO> ChangeProductStatus(int id, ProductStatusEnum newStatus)
         {
             var existingProduct = await _productRepository.GetByIdAsync(id);
             if (existingProduct == null)

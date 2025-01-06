@@ -1,4 +1,4 @@
-﻿using Data.Models.Enums;
+﻿using Data.Enums;
 using Data.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -28,12 +28,14 @@ namespace Services.JWTServices
             _tokenHandler = new JwtSecurityTokenHandler();
             _refreshTokenRepository = refreshTokenRepository;
         }
+ 
         public string decodeToken(string jwtToken, string nameClaim)
         {
-            Claim? claim = _tokenHandler.ReadJwtToken(jwtToken).Claims.FirstOrDefault(selector => selector.Type.ToString().Equals(nameClaim));
+            Claim? claim = _tokenHandler.ReadJwtToken(jwtToken).Claims.FirstOrDefault(selector => selector.Type.Equals(nameClaim));
 
-            return claim != null ? claim.Value : "Error!!!";
+            return claim != null ? claim.Value : "Error!!!"; 
         }
+
 
         public string GenerateJWT<T>(T entity) where T : class
         {
@@ -44,13 +46,13 @@ namespace Services.JWTServices
 
             if (entity is Account account)
             {
-                claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, AccountRoleEnum.CUSTOMER.ToString()));
+ 
+                var accountRole = account.Role.ToString();  
+                claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, accountRole)); 
                 claims.Add(new Claim("accountId", account.Id.ToString()));
                 claims.Add(new Claim("email", account.Email));
                 claims.Add(new Claim("username", account.Username));
             }
-
-
             else
             {
                 throw new ArgumentException("Unsupported entity type");
@@ -64,10 +66,10 @@ namespace Services.JWTServices
                signingCredentials: credential
                );
 
-
-            var encodetoken = new JwtSecurityTokenHandler().WriteToken(token);
-            return encodetoken;
+            var encodedToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return encodedToken;
         }
+
 
         public string GenerateRefreshToken()
         {

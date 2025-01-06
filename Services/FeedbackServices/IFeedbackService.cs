@@ -1,4 +1,5 @@
 ﻿using Data.DTOs.Feedback;
+using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace Services.FeedbackServices
         Task<List<FeedbackResponseDTO>> GetFeedbacks(int? page, int? size);
         Task<FeedbackResponseDTO> GetFeedbackById(int id);
         Task<FeedbackResponseDTO> CreateFeedback(FeedbackRequestDTO request);
-        Task<FeedbackResponseDTO> UpdateFeedback(int id, FeedbackRequestDTO request);
+        Task<FeedbackResponseDTO> UpdateFeedback(int id, FeedbackUpdateRequestDTO request);
         Task DeleteFeedback(int id);
+        Task<FeedbackResponseDTO> ChangeFeedbackStatus(int id, FeedbackStatusEnum newStatus);
     }
 }

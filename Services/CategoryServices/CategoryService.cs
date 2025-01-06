@@ -3,7 +3,6 @@ using Data.DTOs.Category;
 using Data.DTOs.Product;
 using Data.Entities;
 using Data.Enums;
-using Data.Models.Enums;
 using Repositories.CategoryRepos;
 using Repositories.ProductRepos;
 using Services.ProductServices;

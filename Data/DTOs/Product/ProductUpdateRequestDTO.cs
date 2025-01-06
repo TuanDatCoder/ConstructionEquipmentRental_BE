@@ -1,4 +1,4 @@
-﻿using Data.Models.Enums;
+﻿using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +22,10 @@ namespace Data.DTOs.Product
         public ProductImageStatusEnum Status { get; set; }
         public DateTime DiscountStartDate { get; set; }
         public DateTime DiscountEndDate { get; set; }
+        public decimal? Weight { get; set; }
+
+        public string? Dimensions { get; set; }
+
+        public FuelTypeEnum FuelType { get; set; }
     }
 }

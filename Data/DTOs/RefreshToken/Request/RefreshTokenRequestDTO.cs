@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Data.DTOs.RefreshToken.Request
 {
-    public class RefreshTokenReqDTO
+    public class RefreshTokenRequestDTO
     {
         [Required(ErrorMessage = "RefreshToken is required")]
         public string RefreshToken { get; set; }

@@ -15,6 +15,7 @@ namespace Data.DTOs.ProductImage
         public string? ImageUrl { get; set; }
 
         public string? ProductName { get; set; }
+        public string? Status { get; set; }
 
     }
 }
