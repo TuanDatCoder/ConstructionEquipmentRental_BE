@@ -34,29 +34,7 @@ namespace Services.AccountServices
             _emailService = emailService;
     }
 
-        public async Task AccountRegister(AccountRequestDTO accountRequestDTO)
-        {
-            if (await checkUsernameExisted(accountRequestDTO.Username))
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Username has already been used by another user");
-            }
-            if (await checkEmailExisted(accountRequestDTO.Email))
-            {
-                throw new ApiException(HttpStatusCode.BadRequest, "Email has already been used by another user");
-            }
-            var account = _mapper.Map<Account>(accountRequestDTO);
-            account.Password = PasswordHasher.HashPassword(accountRequestDTO.Password);
-
-            account.Status = AccountStatusEnum.UNVERIFIED.ToString();
-            account.CreatedAt = DateTime.Now;
-            account.UpdatedAt = DateTime.Now;
-            account.Points = 0;
-
-            var accountId = await _accountRepository.AddAccount(account);
-
-            await _emailService.SendRegistrationEmail(account.Username, account.Email);
-        }
-
+   
 
         public async Task<bool> checkUsernameExisted(string username)
         {
