@@ -1,10 +1,10 @@
-# BuildLease - Nền tảng Thuê và Quản lý Thiết bị Xây dựng
+# ConstructionEquipmentRental - Nền tảng Thuê và Quản lý Thiết bị Xây dựng
 
 ## 🔧 **Giới thiệu**
 
-BuildLease là nền tảng giúp chủ store (người cho thuê) đăng cho thuê các thiết bị xây dựng và người dùng (khách hàng) thuê thiết bị một cách nhanh chóng, dễ dàng. Nền tảng này giống một mạng xã hội, nơi người dùng có thể tương tác và cho đánh giá sản phẩm.
+ConstructionEquipmentRental là nền tảng giúp chủ store (người cho thuê) đăng cho thuê các thiết bị xây dựng và người dùng (khách hàng) thuê thiết bị một cách nhanh chóng, dễ dàng. Nền tảng này giống một mạng xã hội, nơi người dùng có thể tương tác và cho đánh giá sản phẩm.
 
-- **Tên dự án**: BuildLease
+- **Tên dự án**: ConstructionEquipmentRental
 - **Team thực hiện**: SparkTechVentures
 
 ---
@@ -75,7 +75,7 @@ BuildLease là nền tảng giúp chủ store (người cho thuê) đăng cho th
    
 2. **Cài đặt cơ sở dữ liệu**
    - Khởi chạy Microsoft SQL Server
-   - Khởi tạo database "BuildLeaseDB"
+   - Khởi tạo database "ConstructionEquipmentRentalDB"
    
 3. **Chạy ứng dụng**
    - Chạy lệnh `dotnet run` trong thư mục back-end
@@ -118,5 +118,5 @@ BuildLease là nền tảng giúp chủ store (người cho thuê) đăng cho th
 
 ## 📞 **Hỗ trợ**
 
-Nếu bạn gặp bất kỳ vấn đề nào hoặc có câu hỏi, vui lòng liên hệ đội ngũ hỗ trợ của chúng tôi qua email: support@sparktechventures.com.
+Nếu bạn gặp bất kỳ vấn đề nào hoặc có câu hỏi, vui lòng liên hệ đội ngũ hỗ trợ của chúng tôi qua email: devprojectlabvn@gmail.com.
 
