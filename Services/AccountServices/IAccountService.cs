@@ -9,6 +9,6 @@ namespace Services.AccountServices
 {
     public interface IAccountService
     {
-        Task AccountRegister(AccountRequestDTO accountRequestDTO);
+       
     }
 }
