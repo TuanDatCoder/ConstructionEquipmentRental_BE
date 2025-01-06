@@ -76,7 +76,6 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IOrderItemService, OrderItemService>();
-            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IBrandService, BrandService>();
             builder.Services.AddScoped<IFeedbackService, FeedbackService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -118,20 +117,22 @@ namespace ConstructionEquipmentRental.API
 
             //-----------------------------------------AUTHENTICATION-----------------------------------------
 
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer("Bearer", options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-                        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:JwtKey"])),
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidateLifetime = true,
-                    };
-                });
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:JwtKey"])),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+        };
+    });
+
 
             //-----------------------------------------AUTHORIZATION-----------------------------------------
             builder.Services.AddAuthorization();
@@ -146,7 +147,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-           builder.Services.AddSwaggerGen();
+         //  builder.Services.AddSwaggerGen();
 
 
             builder.Services.AddSwaggerGen(options =>
@@ -182,9 +183,6 @@ namespace ConstructionEquipmentRental.API
 
 
             var app = builder.Build();
-
-
-            app.UseMiddleware<ExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {

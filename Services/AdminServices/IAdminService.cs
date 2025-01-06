@@ -9,6 +9,7 @@ namespace Services.AdminServices
 {
     public interface IAdminService
     {
-        Task<List<AccountResponseDTO>> GetAllAccountsAsync(string token, int? page, int? size);
+        //Task<List<AccountResponseDTO>> GetAllAccountsAsync(string token, int? page, int? size);
+        Task<List<AccountResponseDTO>> GetAllAccountsAsync(int? page, int? size);
     }
 }

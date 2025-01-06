@@ -19,21 +19,11 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpGet("account")]
-        [Authorize(Roles = "ADMIN")]
+       // [Authorize(Roles = "ADMIN,CUSTOMER")]
+       [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetAccounts([FromQuery] int? page, [FromQuery] int? size)
         {
-
-            //var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
-            string token = Request.Headers["Authorization"];
-            if (string.IsNullOrEmpty(token) || !token.StartsWith("Bearer "))
-            {
-                return Unauthorized(new { message = "Token is missing or invalid." });
-            }
-
-            token = token.Split(" ")[1];
-
-
-            var result = await _adminService.GetAllAccountsAsync(token, page, size);
+            var result = await _adminService.GetAllAccountsAsync(page, size);
             return Ok(new ApiResponseDTO
             {
                 IsSuccess = true,

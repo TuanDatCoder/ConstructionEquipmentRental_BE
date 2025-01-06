@@ -38,20 +38,26 @@ namespace Services.AdminServices
             _decodeToken = decodeToken;
         }
 
-        public async Task<List<AccountResponseDTO>> GetAllAccountsAsync(string token, int? page, int? size)
+        //public async Task<List<AccountResponseDTO>> GetAllAccountsAsync(string token, int? page, int? size)
+        //{
+
+        //    var decodedToken = _decodeToken.decode(token);
+
+        //    if (!decodedToken.roleName.Equals(AccountRoleEnum.ADMIN.ToString()))
+        //    {
+        //        throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
+        //    }
+
+        //    var brands = await _accountRepository.GetAccounts(page, size);
+        //    return _mapper.Map<List<AccountResponseDTO>>(brands);
+        //}
+
+        public async Task<List<AccountResponseDTO>> GetAllAccountsAsync(int? page, int? size)
         {
-
-            var decodedToken = _decodeToken.decode(token);
-
-            if (!decodedToken.roleName.Equals(AccountRoleEnum.ADMIN.ToString()))
-            {
-                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
-            }
-
-            var brands = await _accountRepository.GetAccounts(page, size);
-            return _mapper.Map<List<AccountResponseDTO>>(brands);
+            // Phân quyền đã được xử lý ở [Authorize] trong controller
+            var accounts = await _accountRepository.GetAccounts(page, size);
+            return _mapper.Map<List<AccountResponseDTO>>(accounts);
         }
-
 
     }
 }
