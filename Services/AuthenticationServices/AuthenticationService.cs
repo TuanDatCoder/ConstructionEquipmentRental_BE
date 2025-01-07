@@ -159,7 +159,7 @@ namespace Services.AuthenticationServices
                         Username = currentAccount.Username,
                         Email = currentAccount.Email,
                         Role = currentAccount.Role,
-                        Token = token,
+                        AccessToken = token,
                         RefreshToken = refreshToken
                     };
 
@@ -309,7 +309,7 @@ namespace Services.AuthenticationServices
                         Username = account.Username,
                         Email = account.Email,
                         Role = account.Role,
-                        Token = newToken,
+                        AccessToken = newToken,
                         RefreshToken = refreshToken
                     };
 

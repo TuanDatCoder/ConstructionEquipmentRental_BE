@@ -8,7 +8,6 @@ namespace ConstructionEquipmentRental.API.Middlewares
 {
     public class AuthorizeMiddleware
     {
-
         private readonly RequestDelegate _next;
 
         public AuthorizeMiddleware(RequestDelegate next)
@@ -28,40 +27,46 @@ namespace ConstructionEquipmentRental.API.Middlewares
                     return;
                 }
 
-                var accIdentity = context.User.Identity as ClaimsIdentity;
-                if (!accIdentity.IsAuthenticated)
+                if (context.User.Identity is not ClaimsIdentity accIdentity || !accIdentity.IsAuthenticated)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await context.Response.WriteAsync("Unauthorized access");
                     return;
                 }
 
-                var account = await accountRepository.GetAccountById(int.Parse(accIdentity.FindFirst("id").Value));
-
-
-
-                if (account != null)
+                var accountIdClaim = accIdentity.FindFirst("id");
+                if (accountIdClaim == null)
                 {
-                    if (account.Status.Equals(AccountStatusEnum.UNVERIFIED.ToString()))
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                        return;
-                    }
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await context.Response.WriteAsync("Invalid token");
+                    return;
                 }
-               
-                else
+
+                var account = await accountRepository.GetAccountById(int.Parse(accountIdClaim.Value));
+                if (account == null)
                 {
                     throw new ApiException(HttpStatusCode.NotFound, "Account not found");
                 }
 
+                if (account.Status == AccountStatusEnum.UNVERIFIED.ToString())
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    await context.Response.WriteAsync("Account is not verified");
+                    return;
+                }
+
                 await _next.Invoke(context);
+            }
+            catch (ApiException apiEx)
+            {
+                context.Response.StatusCode = (int)apiEx.StatusCode;
+                await context.Response.WriteAsync(apiEx.Message);
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsync(ex.ToString());
+                await context.Response.WriteAsync("Internal Server Error");
             }
-
         }
-
     }
 }

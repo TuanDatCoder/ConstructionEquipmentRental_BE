@@ -122,7 +122,10 @@ namespace Services.Helper.MapperProfiles
            .ForMember(dest => dest.Points, opt => opt.Ignore())
            .ForMember(dest => dest.Password, opt => opt.Ignore());
 
-            
+            CreateMap<Account, AccountResponseDTO>()
+          .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store != null ? src.Store.Name : null));
+      
+
         }
     }
 }

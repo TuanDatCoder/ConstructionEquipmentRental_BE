@@ -10,6 +10,7 @@ namespace Data.DTOs.Account
     {
 
         public int? StoreId { get; set; }
+        public string? StoreName { get; set; }
 
         public string? Username { get; set; }
 

@@ -7,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace Services.Helper.CustomExceptions
 {
+
     public class ApiException : Exception
     {
-        public HttpStatusCode Status { get; }
-        public new string Message { get; }
+        public HttpStatusCode StatusCode { get; }
 
-        public ApiException(HttpStatusCode status, string message)
+        public ApiException(HttpStatusCode statusCode, string message) : base(message)
         {
-            Status = status;
-            Message = message;
+            StatusCode = statusCode;
         }
     }
 }
