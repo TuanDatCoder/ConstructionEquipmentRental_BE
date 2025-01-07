@@ -21,18 +21,37 @@ namespace ConstructionEquipmentRental.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetAllOrders()
         {
-            var orders = await _orderService.GetAllOrdersAsync();
-            return Ok(orders);
+            var result = await _orderService.GetAllOrdersAsync();
+            return Ok(new ApiResponseDTO
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View Orders successfully",
+                Data = result
+            });
         }
 
         [HttpPost]
         public async Task<ActionResult<OrderResponseDTO>> CreateOrder([FromBody] OrderRequestDTO orderRequest)
         {
-            if (orderRequest == null)
-                return BadRequest("Order request cannot be null");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "Invalid Order data"
+                });
+            }
 
             var createdOrder = await _orderService.CreateOrderAsync(orderRequest);
-            return CreatedAtAction(nameof(GetAllOrders), new { id = createdOrder.Id }, createdOrder);
+            return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.Created,
+                Message = "Order created successfully",
+                Data = createdOrder
+            });
         }
 
         [HttpPut("{id}")]
@@ -41,11 +60,31 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 var updatedOrder = await _orderService.UpdateOrderAsync(id, orderRequest);
-                return Ok(updatedOrder);
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Order updated successfully",
+                    Data = updatedOrder
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
 
@@ -54,16 +93,32 @@ namespace ConstructionEquipmentRental.API.Controllers
         {
             try
             {
-                var result = await _orderService.DeleteOrderAsync(id);
-                if (result)
+                await _orderService.DeleteOrderAsync(id);
+
+                return Ok(new ApiResponseDTO
                 {
-                    return NoContent();
-                }
-                return NotFound();
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Order deleted successfully"
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
 
@@ -73,16 +128,32 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 var order = await _orderService.GetOrderByIdAsync(id);
-                return Ok(order);
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Order retrieved successfully",
+                    Data = order
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
-
-        
-
-
     }
 }

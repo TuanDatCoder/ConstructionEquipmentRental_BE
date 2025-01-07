@@ -1,9 +1,11 @@
-﻿using Data.DTOs.OrderItem;
+﻿using Data.DTOs;
+using Data.DTOs.OrderItem;
 using Data.DTOs.OrderReport;
 using Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Services.OrderItemServices;
 using Services.OrderReportServices;
+using System.Net;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
@@ -22,16 +24,35 @@ namespace ConstructionEquipmentRental.API.Controllers
         public async Task<ActionResult<IEnumerable<OrderReportResponseDTO>>> GetAllOrderReport()
         {
             var orderReport = await _orderReportService.GetAllOrderReportAsync();
-            return Ok(orderReport);
+            return Ok(new ApiResponseDTO
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "View Order Report successfully",
+                Data = orderReport
+            });
         }
         [HttpPost]
         public async Task<ActionResult<OrderReportResponseDTO>> CreateOrderReport([FromBody] OrderReportRequestDTO orderReportRequest)
         {
-            if (orderReportRequest == null)
-                return BadRequest("Order Report request cannot be null");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "Invalid Order Report data"
+                });
+            }
 
             var createdOrderReport = await _orderReportService.CreateOrderReportAsync(orderReportRequest);
-            return CreatedAtAction(nameof(GetAllOrderReport), new { id = createdOrderReport.Id }, createdOrderReport);
+            return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.Created,
+                Message = "Wallet created successfully",
+                Data = createdOrderReport
+            });
         }
 
         [HttpPut("{id}")]
@@ -40,11 +61,31 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 var updatedOrderReport = await _orderReportService.UpdateOrderReportAsync(id, orderReportRequest);
-                return Ok(updatedOrderReport);
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Order Report updated successfully",
+                    Data = updatedOrderReport
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
 
@@ -54,15 +95,30 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 var result = await _orderReportService.DeleteOrderReportAsync(id);
-                if (result)
+                return Ok(new ApiResponseDTO
                 {
-                    return NoContent();
-                }
-                return NotFound();
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Order Report deleted successfully"
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
 
@@ -72,11 +128,31 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 var orderReport = await _orderReportService.GetOrderReportByIdAsync(id);
-                return Ok(orderReport);
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Order Report retrieved successfully",
+                    Data = orderReport
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
             }
         }
 
