@@ -22,6 +22,7 @@ using AutoMapper;
 using Data.Enums;
 using Data.DTOs.Auth;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace Services.AuthenticationServices
 {
@@ -35,6 +36,7 @@ namespace Services.AuthenticationServices
         private readonly IAccountRepository _accountRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public AuthenticationService(
             IRefreshTokenRepository refreshTokenRepository,
             IDecodeTokenHandler decodeToken,
@@ -43,7 +45,8 @@ namespace Services.AuthenticationServices
             VerificationCodeCache verificationCodeCache,
             IAccountRepository accountRepository,
             IMapper mapper,
-             IConfiguration config
+             IConfiguration config,
+             IHttpContextAccessor httpContextAccessor
             )
         {
             this.verificationCodeCache = verificationCodeCache;
@@ -55,7 +58,7 @@ namespace Services.AuthenticationServices
             _accountRepository = accountRepository;
             _mapper = mapper;
             _config = config;
-
+            _httpContextAccessor = httpContextAccessor;
 
         }
 
@@ -379,7 +382,11 @@ namespace Services.AuthenticationServices
             verificationCodeCache.Put(account.Email, token, 30); // Expire in 30 minutes
 
             // Send email with verification link
-            var verificationLink = $"https://localhost:7160/api/auth/verify?token={token}";
+            // Lấy host và port từ request hiện tại
+            var request = _httpContextAccessor.HttpContext.Request;
+            var host = $"{request.Scheme}://{request.Host}";
+            var verificationLink = $"{host}/api/auth/verify?token={token}";
+            //var verificationLink = $"https://localhost:7160/api/auth/verify?token={token}";
             await _emailService.SendRegistrationEmail(account.Username, account.Email, verificationLink);
         }
 
