@@ -96,6 +96,26 @@ CREATE TABLE ProductImage (
     ImageUrl NVARCHAR(MAX) NOT NULL,
     Status NVARCHAR(50) DEFAULT 'ACTIVE' NOT NULL
 );
+/*
+CREATE TABLE Cart (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    AccountId INT NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
+    UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
+    FOREIGN KEY (AccountId) REFERENCES Account(Id)
+);
+
+CREATE TABLE CartItem (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    CartId INT NOT NULL,
+    ProductId INT NOT NULL,
+    Quantity INT NOT NULL,
+    Price DECIMAL(18,2) NOT NULL, -- Giá của sản phẩm tại thời điểm thêm vào giỏ hàng
+    TotalPrice AS (Quantity * Price) PERSISTED, -- Tính tổng giá tiền tự động
+    FOREIGN KEY (CartId) REFERENCES Cart(Id),
+    FOREIGN KEY (ProductId) REFERENCES Product(Id)
+);
+*/
 
 -- Tạo bảng Order
 CREATE TABLE [Order] (

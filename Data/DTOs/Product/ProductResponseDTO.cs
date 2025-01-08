@@ -29,7 +29,9 @@ namespace Data.DTOs.Product
         public string? Dimensions { get; set; }
 
         public FuelTypeEnum FuelType { get; set; }
-
+        public int CategoryId { get; set; }
+        public int BrandId { get; set; }
+        public int StoreId { get; set; }
 
     }
 }
