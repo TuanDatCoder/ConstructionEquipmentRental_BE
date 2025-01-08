@@ -52,7 +52,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC07778F330D");
+            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC0709A640A9");
 
             entity.ToTable("Account");
 
@@ -81,7 +81,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Brand>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Brand__3214EC07AD05F527");
+            entity.HasKey(e => e.Id).HasName("PK__Brand__3214EC0758ED540E");
 
             entity.ToTable("Brand");
 
@@ -94,7 +94,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07409FEB19");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC076CFAA9B8");
 
             entity.ToTable("Category");
 
@@ -106,7 +106,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Feedback>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Feedback__3214EC076367BCCC");
+            entity.HasKey(e => e.Id).HasName("PK__Feedback__3214EC071226FF5C");
 
             entity.ToTable("Feedback");
 
@@ -138,7 +138,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Order__3214EC07CDF454DA");
+            entity.HasKey(e => e.Id).HasName("PK__Order__3214EC0779717B08");
 
             entity.ToTable("Order");
 
@@ -166,7 +166,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<OrderItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderIte__3214EC07070D5B57");
+            entity.HasKey(e => e.Id).HasName("PK__OrderIte__3214EC077388F2C0");
 
             entity.ToTable("OrderItem");
 
@@ -189,7 +189,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<OrderReport>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderRep__3214EC074DDFD59C");
+            entity.HasKey(e => e.Id).HasName("PK__OrderRep__3214EC07930E0010");
 
             entity.ToTable("OrderReport");
 
@@ -218,7 +218,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC07CAB08CDB");
+            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC070CA22AEA");
 
             entity.ToTable("Product");
 
@@ -259,7 +259,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ProductI__3214EC07F9C05D18");
+            entity.HasKey(e => e.Id).HasName("PK__ProductI__3214EC07669E7ECD");
 
             entity.ToTable("ProductImage");
 
@@ -275,7 +275,7 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E59DEE9DCAE");
+            entity.HasKey(e => e.RefreshTokenId).HasName("PK__RefreshT__F5845E59A7EB7573");
 
             entity.ToTable("RefreshToken");
 
@@ -294,11 +294,11 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Store__3214EC0737E74C79");
+            entity.HasKey(e => e.Id).HasName("PK__Store__3214EC07E98E518C");
 
             entity.ToTable("Store");
 
-            entity.HasIndex(e => e.AccountId, "UQ__Store__349DA5A709DB20E6").IsUnique();
+            entity.HasIndex(e => e.AccountId, "UQ__Store__349DA5A793FBE36F").IsUnique();
 
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -319,11 +319,11 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC07AC51D4BE");
+            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC077FB9C7EE");
 
             entity.ToTable("Transaction");
 
-            entity.HasIndex(e => e.OrderId, "UQ__Transact__C3905BCEC289004C").IsUnique();
+            entity.HasIndex(e => e.OrderId, "UQ__Transact__C3905BCEF68F345E").IsUnique();
 
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -346,11 +346,11 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<Wallet>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Wallet__3214EC075E0D72CB");
+            entity.HasKey(e => e.Id).HasName("PK__Wallet__3214EC07717E2209");
 
             entity.ToTable("Wallet");
 
-            entity.HasIndex(e => e.AccountId, "UQ__Wallet__349DA5A7F03395F3").IsUnique();
+            entity.HasIndex(e => e.AccountId, "UQ__Wallet__349DA5A7B1A29EEF").IsUnique();
 
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.BankAccount).HasMaxLength(255);
@@ -370,11 +370,11 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
 
         modelBuilder.Entity<WalletLog>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__WalletLo__3214EC077497A3AF");
+            entity.HasKey(e => e.Id).HasName("PK__WalletLo__3214EC070C38CB47");
 
             entity.ToTable("WalletLog");
 
-            entity.HasIndex(e => e.TransactionId, "UQ__WalletLo__55433A6AC2C5E1F0").IsUnique();
+            entity.HasIndex(e => e.TransactionId, "UQ__WalletLo__55433A6A61C4C1DA").IsUnique();
 
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedAt)
