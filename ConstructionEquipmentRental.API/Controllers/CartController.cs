@@ -1,55 +1,52 @@
-﻿using Data.DTOs.Product;
+﻿using Data.DTOs.Category;
 using Data.DTOs;
 using Data.Enums;
 using Microsoft.AspNetCore.Mvc;
-using Services.ProductServices;
-using System.Net;
 using Services.CategoryServices;
-using Data.Entities;
-using Data.DTOs.Category;
-using Data.Enums;
+using System.Net;
+using Services.CartServices;
+using Data.DTOs.Cart;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoryController : ControllerBase
+    public class CartController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICartService _cartService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CartController(ICartService cartService)
         {
-            _categoryService = categoryService;
+            _cartService = cartService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategories(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetCarts(int? page = 1, int? size = 10)
         {
-            var result = await _categoryService.GetCategories(page, size);
+            var result = await _cartService.GetCarts(page, size);
 
             return Ok(new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "View categories successfully",
+                Message = "View carts successfully",
                 Data = result
             });
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById(int id)
+        public async Task<IActionResult> GetCartById(int id)
         {
             try
             {
-                var category = await _categoryService.GetCategoryById(id);
+                var cart = await _cartService.GetCartById(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Category retrieved successfully",
-                    Data = category
+                    Message = "Cart retrieved successfully",
+                    Data = cart
                 });
             }
             catch (KeyNotFoundException ex)
@@ -73,7 +70,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDTO request)
+        public async Task<IActionResult> CreateCart([FromBody] CartRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
@@ -81,34 +78,34 @@ namespace ConstructionEquipmentRental.API.Controllers
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid category data"
+                    Message = "Invalid cart data"
                 });
             }
 
-            var result = await _categoryService.CreateCategory(request);
+            var result = await _cartService.CreateCart(request);
 
             return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.Created,
-                Message = "Category created successfully",
+                Message = "Cart created successfully",
                 Data = result
             });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryRequestDTO request)
+        public async Task<IActionResult> UpdateCart(int id, [FromBody] CartUpdateRequestDTO request)
         {
             try
             {
-                var updatedCategory = await _categoryService.UpdateCategory(id, request);
+                var updatedCart = await _cartService.UpdateCart(id, request);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Category updated successfully",
-                    Data = updatedCategory
+                    Message = "Cart updated successfully",
+                    Data = updatedCart
                 });
             }
             catch (KeyNotFoundException ex)
@@ -132,17 +129,17 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCart(int id)
         {
             try
             {
-                await _categoryService.DeleteCategory(id);
+                await _cartService.DeleteCart(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Category deleted successfully"
+                    Message = "Cart deleted successfully"
                 });
             }
             catch (KeyNotFoundException ex)
@@ -166,18 +163,18 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> ChangeCategoryStatus(int id, [FromBody] CategoryStatusEnum newStatus)
+        public async Task<IActionResult> ChangeCartStatus(int id, [FromBody] CartStatusEnum newStatus)
         {
             try
             {
-                var updatedCategory = await _categoryService.ChangeCategoryStatus(id, newStatus);
+                var updatedCart = await _cartService.ChangeCartStatus(id, newStatus);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Category status updated successfully",
-                    Data = updatedCategory
+                    Message = "Cart status updated successfully",
+                    Data = updatedCart
                 });
             }
             catch (KeyNotFoundException ex)

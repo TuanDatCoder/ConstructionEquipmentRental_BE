@@ -6,7 +6,6 @@ USE ConstructionEquipmentRentalDB;
 GO
 
 -- Tạo bảng Account
--- Tạo bảng Account
 CREATE TABLE Account (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     StoreId INT NULL, -- Cho phép NULL
@@ -96,12 +95,13 @@ CREATE TABLE ProductImage (
     ImageUrl NVARCHAR(MAX) NOT NULL,
     Status NVARCHAR(50) DEFAULT 'ACTIVE' NOT NULL
 );
-/*
+
 CREATE TABLE Cart (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     AccountId INT NOT NULL,
     CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
+	Status NVARCHAR(50) DEFAULT 'ACTIVE' NOT NULL,
     FOREIGN KEY (AccountId) REFERENCES Account(Id)
 );
 
@@ -110,12 +110,12 @@ CREATE TABLE CartItem (
     CartId INT NOT NULL,
     ProductId INT NOT NULL,
     Quantity INT NOT NULL,
-    Price DECIMAL(18,2) NOT NULL, -- Giá của sản phẩm tại thời điểm thêm vào giỏ hàng
-    TotalPrice AS (Quantity * Price) PERSISTED, -- Tính tổng giá tiền tự động
+    Price DECIMAL(18,2) NOT NULL,
+    TotalPrice AS (Quantity * Price) PERSISTED,
     FOREIGN KEY (CartId) REFERENCES Cart(Id),
     FOREIGN KEY (ProductId) REFERENCES Product(Id)
 );
-*/
+
 
 -- Tạo bảng Order
 CREATE TABLE [Order] (
@@ -324,3 +324,19 @@ INSERT INTO WalletLog (WalletId, TransactionId, Type, Amount) VALUES
 (3, 3, 'SUBTRACT', 1150.00),
 (4, 4, 'SUBTRACT', 1050.00),
 (5, 5, 'SUBTRACT', 750.00);
+
+
+-- Thêm dữ liệu mẫu vào bảng Cart
+INSERT INTO Cart (AccountId, CreatedAt, UpdatedAt, Status) VALUES
+(3, GETDATE(), GETDATE(), 'ACTIVE'),  
+(4, GETDATE(), GETDATE(), 'PENDING'), 
+(3, GETDATE(), GETDATE(), 'COMPLETED'),  
+(4, GETDATE(), GETDATE(), 'CANCELLED'); 
+
+
+-- Thêm dữ liệu mẫu vào bảng CartItem
+INSERT INTO CartItem (CartId, ProductId, Quantity, Price) VALUES
+(1, 101, 2, 1500.00), 
+(1, 102, 1, 3000.00),  
+(2, 103, 3, 1000.00), 
+(2, 104, 1, 2500.00);  

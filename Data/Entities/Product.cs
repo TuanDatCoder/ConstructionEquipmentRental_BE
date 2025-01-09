@@ -45,6 +45,8 @@ public partial class Product
 
     public virtual Brand Brand { get; set; } = null!;
 
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
     public virtual Category Category { get; set; } = null!;
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();

@@ -18,6 +18,8 @@ using Data.DTOs.Wallet;
 using Data.DTOs.WalletLog;
 using Data.DTOs.Account;
 using Data.DTOs.Store;
+using Data.DTOs.Cart;
+using Data.DTOs.CartItem;
 
 namespace Services.Helper.MapperProfiles
 {
@@ -124,7 +126,19 @@ namespace Services.Helper.MapperProfiles
 
             CreateMap<Account, AccountResponseDTO>()
           .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store != null ? src.Store.Name : null));
-      
+
+            //Cart
+            CreateMap<Cart, CartResponseDTO>()
+            .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));
+            CreateMap<CartRequestDTO, Cart>();
+
+            CreateMap<CartUpdateRequestDTO, Cart>()
+           .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+            //CartItem
+            CreateMap<CartItem, CartItemResponseDTO>()
+            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null));
+            CreateMap<CartItemRequestDTO, CartItem>();
 
         }
     }
