@@ -49,6 +49,7 @@ namespace Services.CategoryServices
         {
             var category = _mapper.Map<Category>(request);
             category.Status = CategoryStatusEnum.ACTIVE.ToString();
+
             await _categoryRepository.Add(category);
             return _mapper.Map<CategoryResponseDTO>(category);
         }

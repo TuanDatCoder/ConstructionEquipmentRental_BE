@@ -60,7 +60,7 @@ namespace Services.ProductServices
 
             _mapper.Map(request, product);
 
-            product.UpdatedAt = DateTime.UtcNow;
+            product.UpdatedAt = DateTime.Now;
 
             await _productRepository.Update(product);
 

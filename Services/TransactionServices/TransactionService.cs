@@ -26,7 +26,7 @@ namespace Services.TransactionServices
         public async Task<TransactionResponseDTO> CreateTransaction(TransactionRequestDTO request)
         {
             var transaction = _mapper.Map<Transaction>(request);
-            transaction.CreatedAt = DateTime.UtcNow;
+            transaction.CreatedAt = DateTime.Now;
             await _transactionRepository.Add(transaction);
             return _mapper.Map<TransactionResponseDTO>(transaction);
         }

@@ -25,7 +25,7 @@ namespace Services.WalletServices
         public async Task<WalletResponseDTO> CreateWallet(WalletRequestDTO request)
         {
             var wallet = _mapper.Map<Wallet>(request);
-            wallet.CreatedAt = DateTime.UtcNow;
+            wallet.CreatedAt = DateTime.Now;
             await _walletRepository.Add(wallet);
             return _mapper.Map<WalletResponseDTO>(wallet);
         }

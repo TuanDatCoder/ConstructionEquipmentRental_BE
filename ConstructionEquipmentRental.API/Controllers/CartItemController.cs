@@ -1,55 +1,52 @@
-﻿using Data.DTOs.Product;
+﻿using Data.DTOs.Cart;
 using Data.DTOs;
 using Data.Enums;
 using Microsoft.AspNetCore.Mvc;
-using Services.ProductServices;
+using Services.CartServices;
 using System.Net;
-using Services.CategoryServices;
-using Data.Entities;
-using Data.DTOs.Category;
-using Data.Enums;
+using Services.CartItemServices;
+using Data.DTOs.CartItem;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
-    public class CategoryController : ControllerBase
+    public class CartItemController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICartItemService _cartItemService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CartItemController(ICartItemService cartItemService)
         {
-            _categoryService = categoryService;
+            _cartItemService = cartItemService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategories(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetCartItems(int? page = 1, int? size = 10)
         {
-            var result = await _categoryService.GetCategories(page, size);
+            var result = await _cartItemService.GetCartItems(page, size);
 
             return Ok(new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.OK,
-                Message = "View categories successfully",
+                Message = "View cartItems successfully",
                 Data = result
             });
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById(int id)
+        public async Task<IActionResult> GetCartItemById(int id)
         {
             try
             {
-                var category = await _categoryService.GetCategoryById(id);
+                var cart = await _cartItemService.GetCartItemById(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Category retrieved successfully",
-                    Data = category
+                    Message = "CartItem retrieved successfully",
+                    Data = cart
                 });
             }
             catch (KeyNotFoundException ex)
@@ -73,7 +70,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequestDTO request)
+        public async Task<IActionResult> CreateCartItem([FromBody] CartItemRequestDTO request)
         {
             if (!ModelState.IsValid)
             {
@@ -81,34 +78,34 @@ namespace ConstructionEquipmentRental.API.Controllers
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
-                    Message = "Invalid category data"
+                    Message = "Invalid cartItem data"
                 });
             }
 
-            var result = await _categoryService.CreateCategory(request);
+            var result = await _cartItemService.CreateCartItem(request);
 
             return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
             {
                 IsSuccess = true,
                 Code = (int)HttpStatusCode.Created,
-                Message = "Category created successfully",
+                Message = "CartItem created successfully",
                 Data = result
             });
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryRequestDTO request)
+        public async Task<IActionResult> UpdateCartItem(int id, [FromBody] CartItemRequestDTO request)
         {
             try
             {
-                var updatedCategory = await _categoryService.UpdateCategory(id, request);
+                var updatedCartItem = await _cartItemService.UpdateCartItem(id, request);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Category updated successfully",
-                    Data = updatedCategory
+                    Message = "CartItem updated successfully",
+                    Data = updatedCartItem
                 });
             }
             catch (KeyNotFoundException ex)
@@ -132,17 +129,17 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCartItem(int id)
         {
             try
             {
-                await _categoryService.DeleteCategory(id);
+                await _cartItemService.DeleteCartItem(id);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
-                    Message = "Category deleted successfully"
+                    Message = "CartItem deleted successfully"
                 });
             }
             catch (KeyNotFoundException ex)
@@ -165,39 +162,6 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
-        [HttpPatch("{id}/status")]
-        public async Task<IActionResult> ChangeCategoryStatus(int id, [FromBody] CategoryStatusEnum newStatus)
-        {
-            try
-            {
-                var updatedCategory = await _categoryService.ChangeCategoryStatus(id, newStatus);
-
-                return Ok(new ApiResponseDTO
-                {
-                    IsSuccess = true,
-                    Code = (int)HttpStatusCode.OK,
-                    Message = "Category status updated successfully",
-                    Data = updatedCategory
-                });
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(new ApiResponseDTO
-                {
-                    IsSuccess = false,
-                    Code = (int)HttpStatusCode.NotFound,
-                    Message = ex.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ApiResponseDTO
-                {
-                    IsSuccess = false,
-                    Code = (int)HttpStatusCode.BadRequest,
-                    Message = ex.Message
-                });
-            }
-        }
     }
 }
+

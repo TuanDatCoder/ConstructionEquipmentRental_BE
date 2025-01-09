@@ -35,6 +35,8 @@ public partial class Account
 
     public DateTime UpdatedAt { get; set; }
 
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual ICollection<OrderReport> OrderReportHandlers { get; set; } = new List<OrderReport>();
