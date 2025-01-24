@@ -1,0 +1,13 @@
+﻿{
+  "type": "service_account",
+  "project_id": "marinepath-56521",
+  "private_key_id": "026258e08e2d7b16cfdebb0e754e9393e137233b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCd2cbWZBVozCW5\nGCMJ1EXj6gWZavwzHuqiLNSqY8Ax0RfVKC5DuIBxyRAq+ohoivPOUMSp54uKzAe1\n+ysmuVts5uRjCEkIuDZhHbbYN3FYGbSzkeQQWeEpROaEHuRkqGh55FgZCSofLlSt\nKexCyymryWI9b/h8gpctbPsipdppD0UeIp/SL1BZgcExXbO0qyxkywISKutDshuE\nMQEQ+n1X3Px9An86fnucdnmScXTTglM7eEgyYDOckjN7yieTxWQ4TuEpQB7taVFK\nBUb2S0TsKcSkrnl13SbR19xHrzD2hlGm5hKMT8cMflpfPnd4kQrFxgaJtS4zXjp7\n/PSdQ+HjAgMBAAECggEABHaYJA9P+RbS7fNi+s/0hjxRPu1+RsifFDdDlGoU7Fg/\n+VXncY5UCtp1De6e2ceaUjN2lmJrT7yX3KaiO8puEiTdd+X0brTmJ5YcksbzsP8Z\npf1SaFFhIz/ORsyD9W/NT0/epGcnAa1pwxf63iMxd/Hytj1KxFHvifFZbDkp4uJo\nM+IO8DlwoGh800gub8mmXXY7jsMFCsgZTKhyI9nxsqnppZ4l4XoE27sYKwCzE3iL\nudRxdDQxP1JLcpWQsqgavrHERnVyHI8XXlTdD1m5k0r++uThgVHjviXQAwfeqylO\n3NzmFMHKVIxqJlDDV8PfV25jCdQuC7ib/0xeNz/IQQKBgQDPx6lk4KLFZBj/RTYR\nILeJR6dBW6vzkkvHEaNGIg4nCtZHrVbliPy5uRbFH8lBDM2J0jDYqrCvf538s4tp\n51KJZcvH5LzydQghAMHcEGE0syDTd/lFdBUhTl4dt7y8vdhCKcs2wtOAl9s9avyb\nK+ajj6o6c965xwI5XkcrgpARIwKBgQDCe8l9adMUH0MwLXBt286NemL5Fpt+KL2y\nq0oECEMMZV/eQHAoMlW17GtVTxoa59NM5Z6RiKl71QWX7XRpjLiu1vsJNhCl+L3M\nRucKXJCQG1pGLlrvyvXocBt5oLqTJIsBvS4HjwvjiJhwOegDIBU1DQlyg+SBDEjw\ncT/ps37YQQKBgCUl2EY91zwdQk7ZS+pSBB5aHjAUOLDqdfvYTm2qhwc568eS2Rde\nn3iA++4wWaX0qQa7+pmyIratxUw5uXIstlf0SDOr1JAwlkx4OzCiCQ8H+5VzPLDL\nKT/0J+V+RRMlifWCTV+0A2ZZQAxCBXmkpq6Vb+TVdHuYdfBVx7mitSkrAoGAdnwh\n8jUhsrWlIlnckCGFAm6Yk7ZxPvglMg/nBPPfnVK5iFbrvaGE1FPXxF5vwgqQkd2m\nsHV5BAdw4/F3pcJk1agFwsPcerFDOIvNwGNKc3Emm3EsV8Dn9hcutff1EyYFRiby\nPwqoLJQQgvbUYesO4IYzxj+SXAiW+12TmZaQZcECgYEAsaz47GIrx55lYUX4KeEV\nEc4wtkscKq14RdZqBFSkI6UjverjfKuQ4N5qdv0U+N/aG9//hNZrgZuMqedOHbAK\n0uFoaPLbFqb7zuhb3y4cxqeVtetFLIhDi/3IbtqJsCwxEOcNZUQWHwLFAIhyIYf2\nI0/LuKOcULMXUBAS9rIyuXA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "marinepath-56521@appspot.gserviceaccount.com",
+  "client_id": "100148480044945855882",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/marinepath-56521%40appspot.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
