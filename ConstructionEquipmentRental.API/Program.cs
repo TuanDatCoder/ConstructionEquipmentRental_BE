@@ -45,6 +45,7 @@ using Repositories.CartRepos;
 using Repositories.CartItemRepos;
 using Services.CartServices;
 using Services.CartItemServices;
+using Services.FirebaseStorageServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -98,6 +99,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICartItemService, CartItemService>();
+            builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
 
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>

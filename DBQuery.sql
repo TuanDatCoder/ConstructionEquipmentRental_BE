@@ -336,7 +336,7 @@ INSERT INTO Cart (AccountId, CreatedAt, UpdatedAt, Status) VALUES
 
 -- Thêm dữ liệu mẫu vào bảng CartItem
 INSERT INTO CartItem (CartId, ProductId, Quantity, Price) VALUES
-(1, 101, 2, 1500.00), 
-(1, 102, 1, 3000.00),  
-(2, 103, 3, 1000.00), 
-(2, 104, 1, 2500.00);  
+(1, 1, 2, 1500.00), 
+(1, 1, 1, 3000.00),  
+(2, 3, 3, 1000.00), 
+(2, 4, 1, 2500.00);  
