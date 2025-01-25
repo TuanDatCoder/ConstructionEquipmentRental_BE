@@ -127,6 +127,9 @@ namespace Services.Helper.MapperProfiles
             CreateMap<Account, AccountResponseDTO>()
           .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store != null ? src.Store.Name : null));
 
+            CreateMap<Account, AccountInformationResponseDTO>()
+         .ForMember(dest => dest.StoreName, opt => opt.MapFrom(src => src.Store != null ? src.Store.Name : null));
+
             //Cart
             CreateMap<Cart, CartResponseDTO>()
             .ForMember(dest => dest.AccountName, opt => opt.MapFrom(src => src.Account != null ? src.Account.Username : null));

@@ -131,6 +131,23 @@ namespace Services.AuthenticationServices
                 throw new ApiException(HttpStatusCode.NotFound, "User not found");
             }
         }
+        public async Task<Account> GetAccountByToken(string token)
+        {
+            var decode = _decodeToken.decode(token);
+
+            var currentAccount = await _accountRepository.GetAccountByUsername(decode.username);
+
+            if (currentAccount != null)
+            {
+
+                return currentAccount;
+            }
+
+            else
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "User not found");
+            }
+        }
 
         public async Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO)
         {
@@ -364,12 +381,28 @@ namespace Services.AuthenticationServices
                 throw new ApiException(HttpStatusCode.BadRequest, "Email has already been used by another user");
             }
 
+           
+
+
             var account = _mapper.Map<Account>(accountRequestDTO);
             account.Password = PasswordHasher.HashPassword(accountRequestDTO.Password);
             account.Status = AccountStatusEnum.UNVERIFIED.ToString();
             account.CreatedAt = DateTime.Now;
             account.UpdatedAt = DateTime.Now;
             account.Points = 0;
+
+            if (accountRequestDTO.Gender.ToString().Equals("MALE"))
+            {
+                account.Picture = "https://firebasestorage.googleapis.com/v0/b/marinepath-56521.appspot.com/o/male.png?alt=media&token=6f3a8425-e611-4f17-b690-08fd7b465219";
+            }
+            else if (accountRequestDTO.Gender.ToString().Equals("FEMALE")){
+                account.Picture = "https://firebasestorage.googleapis.com/v0/b/marinepath-56521.appspot.com/o/female.png?alt=media&token=c1956e6d-1207-438d-bae4-5c1bcd52e33d";
+            }
+            else
+            {
+                account.Picture = "https://firebasestorage.googleapis.com/v0/b/marinepath-56521.appspot.com/o/orther.png?alt=media&token=f1f7912c-c886-4206-856a-43418e1954bc";
+            }
+
 
             var accountId = await _accountRepository.AddAccount(account);
 

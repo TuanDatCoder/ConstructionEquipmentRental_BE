@@ -9,6 +9,7 @@ namespace Services.AccountServices
 {
     public interface IAccountService
     {
-       
+        Task<string> UploadProfilePictureAsync(int accountId, Stream fileStream, string fileName);
+        Task<string> UploadPictureAsync(string token, Stream fileStream, string fileName);
     }
 }

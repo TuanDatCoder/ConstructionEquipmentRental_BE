@@ -1,6 +1,7 @@
 ﻿using Data.DTOs.Account;
 using Data.DTOs.Auth;
 using Data.DTOs.Password;
+using Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Services.AuthenticationServices
         Task ChangePassword(string token, ChangePasswordRequestDTO changePasswordRequestDTO);
         Task ForgotPassword(string email);
         Task<AccountInformationResponseDTO> GetUserInfor(string token);
+        Task<Account> GetAccountByToken(string token);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
         Task Logout(string refreshToken);
         Task RegisterCustomer(LoginRequestDTO loginRequestDTO);
