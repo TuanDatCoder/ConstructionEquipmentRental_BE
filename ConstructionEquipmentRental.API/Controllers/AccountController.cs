@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.AccountServices;
 using System.Net;
@@ -22,7 +23,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest(new
+                return BadRequest(new ApiResponseDTO
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
@@ -35,7 +36,7 @@ namespace ConstructionEquipmentRental.API.Controllers
                 using var fileStream = file.OpenReadStream();
                 string fileUrl = await _accountService.UploadProfilePictureAsync(accountId, fileStream, file.FileName);
 
-                return Ok(new
+                return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
@@ -45,7 +46,7 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.InternalServerError,
@@ -62,7 +63,7 @@ namespace ConstructionEquipmentRental.API.Controllers
 
             if (file == null || file.Length == 0)
             {
-                return BadRequest(new
+                return BadRequest(new ApiResponseDTO
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.BadRequest,
@@ -75,7 +76,7 @@ namespace ConstructionEquipmentRental.API.Controllers
                 using var fileStream = file.OpenReadStream();
                 string fileUrl = await _accountService.UploadPictureAsync(token, fileStream, file.FileName);
 
-                return Ok(new
+                return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
@@ -85,7 +86,7 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
                 {
                     IsSuccess = false,
                     Code = (int)HttpStatusCode.InternalServerError,

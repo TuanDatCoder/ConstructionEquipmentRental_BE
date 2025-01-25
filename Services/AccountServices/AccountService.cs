@@ -49,6 +49,7 @@ namespace Services.AccountServices
                 throw new Exception("Account not found");
             }
 
+
             var uniqueFileName = await _firebaseStorageService.UploadFileAsync(fileStream, fileName);
             var fileUrl = _firebaseStorageService.GetSignedUrl(uniqueFileName);
 
