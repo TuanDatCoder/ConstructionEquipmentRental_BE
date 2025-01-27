@@ -4,15 +4,18 @@ using Data.DTOs.ProductImage;
 using Data.Entities;
 using Data.Enums;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using Repositories.ProductImageRepos;
 using Repositories.ProductRepos;
 using Services.AuthenticationServices;
 using Services.FirebaseStorageServices;
+using Services.Helper.CustomExceptions;
 using Services.ProductServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,13 +26,15 @@ namespace Services.ProductImageServices
         private readonly IMapper _mapper;
         private readonly IProductImageRepository _productImageRepository;
         private readonly IFirebaseStorageService _firebaseStorageService;
-       // private readonly IAuthenticationService _authenticationService;
-        public ProductImageService(IMapper mapper, IProductImageRepository productImageRepository, IFirebaseStorageService firebaseStorageService)
+        private readonly IAuthenticationService _authenticationService;
+        private readonly IProductRepository _productRepository;
+        public ProductImageService(IMapper mapper, IProductImageRepository productImageRepository, IFirebaseStorageService firebaseStorageService, IAuthenticationService authenticationService, IProductRepository productRepository)
         {
             _mapper = mapper;
             _productImageRepository = productImageRepository;
-            // _authenticationService = authenticationService;
+            _authenticationService = authenticationService;
             _firebaseStorageService = firebaseStorageService;
+            _productRepository = productRepository;
         }
         public async Task<List<ProductImageResponseDTO>> GetProductImages(int? page, int? size)
         {
@@ -104,8 +109,14 @@ namespace Services.ProductImageServices
 
             return _mapper.Map<ProductImageResponseDTO>(existingProductImage);
         }
-        public async Task<List<ProductImageResponseDTO>> UploadMultipleProductImagesAsync(List<Stream> files, List<string> names, int productId)
+
+
+        public async Task<List<ProductImageResponseDTO>> UploadMultipleProductImagesAsync(string token, List<Stream> files, List<string> names, int productId)
         {
+
+            CheckProductAndCurrentAccount(token,productId);
+
+
             if (files == null || files.Count == 0)
             {
                 throw new ArgumentException("No files were uploaded.", nameof(files));
@@ -130,7 +141,6 @@ namespace Services.ProductImageServices
                 }
                 catch (Exception ex)
                 {
-                    // Log lỗi (nếu cần)
                     throw new InvalidOperationException($"Error uploading file '{fileName}': {ex.Message}", ex);
                 }
             }
@@ -151,7 +161,6 @@ namespace Services.ProductImageServices
 
             if (fileStream == null || string.IsNullOrWhiteSpace(fileName))
             {
-                // Sử dụng URL mặc định
                 fileUrl = "https://firebasestorage.googleapis.com/v0/b/marinepath-56521.appspot.com/o/milling-machine.png?alt=media&token=98e4bca0-febe-471a-b807-d656ac81cb33";
             }
             else
@@ -178,8 +187,33 @@ namespace Services.ProductImageServices
             return _mapper.Map<ProductImageResponseDTO>(productImage);
         }
 
+        public async Task<List<ProductImageResponseDTO>> GetProductImagesByProductId(int productId)
+        {
+            var productImages = await _productImageRepository.GetProductImagesByProductId(productId);
 
+            if (productImages == null || !productImages.Any())
+            {
+                throw new KeyNotFoundException($"No product images found for Product ID {productId}.");
+            }
 
+            return _mapper.Map<List<ProductImageResponseDTO>>(productImages);
+        }
+
+        public async Task<Account> CheckProductAndCurrentAccount(string token, int productId)
+        {
+            var account = await _authenticationService.GetAccountByToken(token);
+            var product = await _productRepository.GetByIdAsync(productId);
+
+            if (account.StoreId == null)
+            {
+                throw new Exception("This account does not have a store and cannot create products.");
+            }
+            else if (product.StoreId != account.StoreId)
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to update this product.");
+            }
+            return account;
+        }
 
 
 

@@ -161,6 +161,40 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
         }
+        [HttpGet("cart/{cartId}")]
+        public async Task<IActionResult> GetCartItemsByCartId(int cartId)
+        {
+            try
+            {
+                var cartItems = await _cartItemService.GetCartItemsByCartId(cartId);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "CartItems retrieved successfully",
+                    Data = cartItems
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
 
     }
 }

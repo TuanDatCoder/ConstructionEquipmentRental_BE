@@ -15,5 +15,6 @@ namespace Repositories.CartItemRepos
         Task Update(CartItem cartItem);
 
         Task Delete(CartItem cartItem);
+        Task<List<CartItem>> GetCartItemsByCartId(int cartId);
     }
 }

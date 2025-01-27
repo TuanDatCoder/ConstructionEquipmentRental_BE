@@ -171,13 +171,13 @@ namespace Services.ProductServices
             return fileUrl;
         }
 
-        private async Task<Account> CheckProductAndCurrentAccount(string token, int productId)
+        public async Task<Account> CheckProductAndCurrentAccount(string token, int storeId)
         {
             var account = await _authenticationService.GetAccountByToken(token);
             if (account.StoreId == null)
             {
                 throw new Exception("This account does not have a store and cannot create products.");
-            }else if (productId != account.StoreId)
+            }else if (storeId != account.StoreId)
             {
                 throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to update this product.");
             }

@@ -15,5 +15,7 @@ namespace Services.OrderItemServices
         Task<OrderItemResponseDTO> UpdateOrderItemAsync(int orderItemId, OrderItemRequestDTO orderItemRequest);
         Task<bool> DeleteOrderItemAsync(int orderItemId);
         Task<OrderItemResponseDTO> GetOrderItemByIdAsync(int orderItemId);
+        Task<IEnumerable<OrderItemResponseDTO>> GetOrderItemsByOrderIdAsync(int orderId);
+
     }
 }

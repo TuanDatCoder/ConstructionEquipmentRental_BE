@@ -81,6 +81,22 @@ namespace Repositories.CartItemRepos
             _context.CartItems.Remove(cartItem);
             await _context.SaveChangesAsync();
         }
+        public async Task<List<CartItem>> GetCartItemsByCartId(int cartId)
+        {
+            try
+            {
+                return await _context.CartItems
+                    .Where(ci => ci.CartId == cartId)
+                    .Include(ci => ci.Product)
+                    .Include(ci => ci.Cart)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error when fetching CartItems by CartId: {ex.Message}");
+            }
+        }
+
 
     }
 }

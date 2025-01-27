@@ -16,6 +16,7 @@ namespace Services.CartItemServices
         Task<CartItemResponseDTO> CreateCartItem(CartItemRequestDTO request);
         Task<CartItemResponseDTO> UpdateCartItem(int id, CartItemRequestDTO request);
         Task DeleteCartItem(int id);
-        
+        Task<List<CartItemResponseDTO>> GetCartItemsByCartId(int cartId);
+
     }
 }

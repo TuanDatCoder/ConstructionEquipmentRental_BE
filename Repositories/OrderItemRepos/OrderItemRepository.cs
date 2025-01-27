@@ -60,5 +60,12 @@ namespace Repositories.OrderItemRepos
             await _context.SaveChangesAsync();
             return orderItem;
         }
+        public async Task<IEnumerable<OrderItem>> GetOrderItemsByOrderIdAsync(int orderId)
+        {
+            return await _context.OrderItems
+                                   .Where(oi => oi.OrderId == orderId)
+                                   .ToListAsync();
+        }
+
     }
 }
