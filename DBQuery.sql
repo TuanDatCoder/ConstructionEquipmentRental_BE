@@ -10,6 +10,8 @@ CREATE TABLE Account (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     StoreId INT NULL, -- Cho phép NULL
     Username NVARCHAR(255) NOT NULL,
+	FullName NVARCHAR(255) NOT NULL,
+	Gender NVARCHAR(50) DEFAULT 'OTHER' NOT NULL, 
     Password NVARCHAR(MAX) NOT NULL,
     Email NVARCHAR(255) NOT NULL,
     Phone NVARCHAR(20),
@@ -222,12 +224,12 @@ CREATE TABLE RefreshToken (
 
 -- -----------------------------------------Them Du Lieu-------------------------------------------------
 -- Thêm dữ liệu mẫu vào bảng Account
-INSERT INTO Account (StoreId, Username, Password, Email, Phone, Address, DateOfBirth, Role, Status, Points) VALUES
-(1, 'storeowner1', 'hashed_password1', 'owner1@store.com', '1234567890', '123 Main St', '1980-01-01', 'STORE_OWNER', 'ACTIVE', 500),
-(2, 'storeowner2', 'hashed_password2', 'owner2@store.com', '0987654321', '456 Market Ave', '1985-02-15', 'STORE_OWNER', 'ACTIVE', 300),
-(3, 'customer1', 'hashed_password3', 'customer1@gmail.com', '1122334455', '789 Elm St', '1995-06-10', 'CUSTOMER', 'ACTIVE', 100),
-(4, 'customer2', 'hashed_password4', 'customer2@gmail.com', '6677889900', '321 Oak St', '1992-03-22', 'CUSTOMER', 'ACTIVE', 200),
-(5, 'admin1', 'hashed_password5', 'admin@system.com', '5544332211', 'Admin Office', '1975-12-05', 'ADMIN', 'ACTIVE', 0);
+INSERT INTO Account (StoreId, Username, Password, Email, Phone, Address, DateOfBirth, Role, Status, Points , Gender, FullName) VALUES
+(1, 'storeowner1', 'hashed_password1', 'owner1@store.com', '1234567890', '123 Main St', '1980-01-01', 'LESSOR', 'ACTIVE', 500, 'MALE', 'John Doe'),
+(2, 'storeowner2', 'hashed_password2', 'owner2@store.com', '0987654321', '456 Market Ave', '1985-02-15', 'LESSOR', 'ACTIVE', 300, 'MALE', 'John Doe'),
+(3, 'customer1', 'hashed_password3', 'customer1@gmail.com', '1122334455', '789 Elm St', '1995-06-10', 'CUSTOMER', 'ACTIVE', 100, 'MALE', 'John Doe'),
+(4, 'customer2', 'hashed_password4', 'customer2@gmail.com', '6677889900', '321 Oak St', '1992-03-22', 'CUSTOMER', 'ACTIVE', 200, 'MALE', 'John Doe'),
+(5, 'admin1', 'hashed_password5', 'admin@system.com', '5544332211', 'Admin Office', '1975-12-05', 'ADMIN', 'ACTIVE', 0, 'MALE', 'John Doe');
 
 -- Thêm dữ liệu mẫu vào bảng Store
 INSERT INTO Store (Name, Address, Phone, OpeningDay, OpeningHours, ClosingHours, BusinessLicense, AccountId) VALUES

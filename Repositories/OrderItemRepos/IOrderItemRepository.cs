@@ -17,5 +17,7 @@ namespace Repositories.OrderItemRepos
         Task<bool> DeleteOrderItemAsync(int orderItemId);
 
         Task<OrderItem> GetOrderItemByIdAsync(int orderItemId);
+        Task<IEnumerable<OrderItem>> GetOrderItemsByOrderIdAsync(int orderId);
+
     }
 }

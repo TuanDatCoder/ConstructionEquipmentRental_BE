@@ -82,7 +82,16 @@ namespace Services.CartItemServices
             await _cartItemRepository.Delete(cart);
         }
 
-       
+
+        public async Task<List<CartItemResponseDTO>> GetCartItemsByCartId(int cartId)
+        {
+            var cartItems = await _cartItemRepository.GetCartItemsByCartId(cartId);
+            if (cartItems == null || !cartItems.Any())
+            {
+                throw new KeyNotFoundException($"No CartItems found for CartId {cartId}");
+            }
+            return _mapper.Map<List<CartItemResponseDTO>>(cartItems);
+        }
 
 
 

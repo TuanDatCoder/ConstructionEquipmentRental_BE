@@ -4,6 +4,10 @@ using Data.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Services.ProductServices;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using Data.Entities;
+using Newtonsoft.Json.Linq;
+using Google.Apis.Auth.OAuth2.Requests;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
@@ -68,8 +72,11 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductRequestDTO request)
+        [Authorize(Roles = "LESSOR")]
+        public async Task<IActionResult> CreateProduct([FromForm] ProductRequestDTO request, IFormFile? file = null)
         {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(new ApiResponseDTO
@@ -80,30 +87,66 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
 
-            var result = await _productService.CreateProduct(request);
-
-            return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
-            {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.Created,
-                Message = "Product created successfully",
-                Data = result
-            });
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateRequestDTO request)
-        {
             try
             {
-                var updatedProduct = await _productService.UpdateProduct(id, request);
+                Stream? fileStream = null;
+                string? fileName = null;
+
+                if (file != null && file.Length > 0)
+                {
+                    fileStream = file.OpenReadStream();
+                    fileName = file.FileName;
+                }
+
+                var result = await _productService.CreateProductAsync(token, request, fileStream, fileName);
+
+                return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.Created,
+                    Message = "Product created successfully",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "LESSOR")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUpdateRequestDTO request, IFormFile? file)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiResponseDTO
+                    {
+                        IsSuccess = false,
+                        Code = (int)HttpStatusCode.BadRequest,
+                        Message = "Invalid product data"
+                    });
+                }
+
+                using var fileStream = file?.OpenReadStream();
+                var result = await _productService.UpdateProduct(id, token, request, fileStream, file?.FileName);
 
                 return Ok(new ApiResponseDTO
                 {
                     IsSuccess = true,
                     Code = (int)HttpStatusCode.OK,
                     Message = "Product updated successfully",
-                    Data = updatedProduct
+                    Data = result
                 });
             }
             catch (KeyNotFoundException ex)
@@ -126,7 +169,9 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
+
         [HttpDelete("{id}")]
+        [Authorize(Roles = "LESSOR,ADMIN")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             try
@@ -194,5 +239,47 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
         }
+
+
+        [HttpPost("/{productId}/upload-picture")]
+        [Authorize(Roles = "LESSOR")]
+        public async Task<IActionResult> UploadPicture(int productId, IFormFile file)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "File is not selected"
+                });
+            }
+
+            try
+            {
+                using var fileStream = file.OpenReadStream();
+                string fileUrl = await _productService.UpdatePictureAsync(productId, token, fileStream, file.FileName);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Avatar uploaded successfully",
+                    Data = new { FileUrl = fileUrl }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError,  new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = ex.Message
+                });
+            }
+        }
+
     }
 }

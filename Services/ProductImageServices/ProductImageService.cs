@@ -3,12 +3,19 @@ using Data.DTOs.Product;
 using Data.DTOs.ProductImage;
 using Data.Entities;
 using Data.Enums;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using Repositories.ProductImageRepos;
 using Repositories.ProductRepos;
+using Services.AuthenticationServices;
+using Services.FirebaseStorageServices;
+using Services.Helper.CustomExceptions;
 using Services.ProductServices;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,11 +25,16 @@ namespace Services.ProductImageServices
     {
         private readonly IMapper _mapper;
         private readonly IProductImageRepository _productImageRepository;
-
-        public ProductImageService(IMapper mapper, IProductImageRepository productImageRepository)
+        private readonly IFirebaseStorageService _firebaseStorageService;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly IProductRepository _productRepository;
+        public ProductImageService(IMapper mapper, IProductImageRepository productImageRepository, IFirebaseStorageService firebaseStorageService, IAuthenticationService authenticationService, IProductRepository productRepository)
         {
             _mapper = mapper;
             _productImageRepository = productImageRepository;
+            _authenticationService = authenticationService;
+            _firebaseStorageService = firebaseStorageService;
+            _productRepository = productRepository;
         }
         public async Task<List<ProductImageResponseDTO>> GetProductImages(int? page, int? size)
         {
@@ -47,7 +59,7 @@ namespace Services.ProductImageServices
         public async Task<ProductImageResponseDTO> CreateProductImage(ProductImageRequestDTO request)
         {
             var productImages = _mapper.Map<ProductImage>(request);
-            productImages.Status = ProductImageStatusEnum.AVAILABLE.ToString();
+            productImages.Status = ProductImageStatusEnum.ACTIVE.ToString();
            
             await _productImageRepository.Add(productImages);
             return _mapper.Map<ProductImageResponseDTO>(productImages);
@@ -97,6 +109,112 @@ namespace Services.ProductImageServices
 
             return _mapper.Map<ProductImageResponseDTO>(existingProductImage);
         }
+
+
+        public async Task<List<ProductImageResponseDTO>> UploadMultipleProductImagesAsync(string token, List<Stream> files, List<string> names, int productId)
+        {
+
+            CheckProductAndCurrentAccount(token,productId);
+
+
+            if (files == null || files.Count == 0)
+            {
+                throw new ArgumentException("No files were uploaded.", nameof(files));
+            }
+
+            if (names == null || names.Count == 0 || files.Count != names.Count)
+            {
+                throw new ArgumentException("The number of files and names must be the same.", nameof(names));
+            }
+
+            var productImages = new List<ProductImageResponseDTO>();
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+                var fileName = names[i];
+
+                try
+                {
+                    var productImage = await CreateProductImageWithPictureAsync(productId, file, fileName);
+                    productImages.Add(productImage);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException($"Error uploading file '{fileName}': {ex.Message}", ex);
+                }
+            }
+
+            return productImages;
+        }
+
+
+
+        public async Task<ProductImageResponseDTO> CreateProductImageWithPictureAsync(int productId, Stream fileStream, string fileName)
+        {
+            if (_firebaseStorageService == null)
+            {
+                throw new InvalidOperationException("FirebaseStorageService is not initialized.");
+            }
+
+            string fileUrl;
+
+            if (fileStream == null || string.IsNullOrWhiteSpace(fileName))
+            {
+                fileUrl = "https://firebasestorage.googleapis.com/v0/b/marinepath-56521.appspot.com/o/milling-machine.png?alt=media&token=98e4bca0-febe-471a-b807-d656ac81cb33";
+            }
+            else
+            {
+                try
+                {
+                    var uniqueFileName = await _firebaseStorageService.UploadFileAsync(fileStream, fileName);
+                    fileUrl = _firebaseStorageService.GetSignedUrl(uniqueFileName);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Error occurred while uploading file to Firebase.", ex);
+                }
+            }
+
+            var productImage = new ProductImage
+            {
+                ProductId = productId,
+                ImageUrl = fileUrl,
+                Status = ProductImageStatusEnum.ACTIVE.ToString(),
+            };
+
+            await _productImageRepository.Add(productImage);
+            return _mapper.Map<ProductImageResponseDTO>(productImage);
+        }
+
+        public async Task<List<ProductImageResponseDTO>> GetProductImagesByProductId(int productId)
+        {
+            var productImages = await _productImageRepository.GetProductImagesByProductId(productId);
+
+            if (productImages == null || !productImages.Any())
+            {
+                throw new KeyNotFoundException($"No product images found for Product ID {productId}.");
+            }
+
+            return _mapper.Map<List<ProductImageResponseDTO>>(productImages);
+        }
+
+        public async Task<Account> CheckProductAndCurrentAccount(string token, int productId)
+        {
+            var account = await _authenticationService.GetAccountByToken(token);
+            var product = await _productRepository.GetByIdAsync(productId);
+
+            if (account.StoreId == null)
+            {
+                throw new Exception("This account does not have a store and cannot create products.");
+            }
+            else if (product.StoreId != account.StoreId)
+            {
+                throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to update this product.");
+            }
+            return account;
+        }
+
 
 
     }

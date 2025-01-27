@@ -11,10 +11,8 @@ namespace Data.DTOs.Product
     {
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
-        public int StoreId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string DefaultImage { get; set; }
         public decimal Price { get; set; }
         public decimal Discount { get; set; }
         public decimal PriceSale { get; set; }
@@ -23,9 +21,7 @@ namespace Data.DTOs.Product
         public DateTime DiscountStartDate { get; set; }
         public DateTime DiscountEndDate { get; set; }
         public decimal? Weight { get; set; }
-
         public string? Dimensions { get; set; }
-
         public FuelTypeEnum FuelType { get; set; }
     }
 }

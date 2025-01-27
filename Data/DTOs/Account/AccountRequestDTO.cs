@@ -28,14 +28,16 @@ namespace Data.DTOs.Account
         [EmailAddress(ErrorMessage = "Invalid email address format")]
         public string Email { get; set; } = null!;
 
+
+        public string? FullName { get; set; }
+        public AccountGenderEnum Gender { get; set; }
+
         public string? Phone { get; set; }
 
         public string? Address { get; set; }
 
         [Required(ErrorMessage = "Date of birth is required")]
         public DateOnly? DateOfBirth { get; set; }
-
-        public string? Picture { get; set; }
 
         public AccountRoleEnum Role { get; set; }
 

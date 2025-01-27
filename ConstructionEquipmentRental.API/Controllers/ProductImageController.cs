@@ -1,11 +1,10 @@
-﻿using Data.DTOs.Product;
-using Data.DTOs;
-using Data.Enums;
-using Microsoft.AspNetCore.Mvc;
-using Services.ProductServices;
-using System.Net;
-using Services.ProductImageServices;
+﻿using Data.DTOs;
 using Data.DTOs.ProductImage;
+using Data.Enums;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Services.ProductImageServices;
+using System.Net;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
@@ -197,5 +196,104 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
         }
+        [HttpPost("upload-multiple")]
+        [Authorize(Roles = "LESSOR")]
+        public async Task<IActionResult> UploadMultipleProductImages(int productId, [FromForm] List<IFormFile> files)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "Invalid request data"
+                });
+            }
+
+            if (files == null || files.Count == 0)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "No files were uploaded."
+                });
+            }
+
+            try
+            {
+                var fileStreams = files.Select(file => file.OpenReadStream()).ToList();
+                var fileNames = files.Select(file => file.FileName).ToList();
+                var productImages = await _productImageService.UploadMultipleProductImagesAsync(token,fileStreams, fileNames, productId);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Files uploaded successfully",
+                    Data = productImages
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = "An error occurred while uploading files. Please try again later."
+                });
+            }
+        }
+
+
+        [HttpGet("by-product/{productId}")]
+        public async Task<IActionResult> GetProductImagesByProductId(int productId)
+        {
+            try
+            {
+                var productImages = await _productImageService.GetProductImagesByProductId(productId);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Product images retrieved successfully",
+                    Data = productImages
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+
+
     }
 }

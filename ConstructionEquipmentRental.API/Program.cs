@@ -101,6 +101,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<ICartItemService, CartItemService>();
             builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
 
+
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

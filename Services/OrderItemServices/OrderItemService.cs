@@ -83,5 +83,16 @@ namespace Services.OrderItemServices
 
             return _mapper.Map<OrderItemResponseDTO>(updatedOrderItem);
         }
+        public async Task<IEnumerable<OrderItemResponseDTO>> GetOrderItemsByOrderIdAsync(int orderId)
+        {
+            var orderItems = await _orderItemRepository.GetOrderItemsByOrderIdAsync(orderId);
+
+            if (orderItems == null || !orderItems.Any())
+            {
+                throw new Exception($"No Order Items found for Order ID {orderId}.");
+            }
+            return _mapper.Map<IEnumerable<OrderItemResponseDTO>>(orderItems);
+        }
+
     }
 }
