@@ -24,7 +24,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetCategories(int? page = 1, int? size = 10)
         {
             var result = await _categoryService.GetCategories(page, size);
 

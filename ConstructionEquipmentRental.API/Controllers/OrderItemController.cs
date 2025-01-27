@@ -144,5 +144,34 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
+        [HttpGet("by-order/{orderId}")]
+        public async Task<IActionResult> GetOrderItemsByOrderId(int orderId)
+        {
+            try
+            {
+                var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(orderId);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = $"Order Items for Order ID {orderId} retrieved successfully",
+                    Data = orderItems
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+
+
     }
 }

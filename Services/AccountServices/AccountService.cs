@@ -4,7 +4,9 @@ using Data.Entities;
 using Data.Enums;
 using Repositories.AccountRepos;
 using Repositories.ProductRepos;
+using Services.AuthenticationServices;
 using Services.EmailServices;
+using Services.FirebaseStorageServices;
 using Services.Helper.CustomExceptions;
 using Services.Helper.DecodeTokenHandler;
 using Services.ProductServices;
@@ -24,17 +26,55 @@ namespace Services.AccountServices
         private readonly IAccountRepository _accountRepository;
         private readonly IDecodeTokenHandler _decodeTokenHandler; 
         private readonly IEmailService _emailService;
+        private readonly IFirebaseStorageService _firebaseStorageService;
+        private readonly IAuthenticationService _authenticationService;
 
-
-        public AccountService(IMapper mapper, IAccountRepository accountRepository, IDecodeTokenHandler decodeTokenHandler, IEmailService emailService)
+        public AccountService(IMapper mapper, IAccountRepository accountRepository, IDecodeTokenHandler decodeTokenHandler, IEmailService emailService, IFirebaseStorageService firebaseStorageService, IAuthenticationService authenticationService)
         {
             _mapper = mapper;
             _accountRepository = accountRepository;
             _decodeTokenHandler = decodeTokenHandler;
             _emailService = emailService;
-    }
+            _firebaseStorageService = firebaseStorageService;
+            _authenticationService = authenticationService;
+        }
 
-   
+
+
+        public async Task<string> UploadProfilePictureAsync(int accountId, Stream fileStream, string fileName)
+        {
+            var account = await _accountRepository.GetAccountById(accountId);
+            if (account == null)
+            {
+                throw new Exception("Account not found");
+            }
+
+
+            var uniqueFileName = await _firebaseStorageService.UploadFileAsync(fileStream, fileName);
+            var fileUrl = _firebaseStorageService.GetSignedUrl(uniqueFileName);
+
+            account.Picture = fileUrl;
+            account.UpdatedAt = DateTime.UtcNow;
+            await _accountRepository.Update(account);
+
+            return fileUrl;
+        }
+
+         public async Task<string> UploadPictureAsync(string token, Stream fileStream, string fileName)
+        {
+            var account = await _authenticationService.GetAccountByToken(token);
+
+            var uniqueFileName = await _firebaseStorageService.UploadFileAsync(fileStream, fileName);
+            var fileUrl = _firebaseStorageService.GetSignedUrl(uniqueFileName);
+
+            account.Picture = fileUrl;
+            account.UpdatedAt = DateTime.UtcNow;
+            await _accountRepository.Update(account);
+
+            return fileUrl;
+        }
+
+
 
         public async Task<bool> checkUsernameExisted(string username)
         {

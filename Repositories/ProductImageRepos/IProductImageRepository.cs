@@ -14,5 +14,7 @@ namespace Repositories.ProductImageRepos
         Task Add(ProductImage productImage);
         Task Update(ProductImage productImage);
         Task Delete(ProductImage productImage);
+        Task<List<ProductImage>> GetProductImagesByProductId(int productId);
+
     }
 }

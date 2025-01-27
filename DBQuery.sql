@@ -6,11 +6,12 @@ USE ConstructionEquipmentRentalDB;
 GO
 
 -- Tạo bảng Account
--- Tạo bảng Account
 CREATE TABLE Account (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     StoreId INT NULL, -- Cho phép NULL
     Username NVARCHAR(255) NOT NULL,
+	FullName NVARCHAR(255) NOT NULL,
+	Gender NVARCHAR(50) DEFAULT 'OTHER' NOT NULL, 
     Password NVARCHAR(MAX) NOT NULL,
     Email NVARCHAR(255) NOT NULL,
     Phone NVARCHAR(20),
@@ -96,12 +97,13 @@ CREATE TABLE ProductImage (
     ImageUrl NVARCHAR(MAX) NOT NULL,
     Status NVARCHAR(50) DEFAULT 'ACTIVE' NOT NULL
 );
-/*
+
 CREATE TABLE Cart (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     AccountId INT NOT NULL,
     CreatedAt DATETIME DEFAULT GETDATE() NOT NULL,
     UpdatedAt DATETIME DEFAULT GETDATE() NOT NULL,
+	Status NVARCHAR(50) DEFAULT 'ACTIVE' NOT NULL,
     FOREIGN KEY (AccountId) REFERENCES Account(Id)
 );
 
@@ -110,12 +112,12 @@ CREATE TABLE CartItem (
     CartId INT NOT NULL,
     ProductId INT NOT NULL,
     Quantity INT NOT NULL,
-    Price DECIMAL(18,2) NOT NULL, -- Giá của sản phẩm tại thời điểm thêm vào giỏ hàng
-    TotalPrice AS (Quantity * Price) PERSISTED, -- Tính tổng giá tiền tự động
+    Price DECIMAL(18,2) NOT NULL,
+    TotalPrice AS (Quantity * Price) PERSISTED,
     FOREIGN KEY (CartId) REFERENCES Cart(Id),
     FOREIGN KEY (ProductId) REFERENCES Product(Id)
 );
-*/
+
 
 -- Tạo bảng Order
 CREATE TABLE [Order] (
@@ -222,12 +224,12 @@ CREATE TABLE RefreshToken (
 
 -- -----------------------------------------Them Du Lieu-------------------------------------------------
 -- Thêm dữ liệu mẫu vào bảng Account
-INSERT INTO Account (StoreId, Username, Password, Email, Phone, Address, DateOfBirth, Role, Status, Points) VALUES
-(1, 'storeowner1', 'hashed_password1', 'owner1@store.com', '1234567890', '123 Main St', '1980-01-01', 'STORE_OWNER', 'ACTIVE', 500),
-(2, 'storeowner2', 'hashed_password2', 'owner2@store.com', '0987654321', '456 Market Ave', '1985-02-15', 'STORE_OWNER', 'ACTIVE', 300),
-(3, 'customer1', 'hashed_password3', 'customer1@gmail.com', '1122334455', '789 Elm St', '1995-06-10', 'CUSTOMER', 'ACTIVE', 100),
-(4, 'customer2', 'hashed_password4', 'customer2@gmail.com', '6677889900', '321 Oak St', '1992-03-22', 'CUSTOMER', 'ACTIVE', 200),
-(5, 'admin1', 'hashed_password5', 'admin@system.com', '5544332211', 'Admin Office', '1975-12-05', 'ADMIN', 'ACTIVE', 0);
+INSERT INTO Account (StoreId, Username, Password, Email, Phone, Address, DateOfBirth, Role, Status, Points , Gender, FullName) VALUES
+(1, 'storeowner1', 'hashed_password1', 'owner1@store.com', '1234567890', '123 Main St', '1980-01-01', 'LESSOR', 'ACTIVE', 500, 'MALE', 'John Doe'),
+(2, 'storeowner2', 'hashed_password2', 'owner2@store.com', '0987654321', '456 Market Ave', '1985-02-15', 'LESSOR', 'ACTIVE', 300, 'MALE', 'John Doe'),
+(3, 'customer1', 'hashed_password3', 'customer1@gmail.com', '1122334455', '789 Elm St', '1995-06-10', 'CUSTOMER', 'ACTIVE', 100, 'MALE', 'John Doe'),
+(4, 'customer2', 'hashed_password4', 'customer2@gmail.com', '6677889900', '321 Oak St', '1992-03-22', 'CUSTOMER', 'ACTIVE', 200, 'MALE', 'John Doe'),
+(5, 'admin1', 'hashed_password5', 'admin@system.com', '5544332211', 'Admin Office', '1975-12-05', 'ADMIN', 'ACTIVE', 0, 'MALE', 'John Doe');
 
 -- Thêm dữ liệu mẫu vào bảng Store
 INSERT INTO Store (Name, Address, Phone, OpeningDay, OpeningHours, ClosingHours, BusinessLicense, AccountId) VALUES
@@ -324,3 +326,19 @@ INSERT INTO WalletLog (WalletId, TransactionId, Type, Amount) VALUES
 (3, 3, 'SUBTRACT', 1150.00),
 (4, 4, 'SUBTRACT', 1050.00),
 (5, 5, 'SUBTRACT', 750.00);
+
+
+-- Thêm dữ liệu mẫu vào bảng Cart
+INSERT INTO Cart (AccountId, CreatedAt, UpdatedAt, Status) VALUES
+(3, GETDATE(), GETDATE(), 'ACTIVE'),  
+(4, GETDATE(), GETDATE(), 'PENDING'), 
+(3, GETDATE(), GETDATE(), 'COMPLETED'),  
+(4, GETDATE(), GETDATE(), 'CANCELLED'); 
+
+
+-- Thêm dữ liệu mẫu vào bảng CartItem
+INSERT INTO CartItem (CartId, ProductId, Quantity, Price) VALUES
+(1, 1, 2, 1500.00), 
+(1, 1, 1, 3000.00),  
+(2, 3, 3, 1000.00), 
+(2, 4, 1, 2500.00);  

@@ -80,6 +80,12 @@ namespace Repositories.ProductImageRepos
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<ProductImage>> GetProductImagesByProductId(int productId)
+        {
+            return await _context.ProductImages
+                .Where(p => p.ProductId == productId)
+                .ToListAsync();
+        }
 
 
     }

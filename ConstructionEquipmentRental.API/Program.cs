@@ -41,6 +41,11 @@ using Services.Helper.VerifyCode;
 using Repositories.StoreRepos;
 using Services.StoreServices;
 using Services.AdminServices;
+using Repositories.CartRepos;
+using Repositories.CartItemRepos;
+using Services.CartServices;
+using Services.CartItemServices;
+using Services.FirebaseStorageServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -70,6 +75,8 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IWalletRepository, WalletRepository>();
             builder.Services.AddScoped<IWalletLogRepository, WalletLogRepository>();
             builder.Services.AddScoped<IStoreRepository, StoreRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
             //------------------------------------SERVICES-----------------------------------------
             builder.Services.AddScoped<IJWTService, JWTService>();
@@ -90,6 +97,10 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IWalletService, WalletService>();
             builder.Services.AddScoped<IWalletLogService, WalletLogService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<ICartItemService, CartItemService>();
+            builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+
 
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>

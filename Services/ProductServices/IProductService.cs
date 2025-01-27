@@ -9,10 +9,11 @@ namespace Services.ProductServices
     {
         Task<List<ProductResponseDTO>> GetProducts(int? page, int? size);
         Task<ProductResponseDTO> GetProductById(int id);
-        Task<ProductResponseDTO> CreateProduct(ProductRequestDTO request);
-        Task<ProductResponseDTO> UpdateProduct(int id, ProductUpdateRequestDTO request);
+        Task<ProductResponseDTO> CreateProductAsync(string token, ProductRequestDTO request, Stream fileStream, string fileName);
+        Task<ProductResponseDTO> UpdateProduct(int id, string token, ProductUpdateRequestDTO request, Stream? fileStream, string? fileName);
         Task DeleteProduct(int id);
         Task<ProductResponseDTO> ChangeProductStatus(int id, ProductStatusEnum newStatus);
+        Task<string> UpdatePictureAsync(int productId, string token, Stream fileStream, string fileName);
 
     }
 }

@@ -11,6 +11,10 @@ public partial class Account
 
     public string Username { get; set; } = null!;
 
+    public string FullName { get; set; } = null!;
+
+    public string Gender { get; set; } = null!;
+
     public string Password { get; set; } = null!;
 
     public string Email { get; set; } = null!;
@@ -34,6 +38,8 @@ public partial class Account
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
+
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
