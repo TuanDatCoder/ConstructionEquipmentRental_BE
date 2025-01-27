@@ -17,6 +17,6 @@ namespace Services.ProductImageServices
         Task<ProductImageResponseDTO> UpdateProductImage(int id, ProductImageUpdateRequestDTO request);
         Task DeleteProductImage(int id);
         Task<ProductImageResponseDTO> ChangeProductImageStatus(int id, ProductImageStatusEnum newStatus);
-
+        Task<List<ProductImageResponseDTO>> UploadMultipleProductImagesAsync(List<Stream> files, List<string> names, int productId);
     }
 }

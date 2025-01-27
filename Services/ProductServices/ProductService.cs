@@ -82,7 +82,7 @@ namespace Services.ProductServices
 
             
             var product = _mapper.Map<Product>(request);
-            product.Status = ProductImageStatusEnum.AVAILABLE.ToString(); 
+            product.Status = ProductStatusEnum.ACTIVE.ToString(); 
             product.DefaultImage = fileUrl;                            
             product.CreatedAt = DateTime.UtcNow;                         
             product.UpdatedAt = DateTime.UtcNow;                         
