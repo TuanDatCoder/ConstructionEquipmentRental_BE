@@ -4,6 +4,7 @@ using Data.DTOs.Order;
 using Microsoft.AspNetCore.Mvc;
 using Services.OrderServices;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
@@ -156,7 +157,28 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
+        [HttpPost("payment")]
+        public async Task<IActionResult> OrderPayment(OrderPaymentRequestDTO orderPaymentRequestDTO)
+        {
 
+            var paymentUrl = await _orderService.GetPaymentUrl(HttpContext, orderPaymentRequestDTO.orderId, orderPaymentRequestDTO.redirectUrl);
+
+            var result = new OrderPaymentResponseDTO
+            {
+                orderId = orderPaymentRequestDTO.orderId,
+                paymentUrl = paymentUrl
+            };
+
+            ApiResponseDTO response = new ApiResponseDTO
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Get subscription paymentUrl successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
 
     }
 }

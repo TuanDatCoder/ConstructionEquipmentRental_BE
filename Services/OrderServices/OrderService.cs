@@ -1,10 +1,17 @@
 ﻿using AutoMapper;
 using Data.DTOs.Order;
+using Data.DTOs.PayOS;
 using Data.Entities;
+using Data.Enums;
+using Microsoft.AspNetCore.Http;
 using Repositories.OrderRepos;
+using Services.Helper.CustomExceptions;
+using Services.OrderItemServices;
+using Services.PayOSServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,66 +20,56 @@ namespace Services.OrderServices
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderItemService _orderItemService;
         private readonly IMapper _mapper;
+        private readonly IPayOSService _payOSService;
 
-        public OrderService(IOrderRepository orderRepository, IMapper mapper)
+        public OrderService(IOrderRepository orderRepository, IOrderItemService orderItemService, IMapper mapper, IPayOSService payOSService)
         {
             _orderRepository = orderRepository;
+            _orderItemService = orderItemService;
             _mapper = mapper;
+            _payOSService= payOSService;
         }
 
         public async Task<IEnumerable<OrderResponseDTO>> GetAllOrdersAsync()
         {
             var orders = await _orderRepository.GetAllOrdersAsync();
-
-            // Sử dụng AutoMapper để ánh xạ
             return _mapper.Map<IEnumerable<OrderResponseDTO>>(orders);
         }
 
         public async Task<OrderResponseDTO> CreateOrderAsync(OrderRequestDTO orderRequest)
         {
-            // Chuyển từ OrderRequestDTO sang Order
             var order = _mapper.Map<Order>(orderRequest);
             order.Status = "CONFIRMED";
             order.CreatedAt = DateTime.Now;
-
-            // Lưu vào database
             var createdOrder = await _orderRepository.CreateOrderAsync(order);
 
-            // Chuyển từ Order sang OrderResponseDTO để trả về
             return _mapper.Map<OrderResponseDTO>(createdOrder);
         }
 
         public async Task<OrderResponseDTO> UpdateOrderAsync(int orderId, OrderRequestDTO orderRequest)
         {
-            // Tìm Order trong database
             var existingOrder = await _orderRepository.GetOrderByIdAsync(orderId);
             if (existingOrder == null)
             {
                 throw new Exception($"Order with ID {orderId} not found.");
             }
 
-            // Map thông tin từ DTO vào entity
             _mapper.Map(orderRequest, existingOrder);
-
-            // Cập nhật thông tin
-            existingOrder.CreatedAt = DateTime.Now; // Thêm cột `UpdatedAt` nếu cần
+            existingOrder.CreatedAt = DateTime.Now;
             var updatedOrder = await _orderRepository.UpdateOrderAsync(existingOrder);
 
-            // Trả về thông tin sau khi cập nhật
             return _mapper.Map<OrderResponseDTO>(updatedOrder);
         }
 
         public async Task<bool> DeleteOrderAsync(int orderId)
         {
-            // Tìm Order trong database
             var existingOrder = await _orderRepository.GetOrderByIdAsync(orderId);
             if (existingOrder == null)
             {
                 throw new Exception($"Order with ID {orderId} not found.");
             }
-
-            // Xóa Order
             return await _orderRepository.DeleteOrderAsync(orderId);
         }
 
@@ -85,6 +82,38 @@ namespace Services.OrderServices
             }
 
             return _mapper.Map<OrderResponseDTO>(order);
+        }
+
+
+        public async Task<string> GetPaymentUrl(HttpContext context, int orderId, string redirectUrl)
+        {
+            var currOrder = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            if (currOrder == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Order does not exist");
+            }
+
+            if (currOrder.Status.Equals(OrderStatusEnum.COMPLETED.ToString()))
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "The order has already been completed");
+            }
+
+
+
+            PayOSRequestDTO payOSRequestDTO = new PayOSRequestDTO
+            {
+                OrderId = currOrder.Id,
+                //productName = currOrder.Course.CourseName,
+                Amount = currOrder.TotalPrice,
+                RedirectUrl = redirectUrl,
+                CancelUrl = redirectUrl
+            };
+
+            var result = await _payOSService.createPaymentUrl(payOSRequestDTO);
+
+            return result.checkoutUrl;
+
         }
 
     }
