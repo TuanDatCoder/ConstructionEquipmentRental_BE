@@ -3,6 +3,7 @@ using System.Net;
 using Net.payOS;
 using Net.payOS.Types;
 using Data.DTOs;
+using Services.PayOSServices;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
@@ -10,29 +11,37 @@ namespace ConstructionEquipmentRental.API.Controllers
     [ApiController]
     public class PayOSController : ControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly IPayOSService _payOSService;
 
-        public PayOSController(IConfiguration config)
+        public PayOSController(IPayOSService payOSService)
         {
-            _config = config;
+            _payOSService = payOSService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetPaymentLinkInformation(int orderCode)
         {
-            PayOS payOS = new PayOS(_config["PayOS:ClientID"], _config["PayOS:ApiKey"], _config["PayOS:ChecksumKey"]);
-
-            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
-
-            ApiResponseDTO response = new ApiResponseDTO
+            try
             {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "Get payment link information successfully",
-                Data = paymentLinkInformation
-            };
+                var paymentLinkInformation = await _payOSService.GetPaymentLinkInformationAsync(orderCode);
 
-            return StatusCode(response.Code, response);
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Get payment link information successfully",
+                    Data = paymentLinkInformation
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = ex.Message
+                });
+            }
         }
     }
 }

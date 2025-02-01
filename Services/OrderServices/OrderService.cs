@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Data.DTOs.Order;
 using Data.DTOs.PayOS;
+using Data.DTOs.Transaction;
 using Data.Entities;
 using Data.Enums;
 using Microsoft.AspNetCore.Http;
+using Net.payOS.Types;
 using Repositories.OrderRepos;
 using Services.Helper.CustomExceptions;
 using Services.OrderItemServices;
@@ -57,7 +59,7 @@ namespace Services.OrderServices
             }
 
             _mapper.Map(orderRequest, existingOrder);
-            existingOrder.CreatedAt = DateTime.Now;
+           // existingOrder.CreatedAt = DateTime.Now;
             var updatedOrder = await _orderRepository.UpdateOrderAsync(existingOrder);
 
             return _mapper.Map<OrderResponseDTO>(updatedOrder);
@@ -85,6 +87,7 @@ namespace Services.OrderServices
         }
 
 
+      
         public async Task<string> GetPaymentUrl(HttpContext context, int orderId, string redirectUrl)
         {
             var currOrder = await _orderRepository.GetOrderByIdAsync(orderId);
@@ -99,22 +102,34 @@ namespace Services.OrderServices
                 throw new ApiException(HttpStatusCode.BadRequest, "The order has already been completed");
             }
 
+            //nếu có link thì trả về luôn
+            if (!string.IsNullOrEmpty(currOrder.PayOsUrl)) {
+                var link = currOrder.PayOsUrl;
+                return link;
+            }
 
+            var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(orderId);
 
             PayOSRequestDTO payOSRequestDTO = new PayOSRequestDTO
             {
                 OrderId = currOrder.Id,
-                //productName = currOrder.Course.CourseName,
                 Amount = currOrder.TotalPrice,
                 RedirectUrl = redirectUrl,
-                CancelUrl = redirectUrl
+                CancelUrl = redirectUrl,
+                OrderItems = orderItems.ToList()
             };
 
             var result = await _payOSService.createPaymentUrl(payOSRequestDTO);
 
+            currOrder.PayOsUrl = result.checkoutUrl;
+            currOrder.PaymentMethod = PaymentMethodEnum.PAYOS.ToString();
+            currOrder.Status = OrderStatusEnum.PENDING.ToString();
+            await _orderRepository.UpdateOrderAsync(currOrder);
+
             return result.checkoutUrl;
 
         }
+
 
     }
 }

@@ -11,5 +11,6 @@ namespace Services.PayOSServices
     public interface IPayOSService
     {
         Task<CreatePaymentResult> createPaymentUrl(PayOSRequestDTO payOSRequestDTO);
+        Task<PaymentLinkInformation> GetPaymentLinkInformationAsync(int orderCode);
     }
 }
