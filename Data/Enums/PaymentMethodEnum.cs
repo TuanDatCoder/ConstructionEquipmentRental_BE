@@ -8,6 +8,6 @@ namespace Data.Enums
 {
     public enum PaymentMethodEnum
     {
-        CASH, TRANSFER, VNPAY, BANK_TRANSFER
+        CASH, TRANSFER, PAYOS,VNPAY, BANK_TRANSFER
     }
 }
