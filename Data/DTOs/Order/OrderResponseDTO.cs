@@ -35,5 +35,6 @@ namespace Data.DTOs.Order
         public DateOnly? DateOfReceipt { get; set; }
 
         public DateOnly? DateOfReturn { get; set; }
+        public string? PayOsUrl { get; set; }
     }
 }

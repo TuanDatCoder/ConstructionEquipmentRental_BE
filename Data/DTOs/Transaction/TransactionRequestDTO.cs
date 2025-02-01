@@ -8,6 +8,7 @@ namespace Data.DTOs.Transaction
 {
     public class TransactionRequestDTO
     {
+
         public int? OrderId { get; set; }
 
         public int AccountId { get; set; }

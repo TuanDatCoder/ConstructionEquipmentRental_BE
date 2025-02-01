@@ -29,6 +29,8 @@ public partial class Order
 
     public DateOnly DateOfReturn { get; set; }
 
+    public string? PayOsUrl { get; set; }
+
     public virtual Account Customer { get; set; } = null!;
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
