@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,9 @@ namespace Data.DTOs.Order
 
         public decimal? TotalPrice { get; set; }
 
-        public string? PaymentMethod { get; set; }
+        public PaymentMethodEnum PaymentMethod { get; set; }
 
-        public string? PurchaseMethod { get; set; }
+        public PurchaseMethodEnum PurchaseMethod { get; set; }
 
         public string? RecipientName { get; set; }
 

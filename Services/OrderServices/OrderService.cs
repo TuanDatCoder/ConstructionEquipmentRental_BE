@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Data.DTOs.Order;
+using Data.DTOs.OrderItem;
 using Data.DTOs.PayOS;
 using Data.DTOs.Transaction;
 using Data.Entities;
@@ -45,6 +46,7 @@ namespace Services.OrderServices
             var order = _mapper.Map<Order>(orderRequest);
             order.Status = "CONFIRMED";
             order.CreatedAt = DateTime.Now;
+            order.UpdatedAt = DateTime.Now;
             var createdOrder = await _orderRepository.CreateOrderAsync(order);
 
             return _mapper.Map<OrderResponseDTO>(createdOrder);
@@ -59,7 +61,8 @@ namespace Services.OrderServices
             }
 
             _mapper.Map(orderRequest, existingOrder);
-           // existingOrder.CreatedAt = DateTime.Now;
+            existingOrder.CreatedAt = existingOrder.CreatedAt;
+            existingOrder.UpdatedAt = DateTime.Now;
             var updatedOrder = await _orderRepository.UpdateOrderAsync(existingOrder);
 
             return _mapper.Map<OrderResponseDTO>(updatedOrder);
@@ -124,11 +127,53 @@ namespace Services.OrderServices
             currOrder.PayOsUrl = result.checkoutUrl;
             currOrder.PaymentMethod = PaymentMethodEnum.PAYOS.ToString();
             currOrder.Status = OrderStatusEnum.PENDING.ToString();
+            currOrder.UpdatedAt = DateTime.Now;
+
             await _orderRepository.UpdateOrderAsync(currOrder);
 
             return result.checkoutUrl;
 
         }
+        //public async Task<OrderResponseDTO> CreateOrderWithItemsAsync(OrderWithItemsRequestDTO orderWithItemsRequest)
+        //{
+        //    // Kiểm tra đầu vào hợp lệ
+        //    if (orderWithItemsRequest == null || orderWithItemsRequest.OrderItems == null || !orderWithItemsRequest.OrderItems.Any())
+        //    {
+        //        throw new ArgumentNullException(nameof(orderWithItemsRequest), "Order request or order items cannot be null or empty.");
+        //    }
+
+        //    // Chuyển đổi DTO sang Entity Order
+        //    var order = _mapper.Map<Order>(orderWithItemsRequest);
+        //    order.Status = OrderStatusEnum.PENDING.ToString();  // Đặt trạng thái mặc định là PENDING
+        //    order.CreatedAt = DateTime.Now;
+        //    order.UpdatedAt = DateTime.Now;
+
+        //    // Lưu đơn hàng vào cơ sở dữ liệu
+        //    var createdOrder = await _orderRepository.CreateOrderAsync(order);
+
+        //    // Thêm các sản phẩm vào đơn hàng
+        //    var orderItemList = new List<OrderItem>();
+        //    foreach (var orderItemDto in orderWithItemsRequest.OrderItems)
+        //    {
+        //        // Chuyển đổi OrderItemRequestDTO thành OrderItem Entity
+        //        var orderItem = _mapper.Map<OrderItem>(orderItemDto);
+        //        orderItem.OrderId = createdOrder.Id; // Liên kết OrderItem với Order vừa tạo
+        //        var createdOrderItem = await _orderItemService.CreateOrderItemAsync(orderItem);  // Lưu OrderItem vào cơ sở dữ liệu
+        //        orderItemList.Add(createdOrderItem);
+        //    }
+
+        //    // Lấy các sản phẩm đã lưu
+        //    var orderItems = await _orderItemService.GetOrderItemsByOrderIdAsync(createdOrder.Id);
+
+        //    // Chuyển đổi kết quả sang OrderResponseDTO để trả về
+        //    var response = _mapper.Map<OrderResponseDTO>(createdOrder);
+        //    response.OrderItems = _mapper.Map<List<OrderItemResponseDTO>>(orderItems);  // Chuyển đổi OrderItems sang DTO
+
+        //    return response;
+        //}
+
+
+
 
 
     }

@@ -14,6 +14,8 @@ using Services.Helper.CustomExceptions;
 using System.Net;
 using Services.TransactionServices;
 using Data.DTOs.Transaction;
+using Repositories.TransactionRepos;
+using System.Transactions;
 
 namespace Services.PayOSServices
 {
@@ -21,48 +23,54 @@ namespace Services.PayOSServices
     {
         private readonly IConfiguration _config;
         private readonly IOrderRepository _orderRepository;
-        private readonly ITransactionService _transactionService;
-        public PayOSService(IConfiguration config, IOrderRepository orderRepository)
+        private readonly ITransactionRepository _transactionRepository;
+        public PayOSService(IConfiguration config, IOrderRepository orderRepository, ITransactionRepository transactionRepository)
         {
             _config = config;
             _orderRepository = orderRepository;
+            _transactionRepository = transactionRepository;
         }
 
         public async Task<PaymentLinkInformation> GetPaymentLinkInformationAsync(int orderCode)
         {
-            PayOS payOS = new PayOS(_config["PayOS:ClientID"], _config["PayOS:ApiKey"], _config["PayOS:ChecksumKey"]);
-
-            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
-
+        
             var currOrder = await _orderRepository.GetOrderByIdAsync(orderCode);
-
             if (currOrder == null)
             {
                 throw new ApiException(HttpStatusCode.NotFound, "Order does not exist");
             }
 
-            currOrder.Status = paymentLinkInformation.status;
-            if (currOrder.Status.Equals("PAID"))
+
+            if (!currOrder.PaymentMethod.Equals("PAYOS"))
             {
-                currOrder.Status = OrderStatusEnum.COMPLETED.ToString();
-                currOrder.PaymentMethod = PaymentMethodEnum.PAYOS.ToString();
+                throw new ApiException(HttpStatusCode.BadRequest, "This transaction is not paid with PAYOS");
             }
-            await _orderRepository.UpdateOrderAsync(currOrder);
 
-            var transactionRequestDTO = new TransactionRequestDTO
+            PayOS payOS = new PayOS(_config["PayOS:ClientID"], _config["PayOS:ApiKey"], _config["PayOS:ChecksumKey"]);
+            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
+
+            string status = paymentLinkInformation.status.Equals("PAID")
+                ? OrderStatusEnum.COMPLETED.ToString()
+                : paymentLinkInformation.status;
+
+            if (!status.Equals(currOrder.Status))
             {
-                OrderId = orderCode,
-                AccountId = currOrder.CustomerId,
-                PaymentMethod = currOrder.PaymentMethod,
-                TotalPrice = paymentLinkInformation.amountPaid,
-                Status = currOrder.Status
-            };
+                currOrder.UpdatedAt = DateTime.UtcNow;
+                currOrder.Status = status;
+                await _orderRepository.UpdateOrderAsync(currOrder);
+            }
+ 
 
-            await _transactionService.CreateTransaction(transactionRequestDTO);
+            var currTransaction = await _transactionRepository.GetByOrderIdAsync(orderCode);
+            if (currTransaction != null && (!status.Equals(currTransaction.Status)))
+            {
+                currTransaction.Status = status;
+                await _transactionRepository.Update(currTransaction);
+            }
 
             return paymentLinkInformation;
         }
-      
+
 
         public async Task<CreatePaymentResult> createPaymentUrl(PayOSRequestDTO payOSRequestDTO)
         {

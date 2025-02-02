@@ -77,5 +77,28 @@ namespace Services.TransactionServices
 
             return _mapper.Map<TransactionResponseDTO>(transaction);
         }
+
+        public async Task<TransactionResponseDTO> GetTransactionsByOrderId(int orderId)
+        {
+            var transactions = await _transactionRepository.GetByOrderIdAsync(orderId);
+            if (transactions == null)
+            {
+                throw new Exception($"Order with ID {orderId} not found.");
+            }
+
+            return _mapper.Map<TransactionResponseDTO>(transactions);
+        }
+
+        public async Task<List<TransactionResponseDTO>> GetTransactionsByAccountId(int accountId)
+        {
+            var transactions = await _transactionRepository.GetByAccountIdAsync(accountId);
+            if (transactions == null)
+            {
+                throw new Exception($"Account with ID {accountId} not found.");
+            }
+            return _mapper.Map<List<TransactionResponseDTO>>(transactions);
+        }
+
+
     }
 }
