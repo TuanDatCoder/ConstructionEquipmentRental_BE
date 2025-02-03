@@ -15,10 +15,10 @@ namespace Data.DTOs.Product
         public string Description { get; set; }
         public string DefaultImage { get; set; }
         public decimal Price { get; set; }
-        public decimal Discount { get; set; }
-        public decimal PriceSale { get; set; }
+        public decimal? Discount { get; set; }
+        public decimal? PriceSale { get; set; }
         public int Stock { get; set; }
-        public ProductImageStatusEnum Status { get; set; }
+        public string? Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string CategoryName { get; set; }

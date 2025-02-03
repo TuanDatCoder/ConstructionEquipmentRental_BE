@@ -16,5 +16,6 @@ namespace Services.OrderServices
         Task<bool> DeleteOrderAsync(int orderId);
         Task<OrderResponseDTO> GetOrderByIdAsync(int orderId);
         Task<string> GetPaymentUrl(HttpContext context, int orderId, string redirectUrl);
+        Task<OrderWithItemsResponseDTO> CreateOrderWithItemsAsync(string token, OrderWithItemsRequestDTO orderWithItemsRequest);
     }
 }

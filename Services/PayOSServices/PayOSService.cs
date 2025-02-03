@@ -81,17 +81,16 @@ namespace Services.PayOSServices
             foreach (var orderItem in payOSRequestDTO.OrderItems)
             {
               
-                int quantity = orderItem.Quantity ?? 1; 
-                int price = (int)(orderItem.Price ?? 0);
+                int quantity = orderItem.Quantity; 
+                int price = (int)(orderItem.Price);
                 string productName = orderItem.ProductName ?? "Unknown Product";
                 items.Add(new ItemData(productName, quantity, price));
             }
 
-            int totalAmount = items.Sum(i => i.price * i.quantity);
 
             PaymentData paymentData = new PaymentData(
                 payOSRequestDTO.OrderId,
-                totalAmount,
+                (int)payOSRequestDTO.Amount,
                 "Thanh toán đơn hàng",
                 items,
                 payOSRequestDTO.CancelUrl,

@@ -15,15 +15,13 @@ namespace Data.DTOs.Order
 
         public string CustomerName { get; set; }
 
-        public int StaffId { get; set; }
-
         public string? Status { get; set; }
 
         public decimal? TotalPrice { get; set; }
 
-        public PaymentMethodEnum PaymentMethod { get; set; }
+        public string? PaymentMethod { get; set; }
 
-        public PurchaseMethodEnum PurchaseMethod { get; set; }
+        public string? PurchaseMethod { get; set; }
 
         public string? RecipientName { get; set; }
 

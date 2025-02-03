@@ -17,7 +17,7 @@ namespace Data.DTOs.Store
 
         public string Phone { get; set; } = null!;
 
-        public StoreStatusEnum Status { get; set; }
+        public string? Status { get; set; }
 
         public DateOnly OpeningDay { get; set; }
 

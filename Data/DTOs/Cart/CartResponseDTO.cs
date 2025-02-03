@@ -17,7 +17,7 @@ namespace Data.DTOs.Cart
 
         public DateTime UpdatedAt { get; set; }
 
-        public CartStatusEnum Status { get; set; }
+        public string? Status { get; set; }
         public string? AccountName { get; set; }
     }
 }
