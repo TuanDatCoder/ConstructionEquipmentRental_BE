@@ -46,6 +46,8 @@ using Repositories.CartItemRepos;
 using Services.CartServices;
 using Services.CartItemServices;
 using Services.FirebaseStorageServices;
+using Services.VnPayServices;
+using Services.PayOSServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -100,6 +102,8 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICartItemService, CartItemService>();
             builder.Services.AddScoped<IFirebaseStorageService, FirebaseStorageService>();
+            builder.Services.AddScoped<IVnPayService, VnPayService>();
+            builder.Services.AddScoped<IPayOSService, PayOSService>();
 
 
             //-----------------------------------------DB----------------------------------------

@@ -64,6 +64,8 @@ namespace Repositories.OrderItemRepos
         {
             return await _context.OrderItems
                                    .Where(oi => oi.OrderId == orderId)
+                                   .Include(o => o.Order)
+                                    .Include(o => o.Product)
                                    .ToListAsync();
         }
 

@@ -14,5 +14,7 @@ namespace Repositories.TransactionRepos
         Task Add(Transaction transaction);
         Task Update(Transaction transaction);
         Task Delete(Transaction transaction);
+        Task<Transaction> GetByOrderIdAsync(int orderId);
+        Task<List<Transaction>> GetByAccountIdAsync(int accountId);
     }
 }

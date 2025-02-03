@@ -161,5 +161,58 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
         }
+
+        [HttpGet("order/{orderId}")]
+        public async Task<IActionResult> GetTransactionByOrderId(int orderId)
+        {
+            try
+            {
+                var transaction = await _transactionService.GetTransactionsByOrderId(orderId);
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Transaction retrieved successfully",
+                    Data = transaction
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("account/{accountId}")]
+        public async Task<IActionResult> GetTransactionsByAccountId(int accountId)
+        {
+            try
+            {
+                var transactions = await _transactionService.GetTransactionsByAccountId(accountId);
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Transactions retrieved successfully",
+                    Data = transactions
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+
     }
 }

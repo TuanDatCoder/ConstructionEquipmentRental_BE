@@ -1,4 +1,5 @@
 ﻿using Data.DTOs.Order;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Services.OrderServices
         Task<OrderResponseDTO> UpdateOrderAsync(int orderId, OrderRequestDTO orderRequest);
         Task<bool> DeleteOrderAsync(int orderId);
         Task<OrderResponseDTO> GetOrderByIdAsync(int orderId);
+        Task<string> GetPaymentUrl(HttpContext context, int orderId, string redirectUrl);
+        Task<OrderWithItemsResponseDTO> CreateOrderWithItemsAsync(string token, OrderWithItemsRequestDTO orderWithItemsRequest);
     }
 }

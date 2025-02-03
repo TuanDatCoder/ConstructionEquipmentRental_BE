@@ -4,6 +4,7 @@ using Data.DTOs.Order;
 using Microsoft.AspNetCore.Mvc;
 using Services.OrderServices;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
@@ -156,7 +157,76 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
+        [HttpPost("payment")]
+        public async Task<IActionResult> OrderPayment(OrderPaymentRequestDTO orderPaymentRequestDTO)
+        {
 
+            var paymentUrl = await _orderService.GetPaymentUrl(HttpContext, orderPaymentRequestDTO.orderId, orderPaymentRequestDTO.redirectUrl);
+
+            var result = new OrderPaymentResponseDTO
+            {
+                orderId = orderPaymentRequestDTO.orderId,
+                paymentUrl = paymentUrl
+            };
+
+            ApiResponseDTO response = new ApiResponseDTO
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Get subscription paymentUrl successfully",
+                Data = result
+            };
+
+            return StatusCode(response.Code, response);
+        }
+
+
+
+        [HttpPost("with-items")]
+        [Authorize(Roles = "CUSTOMER, STAFF, LESSOR,  ADMIN")]
+        public async Task<ActionResult<OrderWithItemsResponseDTO>> CreateOrderWithItemsAsync([FromBody] OrderWithItemsRequestDTO orderWithItemsRequest)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "Invalid Order with Items data"
+                });
+            }
+
+            try
+            {
+                var createdOrder = await _orderService.CreateOrderWithItemsAsync(token, orderWithItemsRequest);
+                return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.Created,
+                    Message = "Order with items created successfully",
+                    Data = createdOrder
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
 
     }
 }

@@ -134,6 +134,10 @@ CREATE TABLE [Order] (
     DateOfReceipt DATE NOT NULL,
     DateOfReturn DATE NOT NULL
 );
+ALTER TABLE [Order]
+ADD PayOsUrl NVARCHAR(MAX) NULL;
+ALTER TABLE [Order]
+ADD UpdatedAt DATETIME DEFAULT GETDATE() NULL;
 
 -- Tạo bảng OrderItem
 CREATE TABLE OrderItem (
@@ -272,6 +276,7 @@ INSERT INTO ProductImage (ProductId, ImageUrl) VALUES
 (4, 'images/l110_front.jpg');
 
 -- Thêm dữ liệu mẫu vào bảng Order
+/*
 INSERT INTO [Order] (CustomerId, TotalPrice, RecipientName, RecipientPhone, Address, DateOfReceipt, DateOfReturn) VALUES
 (3, 1200.00, 'John Doe', '1234567890', '123 Main St', '2024-01-01', '2024-01-05'),
 (4, 950.00, 'Jane Smith', '0987654321', '456 Market Ave', '2024-01-02', '2024-01-06'),
@@ -286,6 +291,42 @@ INSERT INTO OrderItem (OrderId, ProductId, Quantity, Price, TotalPrice) VALUES
 (3, 3, 1, 115000.00, 1150.00),
 (4, 4, 1, 105000.00, 1050.00),
 (5, 5, 1, 75000.00, 750.00);
+*/
+
+INSERT INTO [Order] (CustomerId, Status,TotalPrice, RecipientName, RecipientPhone, Address, DateOfReceipt, DateOfReturn, PayOSUrl) VALUES
+(3, 0,1200.00, 'John Doe', '1234567890', '123 Main St', '2024-01-01', '2024-01-05', 'https://pay.payos.vn/web/8cc4147524254bc39f981ef7156fed97'),
+(4, 0,950.00, 'Jane Smith', '0987654321', '456 Market Ave', '2024-01-02', '2024-01-06', 'https://pay.payos.vn/web/74b1be04f754450495f597d6de4cab6e'),
+(3, 0,1150.00, 'Alice Brown', '2233445566', '789 Elm St', '2024-01-03', '2024-01-07', 'https://pay.payos.vn/web/0be783df1e2c4bd4a6dfdac5e689960d'),
+(4, 0,105000.00, 'Bob White', '4455667788', '321 Oak St', '2024-01-04', '2024-01-08', 'https://pay.payos.vn/web/38a32cffbfa044849807b082a2613aba'),
+(3, 2,1750.00, 'Charlie Black', '6677889900', '987 Park Ln', '2024-01-05', '2024-01-09', 'https://pay.payos.vn/web/701cfd8409774705b0d11d1fe21b66fc'),
+(1, 0,1800.00, 'David Green', '1122334455', '101 Pine St', '2024-01-06', '2024-01-10', NULL),
+(2, 0,2200.00, 'Emma Blue', '2233557799', '303 Cedar Rd', '2024-01-07', '2024-01-11', NULL),
+(3, 0,1600.00, 'Frank Yellow', '5566778899', '505 Birch Ln', '2024-01-08', '2024-01-12', NULL),
+(4, 0,1900.00, 'Grace Red', '9988776655', '707 Walnut St', '2024-01-09', '2024-01-13', NULL),
+(5, 0,1300.00, 'Henry Purple', '4433221100', '909 Maple Ave', '2024-01-10', '2024-01-14', NULL);
+
+INSERT INTO OrderItem (OrderId, ProductId, Quantity, Price, TotalPrice) VALUES
+(1, 1, 1, 120000.00, 1200.00),
+(2, 2, 1, 95000.00, 950.00),
+(3, 3, 1, 115000.00, 1150.00),
+(4, 4, 1, 105000.00, 1050.00),
+(5, 5, 1, 75000.00, 750.00),
+(6, 6, 2, 90000.00, 1800.00),
+(7, 7, 1, 220000.00, 2200.00),
+(8, 8, 2, 80000.00, 1600.00),
+(9, 9, 1, 190000.00, 1900.00),
+(10, 10, 1, 130000.00, 1300.00),
+(1, 2, 2, 60000.00, 1200.00),
+(2, 3, 1, 75000.00, 750.00),
+(3, 4, 3, 50000.00, 1500.00),
+(4, 5, 2, 80000.00, 1600.00),
+(5, 6, 1, 180000.00, 1800.00),
+(6, 7, 1, 220000.00, 2200.00),
+(7, 8, 2, 70000.00, 1400.00),
+(8, 9, 1, 190000.00, 1900.00),
+(9, 10, 2, 65000.00, 1300.00),
+(10, 1, 1, 120000.00, 1200.00);
+
 
 -- Thêm dữ liệu mẫu vào bảng Feedback
 INSERT INTO Feedback (AccountId, ProductId, OrderId, Rating, Comment) VALUES
