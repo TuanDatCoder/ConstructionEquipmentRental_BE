@@ -136,7 +136,8 @@ CREATE TABLE [Order] (
 );
 ALTER TABLE [Order]
 ADD PayOsUrl NVARCHAR(MAX) NULL;
-
+ALTER TABLE [Order]
+ADD UpdatedAt DATETIME DEFAULT GETDATE() NULL;
 
 -- Tạo bảng OrderItem
 CREATE TABLE OrderItem (

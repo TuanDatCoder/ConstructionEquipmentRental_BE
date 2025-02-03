@@ -16,5 +16,10 @@ namespace Services.TransactionServices
         Task<TransactionResponseDTO> CreateTransaction(TransactionRequestDTO request);
         Task<TransactionResponseDTO> UpdateTransaction(int id, TransactionRequestDTO request);
         Task DeleteTransaction(int id);
+
+        Task<TransactionResponseDTO> GetTransactionsByOrderId(int orderId);
+        Task<List<TransactionResponseDTO>> GetTransactionsByAccountId(int accountId);
+    
+
     }
 }

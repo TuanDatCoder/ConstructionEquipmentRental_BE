@@ -2,6 +2,7 @@
 using Data.DTOs.Order;
 using Data.DTOs.OrderItem;
 using Data.Entities;
+using Data.Enums;
 using Repositories.OrderItemRepos;
 using Repositories.OrderRepos;
 using System;
@@ -25,13 +26,13 @@ namespace Services.OrderItemServices
 
         public async Task<OrderItemResponseDTO> CreateOrderItemAsync(OrderItemRequestDTO orderItemRequest)
         {
-            // Chuyển từ OrderRequestDTO sang Order
+           
             var orderItem = _mapper.Map<OrderItem>(orderItemRequest);
+            orderItem.TotalPrice = orderItem.Price * orderItem.Quantity;
+            orderItem.Status = OrderItemStatusEnum.ACTIVE.ToString();
 
-            // Lưu vào database
             var createdOrderItem = await _orderItemRepository.CreateOrderItemAsync(orderItem);
 
-            // Chuyển từ Order sang OrderResponseDTO để trả về
             return _mapper.Map<OrderItemResponseDTO>(createdOrderItem);
         }
 

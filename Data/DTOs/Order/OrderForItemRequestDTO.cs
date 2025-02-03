@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace Data.DTOs.Order
 {
-    public class OrderRequestDTO
+    public class OrderForItemRequestDTO
     {
-
-        public int CustomerId { get; set; }
-
-        public decimal? TotalPrice { get; set; }
 
         public PaymentMethodEnum PaymentMethod { get; set; }
 

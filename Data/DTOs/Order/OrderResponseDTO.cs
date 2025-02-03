@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,6 @@ namespace Data.DTOs.Order
         public int CustomerId { get; set; }
 
         public string CustomerName { get; set; }
-
-        public int StaffId { get; set; }
 
         public string? Status { get; set; }
 

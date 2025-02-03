@@ -209,6 +209,9 @@ public partial class ConstructionEquipmentRentalDbContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValue("PENDING");
             entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
