@@ -31,6 +31,8 @@ public partial class Order
 
     public string? PayOsUrl { get; set; }
 
+    public DateTime? UpdatedAt { get; set; }
+
     public virtual Account Customer { get; set; } = null!;
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();

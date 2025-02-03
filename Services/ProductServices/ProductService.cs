@@ -174,6 +174,11 @@ namespace Services.ProductServices
         public async Task<Account> CheckProductAndCurrentAccount(string token, int storeId)
         {
             var account = await _authenticationService.GetAccountByToken(token);
+            if (account == null)
+            {
+                throw new UnauthorizedAccessException("Invalid account or token.");
+            }
+
             if (account.StoreId == null)
             {
                 throw new Exception("This account does not have a store and cannot create products.");

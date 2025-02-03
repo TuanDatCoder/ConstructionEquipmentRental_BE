@@ -79,5 +79,28 @@ namespace Repositories.TransactionRepos
                 throw new Exception($"Error when updating transaction: {ex.Message}");
             }
         }
+
+        public async Task<Transaction?> GetByOrderIdAsync(int orderId)
+        {
+            return await _context.Transactions
+                .Include(t => t.Account)
+                .Include(t => t.Order)
+                .Include(t => t.WalletLog)
+                .FirstOrDefaultAsync(t => t.OrderId == orderId);
+        }
+
+
+        public async Task<List<Transaction>> GetByAccountIdAsync(int accountId)
+        {
+            return await _context.Transactions
+                .Include(t => t.Account)
+                .Include(t => t.Order)
+                .Include(t => t.WalletLog)
+                .Where(t => t.AccountId == accountId)
+                .ToListAsync();
+        }
+
+
+
     }
 }

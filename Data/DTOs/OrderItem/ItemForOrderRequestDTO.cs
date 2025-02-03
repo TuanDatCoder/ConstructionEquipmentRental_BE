@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace Data.DTOs.OrderItem
 {
-    public class OrderItemRequestDTO
+    public class ItemForOrderRequestDTO
     {
-        
-        public int OrderId { get; set; }
 
         public int ProductId { get; set; }
 
         public int Quantity { get; set; }
-
-        public decimal Price { get; set; }
 
     }
 }

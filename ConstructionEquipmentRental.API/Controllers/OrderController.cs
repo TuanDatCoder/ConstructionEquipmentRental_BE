@@ -180,5 +180,53 @@ namespace ConstructionEquipmentRental.API.Controllers
             return StatusCode(response.Code, response);
         }
 
+
+
+        [HttpPost("with-items")]
+        [Authorize(Roles = "CUSTOMER, STAFF, LESSOR,  ADMIN")]
+        public async Task<ActionResult<OrderWithItemsResponseDTO>> CreateOrderWithItemsAsync([FromBody] OrderWithItemsRequestDTO orderWithItemsRequest)
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = "Invalid Order with Items data"
+                });
+            }
+
+            try
+            {
+                var createdOrder = await _orderService.CreateOrderWithItemsAsync(token, orderWithItemsRequest);
+                return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.Created,
+                    Message = "Order with items created successfully",
+                    Data = createdOrder
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
     }
 }

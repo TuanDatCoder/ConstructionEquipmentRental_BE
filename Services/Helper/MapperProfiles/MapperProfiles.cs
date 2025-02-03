@@ -50,11 +50,14 @@ namespace Services.Helper.MapperProfiles
             CreateMap<Order, OrderResponseDTO>()
                 .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.Username));
 
+            CreateMap<OrderForItemRequestDTO, Order>();
+
             //Order Item
             CreateMap<OrderItem, OrderItemResponseDTO>()
                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
+            CreateMap<ItemForOrderRequestDTO, OrderItem>();
 
-            
+
 
             CreateMap<OrderItemRequestDTO, OrderItem>();
 
