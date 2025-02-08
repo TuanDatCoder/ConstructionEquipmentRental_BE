@@ -2,6 +2,7 @@
 using Data.DTOs.Order;
 using Data.DTOs.OrderItem;
 using Data.DTOs.PayOS;
+using Data.DTOs.Product;
 using Data.DTOs.Transaction;
 using Data.Entities;
 using Data.Enums;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Net.payOS.Types;
 using Newtonsoft.Json.Linq;
 using Repositories.OrderRepos;
+using Repositories.ProductRepos;
 using Services.AuthenticationServices;
 using Services.Helper.CustomExceptions;
 using Services.OrderItemServices;
@@ -32,12 +34,14 @@ namespace Services.OrderServices
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderItemService _orderItemService;
         private readonly IProductService _productService;
+        private readonly IProductRepository _productRepository;
         private readonly ITransactionService _transactionService;
         private readonly IMapper _mapper;
         private readonly IPayOSService _payOSService;
         private readonly IAuthenticationService _authenticationService;
+        
 
-        public OrderService(IOrderRepository orderRepository, IOrderItemService orderItemService, IMapper mapper, IPayOSService payOSService, IProductService productService, ITransactionService transactionService, IAuthenticationService authenticationService)
+        public OrderService(IOrderRepository orderRepository, IOrderItemService orderItemService, IMapper mapper, IPayOSService payOSService, IProductService productService, ITransactionService transactionService, IAuthenticationService authenticationService, IProductRepository productRepository)
         {
             _orderRepository = orderRepository;
             _orderItemService = orderItemService;
@@ -46,6 +50,7 @@ namespace Services.OrderServices
             _mapper = mapper;
             _payOSService= payOSService;
             _authenticationService= authenticationService;
+            _productRepository= productRepository;
         }
 
         public async Task<IEnumerable<OrderResponseDTO>> GetAllOrdersAsync()
@@ -190,6 +195,7 @@ namespace Services.OrderServices
                 {
                     throw new ApiException(HttpStatusCode.NotFound, "Insufficient stock for this " + product.Name + " item");
                 }
+
                 decimal price = product.PriceSale ?? (product.Price - (product.Price * ((product.Discount ?? 0) / 100)));
 
                 priceItems.Add(price);
@@ -208,9 +214,6 @@ namespace Services.OrderServices
             foreach (var orderItemDto in orderWithItemsRequest.OrderItems)
             {
 
-                var product = await _productService.GetProductById(orderItemDto.ProductId);
-
-
                 var orderItemRequest = new OrderItemRequestDTO
                 {
                     OrderId = createdOrder.Id, 
@@ -222,6 +225,12 @@ namespace Services.OrderServices
                 var orderItem = _mapper.Map<OrderItem>(orderItemDto);
                 orderItem.OrderId = createdOrder.Id;
                 var createdOrderItemResponse = await _orderItemService.CreateOrderItemAsync(orderItemRequest);
+
+                var productDTO = await _productRepository.GetByIdAsync(orderItemDto.ProductId);
+                   
+                    productDTO.Stock = productDTO.Stock - orderItemDto.Quantity;
+
+                await _productRepository.Update(productDTO);
 
                 orderItemResponses.Add(createdOrderItemResponse);
                 i++;
@@ -251,8 +260,8 @@ namespace Services.OrderServices
                 {
                     OrderId = createdOrder.Id,
                     Amount = createdOrder.TotalPrice,
-                    RedirectUrl = "https://localhost:7160/api/payos?orderCode="+ createdOrder.Id,
-                    CancelUrl = "https://localhost:7160/api/payos?orderCode=" + createdOrder.Id,
+                    RedirectUrl = "http://localhost:5173/paysuccess?orderCode=" + createdOrder.Id,
+                    CancelUrl = "http://localhost:5173/paycancel?orderCode=" + createdOrder.Id,
                     OrderItems = orderItemResponses.ToList()
                 };
 
