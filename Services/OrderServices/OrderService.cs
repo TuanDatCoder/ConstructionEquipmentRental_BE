@@ -181,14 +181,39 @@ namespace Services.OrderServices
             order.CreatedAt = DateTime.UtcNow;
             order.UpdatedAt = DateTime.UtcNow;
 
+            if (order.DateOfReceipt >= order.DateOfReturn)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Receive date must be less than pay date.");
+            }
+
+            var rentalDays = (DateTime.Parse(order.DateOfReturn.ToString()) - DateTime.Parse(order.DateOfReceipt.ToString())).Days;
+
+            // Kiểm tra nếu rentalDays nhỏ hơn 1 ngày thì throw exception
+            if (rentalDays < 1)
+            {
+                throw new ApiException(HttpStatusCode.BadRequest, "Rental days must be greater than 0.");
+            }
 
             decimal totalPrice = 0;
             List<decimal> priceItems = new List<decimal>();
 
             // Tính Price
+            int checkId = -1;
             foreach (var orderItemDto in orderWithItemsRequest.OrderItems)
             {
+
                 var product = await _productService.GetProductById(orderItemDto.ProductId);
+
+
+                //kiểm tra xem có thuộc 1 cửa hàng đó không.
+                if (checkId == -1) checkId = product.StoreId; // bắt thằng đầu tiên
+                else
+                {
+                    if(checkId != product.StoreId)
+                        throw new ApiException(HttpStatusCode.BadRequest, "Only order common products in one store");
+                    checkId = product.StoreId;
+                }
+                
 
                 // Kiểm tra tồn kho
                 if (product.Stock < orderItemDto.Quantity)
@@ -201,8 +226,10 @@ namespace Services.OrderServices
                 priceItems.Add(price);
                 totalPrice += price * orderItemDto.Quantity;
 
-                order.TotalPrice = totalPrice;
+               
             }
+            // tính giá cho thuê chỉ theo ngày
+            order.TotalPrice = totalPrice * rentalDays;
 
             var createdOrder = await _orderRepository.CreateOrderAsync(order);
             //======= /Tạo xong Order =============
@@ -253,6 +280,7 @@ namespace Services.OrderServices
 
             string? payOsUrl = null;
 
+            // chuyển sang payos
             if (createdOrder.PaymentMethod.Equals("PAYOS"))
             {
 
