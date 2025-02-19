@@ -46,6 +46,16 @@ namespace Repositories.ProductRepos
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<List<Product>> GetProductsByStoreIdAsync(int storeId)
+        {
+            return await _context.Products
+                                 .Where(p => p.StoreId == storeId)
+                                 .Include(p => p.Category)
+                                 .Include(p => p.Brand)
+                                 .Include(p => p.Store)
+                                 .OrderByDescending(p => p.Id) 
+                                 .ToListAsync();
+        }
 
         public async Task Add(Product product)
         {
