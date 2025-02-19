@@ -9,6 +9,7 @@ using Services.Helper.CustomExceptions;
 using System.Net;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using Data.DTOs.OrderItem;
 
 
 namespace Services.ProductServices
@@ -188,6 +189,18 @@ namespace Services.ProductServices
             }
             return account;
         }
+        public async Task<List<ProductResponseDTO>> GetProductsByProductIdAsync(int storeId)
+        {
+            var products = await _productRepository.GetProductsByStoreIdAsync(storeId);
+
+            if (products == null || !products.Any())
+            {
+                throw new Exception($"No Products found for Store ID {storeId}.");
+            }
+
+            return _mapper.Map<List<ProductResponseDTO>>(products);
+        }
+
 
     }
 }

@@ -14,6 +14,9 @@ namespace Services.ProductServices
         Task DeleteProduct(int id);
         Task<ProductResponseDTO> ChangeProductStatus(int id, ProductStatusEnum newStatus);
         Task<string> UpdatePictureAsync(int productId, string token, Stream fileStream, string fileName);
+        Task<List<ProductResponseDTO>> GetProductsByProductIdAsync(int storeId);
 
-    }
+
+
+     }
 }

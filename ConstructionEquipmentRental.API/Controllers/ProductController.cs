@@ -281,5 +281,30 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
+        [HttpGet("by-store/{storeId}")]
+        public async Task<IActionResult> GetProductsByStoreId(int storeId)
+        {
+            try
+            {
+                var prooducts = await _productService.GetProductsByProductIdAsync(storeId);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = $"Products for Store ID {storeId} retrieved successfully",
+                    Data = prooducts
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
     }
 }

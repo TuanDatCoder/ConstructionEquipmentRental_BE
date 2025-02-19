@@ -17,6 +17,8 @@ using Data.DTOs.Transaction;
 using Repositories.TransactionRepos;
 using System.Transactions;
 using Data.Entities;
+using Repositories.OrderItemRepos;
+using Repositories.ProductRepos;
 
 namespace Services.PayOSServices
 {
@@ -25,11 +27,15 @@ namespace Services.PayOSServices
         private readonly IConfiguration _config;
         private readonly IOrderRepository _orderRepository;
         private readonly ITransactionRepository _transactionRepository;
-        public PayOSService(IConfiguration config, IOrderRepository orderRepository, ITransactionRepository transactionRepository)
+        private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IProductRepository _productRepository;
+        public PayOSService(IConfiguration config, IOrderRepository orderRepository, ITransactionRepository transactionRepository, IOrderItemRepository orderItemRepository, IProductRepository productRepository)
         {
             _config = config;
             _orderRepository = orderRepository;
             _transactionRepository = transactionRepository;
+            _orderItemRepository = orderItemRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<PaymentLinkInformation> GetPaymentLinkInformationAsync(int orderCode)
@@ -52,7 +58,23 @@ namespace Services.PayOSServices
             string status = paymentLinkInformation.status.Equals("PAID")
                 ? OrderStatusEnum.COMPLETED.ToString()
                 : paymentLinkInformation.status;
+            if(paymentLinkInformation.status.Equals("CANCELLED") && currOrder.Status.Equals("PENDING"))
+            {
+                var orderItems = await _orderItemRepository.GetOrderItemsByOrderIdAsync(orderCode);
+                foreach (var item in orderItems)
+                {
+                    var product = await _productRepository.GetByIdAsync(item.ProductId);
+                    if (product == null)
+                    {
+                        throw new ApiException(HttpStatusCode.NotFound, "Product does not exist");
+                    }
+                    product.Stock += item.Quantity; // trả lại số hàng
+                    await _productRepository.Update(product);
+                    item.Status = "CANCELLED";
+                    await _orderItemRepository.UpdateOrderItemAsync(item);
 
+                }
+            }
             if (!status.Equals(currOrder.Status))
             {
                 currOrder.UpdatedAt = DateTime.UtcNow;
