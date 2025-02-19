@@ -16,6 +16,7 @@ using Services.TransactionServices;
 using Data.DTOs.Transaction;
 using Repositories.TransactionRepos;
 using System.Transactions;
+using Data.Entities;
 
 namespace Services.PayOSServices
 {
@@ -39,7 +40,6 @@ namespace Services.PayOSServices
             {
                 throw new ApiException(HttpStatusCode.NotFound, "Order does not exist");
             }
-
 
             if (!currOrder.PaymentMethod.Equals("PAYOS"))
             {
@@ -76,6 +76,13 @@ namespace Services.PayOSServices
         {
             PayOS payOS = new PayOS(_config["PayOS:ClientID"], _config["PayOS:ApiKey"], _config["PayOS:ChecksumKey"]);
 
+            var currOrder = await _orderRepository.GetOrderByIdAsync(payOSRequestDTO.OrderId);
+            if (currOrder == null)
+            {
+                throw new ApiException(HttpStatusCode.NotFound, "Order does not exist");
+            }
+
+
             List<ItemData> items = new List<ItemData>();
 
             foreach (var orderItem in payOSRequestDTO.OrderItems)
@@ -87,6 +94,10 @@ namespace Services.PayOSServices
                 items.Add(new ItemData(productName, quantity, price));
             }
 
+            // chèn vô tính tổng tiền theo ngày thuê
+            var rentalDays = (DateTime.Parse(currOrder.DateOfReturn.ToString()) - DateTime.Parse(currOrder.DateOfReceipt.ToString())).Days;
+
+            items.Add(new ItemData("Tổng số ngày thuê", rentalDays, (int)payOSRequestDTO.Amount/ rentalDays));
 
             PaymentData paymentData = new PaymentData(
                 payOSRequestDTO.OrderId,
