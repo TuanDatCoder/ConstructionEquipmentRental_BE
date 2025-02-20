@@ -3,8 +3,10 @@ using Data.DTOs.Product;
 using Data.DTOs.Store;
 using Data.Entities;
 using Data.Enums;
+using Repositories.AccountRepos;
 using Repositories.ProductRepos;
 using Repositories.StoreRepos;
+using Services.AuthenticationServices;
 using Services.ProductServices;
 using System;
 using System.Collections.Generic;
@@ -18,11 +20,15 @@ namespace Services.StoreServices
     {
         private readonly IMapper _mapper;
         private readonly IStoreRepository _storeRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IAuthenticationService _authenticationService;
 
-        public StoreService(IMapper mapper, IStoreRepository storeRepository)
+        public StoreService(IMapper mapper, IStoreRepository storeRepository, IAccountRepository accountRepository, IAuthenticationService authenticationService)
         {
             _mapper = mapper;
             _storeRepository = storeRepository;
+            _accountRepository = accountRepository;
+            _authenticationService = authenticationService;
         }
 
         public async Task<List<StoreResponseDTO>> GetStores(int? page, int? size)
@@ -45,13 +51,25 @@ namespace Services.StoreServices
         }
 
 
-        public async Task<StoreResponseDTO> CreateStore(StoreRequestDTO request)
+        public async Task<StoreResponseDTO> CreateStore(String token, StoreRequestDTO request)
         {
+            var currAccount = await _authenticationService.GetAccountByToken(token);
+
+            if (currAccount == null)
+            {
+                throw new UnauthorizedAccessException("Invalid account or token.");
+            }
             var store = _mapper.Map<Store>(request);
+            store.AccountId = currAccount.Id;
             store.Status = StoreStatusEnum.PENDING.ToString();
             store.CreatedAt = DateTime.UtcNow;
             store.UpdatedAt = DateTime.UtcNow;
             await _storeRepository.Add(store);
+
+            currAccount.StoreId = store.Id;
+            await _accountRepository.Update(currAccount);
+      
+
             return _mapper.Map<StoreResponseDTO>(store);
         }
 

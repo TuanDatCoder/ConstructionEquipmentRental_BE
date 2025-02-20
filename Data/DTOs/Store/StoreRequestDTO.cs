@@ -22,6 +22,6 @@ namespace Data.DTOs.Store
 
         public string? BusinessLicense { get; set; }
 
-        public int? AccountId { get; set; }
+       // public int? AccountId { get; set; }
     }
 }
