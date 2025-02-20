@@ -6,6 +6,7 @@ using Services.ProductServices;
 using System.Net;
 using Services.StoreServices;
 using Data.DTOs.Store;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConstructionEquipmentRental.API.Controllers
 {
@@ -70,8 +71,10 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "LESSOR")]
         public async Task<IActionResult> CreateStore([FromBody] StoreRequestDTO request)
         {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             if (!ModelState.IsValid)
             {
                 return BadRequest(new ApiResponseDTO
@@ -82,7 +85,7 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
 
-            var result = await _storeService.CreateStore(request);
+            var result = await _storeService.CreateStore(token,request);
 
             return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
             {
@@ -94,6 +97,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "LESSOR")]
         public async Task<IActionResult> UpdateStore(int id, [FromBody] StoreUpdateRequestDTO request)
         {
             try
