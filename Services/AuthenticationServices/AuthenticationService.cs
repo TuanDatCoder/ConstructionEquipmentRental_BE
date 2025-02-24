@@ -37,6 +37,7 @@ namespace Services.AuthenticationServices
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly string _backendUrl;
         public AuthenticationService(
             IRefreshTokenRepository refreshTokenRepository,
             IDecodeTokenHandler decodeToken,
@@ -59,6 +60,8 @@ namespace Services.AuthenticationServices
             _mapper = mapper;
             _config = config;
             _httpContextAccessor = httpContextAccessor;
+            #pragma warning disable CS8601
+            _backendUrl = config["Environment:BE_URL"];
 
         }
 
@@ -381,9 +384,6 @@ namespace Services.AuthenticationServices
                 throw new ApiException(HttpStatusCode.BadRequest, "Email has already been used by another user");
             }
 
-           
-
-
             var account = _mapper.Map<Account>(accountRequestDTO);
             account.Password = PasswordHasher.HashPassword(accountRequestDTO.Password);
             account.Status = AccountStatusEnum.UNVERIFIED.ToString();
@@ -415,11 +415,17 @@ namespace Services.AuthenticationServices
             verificationCodeCache.Put(account.Email, token, 30); // Expire in 30 minutes
 
             // Send email with verification link
+
             // Lấy host và port từ request hiện tại
-            var request = _httpContextAccessor.HttpContext.Request;
-            var host = $"{request.Scheme}://{request.Host}";
-            var verificationLink = $"{host}/api/auth/verify?token={token}";
+            //var request = _httpContextAccessor.HttpContext.Request;
+            //var host = $"{request.Scheme}://{request.Host}";
+            //var verificationLink = $"{host}/api/auth/verify?token={token}";
+            
+            // Lấy link fix cứng
             //var verificationLink = $"https://localhost:7160/api/auth/verify?token={token}";
+
+            var verificationLink = $"{_backendUrl}/api/auth/verify?token={token}";
+
             await _emailService.SendRegistrationEmail(account.Username, account.Email, verificationLink);
         }
 

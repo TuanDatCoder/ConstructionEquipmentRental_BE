@@ -29,6 +29,7 @@ namespace Services.PayOSServices
         private readonly ITransactionRepository _transactionRepository;
         private readonly IOrderItemRepository _orderItemRepository;
         private readonly IProductRepository _productRepository;
+
         public PayOSService(IConfiguration config, IOrderRepository orderRepository, ITransactionRepository transactionRepository, IOrderItemRepository orderItemRepository, IProductRepository productRepository)
         {
             _config = config;
@@ -36,11 +37,12 @@ namespace Services.PayOSServices
             _transactionRepository = transactionRepository;
             _orderItemRepository = orderItemRepository;
             _productRepository = productRepository;
+            
         }
 
         public async Task<PaymentLinkInformation> GetPaymentLinkInformationAsync(int orderCode)
         {
-        
+            orderCode -= 10000;
             var currOrder = await _orderRepository.GetOrderByIdAsync(orderCode);
             if (currOrder == null)
             {
@@ -53,7 +55,7 @@ namespace Services.PayOSServices
             }
 
             PayOS payOS = new PayOS(_config["PayOS:ClientID"], _config["PayOS:ApiKey"], _config["PayOS:ChecksumKey"]);
-            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
+            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode+10000);
 
             string status = paymentLinkInformation.status.Equals("PAID")
                 ? OrderStatusEnum.COMPLETED.ToString()
@@ -122,7 +124,7 @@ namespace Services.PayOSServices
             items.Add(new ItemData("Tổng số ngày thuê", rentalDays, (int)payOSRequestDTO.Amount/ rentalDays));
 
             PaymentData paymentData = new PaymentData(
-                payOSRequestDTO.OrderId,
+                payOSRequestDTO.OrderId + 10000,
                 (int)payOSRequestDTO.Amount,
                 "Thanh toán đơn hàng",
                 items,

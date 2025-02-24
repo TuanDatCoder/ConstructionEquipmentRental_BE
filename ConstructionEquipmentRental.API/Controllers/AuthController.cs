@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.AccountServices;
 using Services.AuthenticationServices;
+using Services.Helper.CustomExceptions;
 using Services.JWTServices;
 using System.Net;
 
@@ -19,12 +20,17 @@ namespace ConstructionEquipmentRental.API.Controllers
         private readonly IJWTService _jwtService;
         private readonly IAccountService _accountService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly string _frontendUrl;
+        private readonly IConfiguration _config;
 
-        public AuthController(IJWTService jwtService, IAccountService accountService, IAuthenticationService authenticationService)
+        public AuthController(IConfiguration config,IJWTService jwtService, IAccountService accountService, IAuthenticationService authenticationService)
         {
             _jwtService = jwtService;
             _accountService = accountService;
             _authenticationService = authenticationService;
+            _config = config;
+             #pragma warning disable CS8601
+            _frontendUrl = config["Environment:FE_URL"];
         }
 
         [HttpPost]
@@ -168,20 +174,19 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
 
-        [HttpGet]  // Sử dụng GET vì đây là yêu cầu xác nhận qua URL
+        [HttpGet]
         [Route("verify")]
         public async Task<IActionResult> VerifyAccount([FromQuery] string token)
         {
-            await _authenticationService.VerifyAccount(token);
-
-            ApiResponseDTO response = new ApiResponseDTO
+            try
             {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.OK,
-                Message = "Account verified successfully",
-            };
-
-            return StatusCode(response.Code, response);
+                await _authenticationService.VerifyAccount(token);
+                return Redirect($"{_frontendUrl}/successregis");
+            }
+            catch (ApiException ex)
+            {
+                return Redirect($"{_frontendUrl}/faildregis");
+            }
         }
 
 

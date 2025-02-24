@@ -8,6 +8,7 @@ using Data.Entities;
 using Data.Enums;
 using MailKit.Search;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Net.payOS.Types;
 using Newtonsoft.Json.Linq;
 using Repositories.OrderRepos;
@@ -31,6 +32,7 @@ namespace Services.OrderServices
 {
     public class OrderService : IOrderService
     {
+        private readonly IConfiguration _config;
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderItemService _orderItemService;
         private readonly IProductService _productService;
@@ -39,9 +41,9 @@ namespace Services.OrderServices
         private readonly IMapper _mapper;
         private readonly IPayOSService _payOSService;
         private readonly IAuthenticationService _authenticationService;
-        
+        private readonly string _frontendUrl;
 
-        public OrderService(IOrderRepository orderRepository, IOrderItemService orderItemService, IMapper mapper, IPayOSService payOSService, IProductService productService, ITransactionService transactionService, IAuthenticationService authenticationService, IProductRepository productRepository)
+        public OrderService(IConfiguration config, IOrderRepository orderRepository, IOrderItemService orderItemService, IMapper mapper, IPayOSService payOSService, IProductService productService, ITransactionService transactionService, IAuthenticationService authenticationService, IProductRepository productRepository)
         {
             _orderRepository = orderRepository;
             _orderItemService = orderItemService;
@@ -51,6 +53,8 @@ namespace Services.OrderServices
             _payOSService= payOSService;
             _authenticationService= authenticationService;
             _productRepository= productRepository;
+            #pragma warning disable CS8601
+            _frontendUrl = config["Environment:FE_URL"];
         }
 
         public async Task<IEnumerable<OrderResponseDTO>> GetAllOrdersAsync()
@@ -288,8 +292,8 @@ namespace Services.OrderServices
                 {
                     OrderId = createdOrder.Id,
                     Amount = createdOrder.TotalPrice,
-                    RedirectUrl = "http://localhost:5173/paysuccess?orderCode=" + createdOrder.Id,
-                    CancelUrl = "http://localhost:5173/paycancel?orderCode=" + createdOrder.Id,
+                    RedirectUrl = $"{_frontendUrl}/paysuccess?orderCode={createdOrder.Id}",
+                    CancelUrl = $"{_frontendUrl}/paycancel?orderCode={createdOrder.Id}",
                     OrderItems = orderItemResponses.ToList()
                 };
 
