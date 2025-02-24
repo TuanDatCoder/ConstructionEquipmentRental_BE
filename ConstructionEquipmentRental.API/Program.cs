@@ -196,6 +196,12 @@ namespace ConstructionEquipmentRental.API
                 options.IncludeXmlComments(xmlPath);
             });
 
+            //++++++++++++ appsettings
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+
+
+
 
             var app = builder.Build();
             /////////////////////////////////////////////////
