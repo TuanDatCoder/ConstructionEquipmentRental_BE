@@ -70,8 +70,18 @@ namespace Repositories.OrderRepos
                 .Where(o => o.OrderItems.Any(oi => oi.Product.Store.AccountId == lessorId))
                 .ToListAsync();
         }
+        public async Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId)
+        {
+            return await _context.Orders
+                                 .Where(p => p.CustomerId == customerId)
+                                  .Include(o => o.Customer)
+                                    .Include(o => o.OrderItems)
+                                    .Include(o => o.Feedbacks)
+                                    .Include(o => o.OrderReports)
+                                 .OrderByDescending(o => o.Id)
+                                 .ToListAsync();
+        }
 
-        
 
     }
 }

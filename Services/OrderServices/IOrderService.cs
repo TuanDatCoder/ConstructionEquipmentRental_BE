@@ -20,5 +20,6 @@ namespace Services.OrderServices
         Task<string> GetPaymentUrl(HttpContext context, int orderId, string redirectUrl);
         Task<OrderWithItemsResponseDTO> CreateOrderWithItemsAsync(string token, OrderWithItemsRequestDTO orderWithItemsRequest);
         Task<OrderResponseDTO> ChangeOrderStatus(int id, OrderStatusEnum newStatus);
+        Task<List<OrderResponseDTO>> GetOrdersByCustomerAsync(string token);
     }
 }

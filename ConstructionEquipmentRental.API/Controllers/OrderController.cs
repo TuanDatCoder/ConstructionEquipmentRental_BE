@@ -266,5 +266,35 @@ namespace ConstructionEquipmentRental.API.Controllers
             }
         }
 
+        [HttpGet("by-customer")]
+        [Authorize(Roles =  "CUSTOMER, STAFF, LESSOR,  ADMIN")]
+        public async Task<IActionResult> GetOrdersByCustomerId()
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            try
+            {
+                var orders = await _orderService.GetOrdersByCustomerAsync(token);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = $"Orders for Customer retrieved successfully",
+                    Data = orders
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+
     }
 }

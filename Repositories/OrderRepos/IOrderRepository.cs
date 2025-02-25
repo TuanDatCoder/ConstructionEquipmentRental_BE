@@ -19,6 +19,9 @@ namespace Repositories.OrderRepos
         Task<Order> GetOrderByIdAsync(int orderId);
 
         Task<List<Order>> GetOrdersByLessorIdAsync(int lessorId);
+        Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId);
+
+
     }
 }
 
