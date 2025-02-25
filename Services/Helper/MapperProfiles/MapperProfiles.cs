@@ -148,6 +148,27 @@ namespace Services.Helper.MapperProfiles
             .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : null));
             CreateMap<CartItemRequestDTO, CartItem>();
 
+
+
+            CreateMap<Order, OrderAndItemsResponseDTO>()
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Customer != null ? src.Customer.Id : 0))
+            .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer != null ? src.Customer.Username : "N/A"))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.PaymentMethod, opt => opt.MapFrom(src => src.PaymentMethod.ToString()))
+            .ForMember(dest => dest.PurchaseMethod, opt => opt.MapFrom(src => src.PurchaseMethod.ToString()))
+            .ForMember(dest => dest.RecipientName, opt => opt.MapFrom(src => src.RecipientName ?? "N/A"))
+            .ForMember(dest => dest.RecipientPhone, opt => opt.MapFrom(src => src.RecipientPhone ?? "N/A"))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address ?? "N/A"))
+            .ForMember(dest => dest.PayOsUrl, opt => opt.MapFrom(src => src.PayOsUrl ?? "N/A"))
+            .ForMember(dest => dest.TotalPrice, opt => opt.Ignore())
+            .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
+
+            CreateMap<OrderItem, OrderItemResponseDTO>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Product != null ? src.Product.Id : 0))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.Name : "Unknown"))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status != null ? src.Status.ToString() : "Unknown"));
+
+
         }
     }
 }

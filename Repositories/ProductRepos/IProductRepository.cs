@@ -15,5 +15,7 @@ namespace Repositories.ProductRepos
         Task Update(Product product);
         Task Delete(Product product);
         Task<List<Product>> GetProductsByStoreIdAsync(int storeId);
+        Task<List<Product>> GetProductsByLessorIdAsync(int lessorId);
+
     }
 }

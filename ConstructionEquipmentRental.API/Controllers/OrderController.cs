@@ -90,6 +90,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             try
@@ -206,6 +207,43 @@ namespace ConstructionEquipmentRental.API.Controllers
                     Code = (int)HttpStatusCode.Created,
                     Message = "Order with items created successfully",
                     Data = createdOrder
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPatch("{id}/status")]
+        [Authorize(Roles = "STAFF, LESSOR,  ADMIN")]
+        public async Task<IActionResult> ChangeOrderStatus(int id, [FromBody] OrderStatusEnum newStatus)
+        {
+            try
+            {
+                var updatedOrder = await _orderService.ChangeOrderStatus(id, newStatus);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Order status updated successfully",
+                    Data = updatedOrder
                 });
             }
             catch (KeyNotFoundException ex)

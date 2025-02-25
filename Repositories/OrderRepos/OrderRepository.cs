@@ -61,5 +61,17 @@ namespace Repositories.OrderRepos
                 .FirstOrDefaultAsync(o => o.Id == orderId);
         }
 
+        public async Task<List<Order>> GetOrdersByLessorIdAsync(int lessorId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                        .ThenInclude(p => p.Store)
+                .Where(o => o.OrderItems.Any(oi => oi.Product.Store.AccountId == lessorId))
+                .ToListAsync();
+        }
+
+        
+
     }
 }
