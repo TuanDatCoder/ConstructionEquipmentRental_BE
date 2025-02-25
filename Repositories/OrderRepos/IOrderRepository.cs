@@ -17,6 +17,8 @@ namespace Repositories.OrderRepos
         Task<bool> DeleteOrderAsync(int orderId);
 
         Task<Order> GetOrderByIdAsync(int orderId);
+
+        Task<List<Order>> GetOrdersByLessorIdAsync(int lessorId);
     }
 }
 

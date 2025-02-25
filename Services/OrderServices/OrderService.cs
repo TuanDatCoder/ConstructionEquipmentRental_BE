@@ -158,10 +158,6 @@ namespace Services.OrderServices
         }
 
 
-
-
-
-
         public async Task<OrderWithItemsResponseDTO> CreateOrderWithItemsAsync(string token, OrderWithItemsRequestDTO orderWithItemsRequest)
         {
 
@@ -292,8 +288,8 @@ namespace Services.OrderServices
                 {
                     OrderId = createdOrder.Id,
                     Amount = createdOrder.TotalPrice,
-                    RedirectUrl = $"{_frontendUrl}/paysuccess?orderCode={createdOrder.Id}",
-                    CancelUrl = $"{_frontendUrl}/paycancel?orderCode={createdOrder.Id}",
+                    RedirectUrl = $"{_frontendUrl}/paysuccess?orderCode={createdOrder.Id + 10000}",
+                    CancelUrl = $"{_frontendUrl}/paycancel?orderCode={createdOrder.Id + 10000}",
                     OrderItems = orderItemResponses.ToList()
                 };
 
