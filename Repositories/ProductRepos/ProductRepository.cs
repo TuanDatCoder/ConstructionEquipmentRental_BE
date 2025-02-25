@@ -89,7 +89,15 @@ namespace Repositories.ProductRepos
             await _context.SaveChangesAsync();
         }
 
-    
+        public async Task<List<Product>> GetProductsByLessorIdAsync(int lessorId)
+        {
+            return await _context.Products
+                                 .Where(p => p.Store.AccountId == lessorId)
+                                 .ToListAsync();  // Sử dụng ToListAsync để chuyển đổi thành List
+        }
+
+
+
 
     }
 }

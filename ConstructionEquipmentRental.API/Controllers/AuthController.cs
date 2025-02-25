@@ -181,11 +181,11 @@ namespace ConstructionEquipmentRental.API.Controllers
             try
             {
                 await _authenticationService.VerifyAccount(token);
-                return Redirect($"{_frontendUrl}/successregis");
+                return Redirect($"{_frontendUrl}/verify-success");
             }
             catch (ApiException ex)
             {
-                return Redirect($"{_frontendUrl}/faildregis");
+                return Redirect($"{_frontendUrl}/verify-fail");
             }
         }
 

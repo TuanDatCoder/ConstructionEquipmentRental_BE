@@ -318,7 +318,20 @@ namespace Services.OrderServices
         }
 
 
+        public async Task<OrderResponseDTO> ChangeOrderStatus(int id, OrderStatusEnum newStatus)
+        {
+            var existingOrder = await _orderRepository.GetOrderByIdAsync(id);
+            if (existingOrder == null)
+            {
+                throw new KeyNotFoundException($"Order with ID {id} not found.");
+            }
 
+            existingOrder.Status = newStatus.ToString();
+
+            await _orderRepository.UpdateOrderAsync(existingOrder);
+
+            return _mapper.Map<OrderResponseDTO>(existingOrder);
+        }
 
 
     }
