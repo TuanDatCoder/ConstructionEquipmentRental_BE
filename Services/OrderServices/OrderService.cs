@@ -334,5 +334,27 @@ namespace Services.OrderServices
         }
 
 
+        public async Task<List<OrderResponseDTO>> GetOrdersByCustomerAsync(string token)
+        {
+
+            var account = await _authenticationService.GetAccountByToken(token);
+
+
+            if (account == null)
+            {
+                throw new UnauthorizedAccessException("Invalid account or token.");
+            }
+            var orders = await _orderRepository.GetOrdersByCustomerIdAsync(account.Id);
+
+            if (orders == null || !orders.Any())
+            {
+                throw new Exception($"No Orders found for Customer ID {account.Id}.");
+            }
+
+            return _mapper.Map<List<OrderResponseDTO>>(orders);
+        }
+
+
+
     }
 }
