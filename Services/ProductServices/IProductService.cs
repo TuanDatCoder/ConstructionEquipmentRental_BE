@@ -1,4 +1,5 @@
-﻿using Data.DTOs.Product;
+﻿using Data.DTOs.Category;
+using Data.DTOs.Product;
 using Data.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,8 +16,8 @@ namespace Services.ProductServices
         Task<ProductResponseDTO> ChangeProductStatus(int id, ProductStatusEnum newStatus);
         Task<string> UpdatePictureAsync(int productId, string token, Stream fileStream, string fileName);
         Task<List<ProductResponseDTO>> GetProductsByProductIdAsync(int storeId);
+        Task<CategoryWithProductsResponseDTO> GetProductsByCategoryAsync(int categoryId);
+        Task<List<CategoryWithProductsResponseDTO>> GetCategoriesAndTotalProductAsync(int? page, int? size);
 
-
-
-     }
+    }
 }

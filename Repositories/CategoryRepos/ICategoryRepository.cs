@@ -14,5 +14,6 @@ namespace Repositories.CategoryRepos
         Task Add(Category category);
         Task Update(Category category);
         Task Delete(Category category);
+
     }
 }

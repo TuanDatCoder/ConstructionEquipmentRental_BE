@@ -169,6 +169,15 @@ namespace Services.Helper.MapperProfiles
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status != null ? src.Status.ToString() : "Unknown"));
 
 
+            CreateMap<Category, CategoryWithProductsResponseDTO>()
+            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.TotalProducts, opt => opt.MapFrom(src => src.Products.Count))
+            .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products));
+
+
+
+
         }
     }
 }
