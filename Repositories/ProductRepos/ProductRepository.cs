@@ -1,4 +1,6 @@
 ﻿using Data;
+using Data.DTOs.Category;
+using Data.DTOs.Product;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repositories.GenericRepos;
@@ -27,6 +29,7 @@ namespace Repositories.ProductRepos
                     .Include(p => p.Category)
                     .Include(p => p.Brand)
                     .Include(p => p.Store)
+                    .OrderByDescending(p => p.Id)
                     .Skip((pageIndex - 1) * sizeIndex)
                     .Take(sizeIndex)
                     .ToListAsync();
@@ -96,8 +99,13 @@ namespace Repositories.ProductRepos
                                  .ToListAsync();  // Sử dụng ToListAsync để chuyển đổi thành List
         }
 
-
-
+        public async Task<Category?> GetProductsByCategoryAsync(int categoryId)
+        {
+            return await _context.Categories
+                .Where(c => c.Id == categoryId)
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync();
+        }
 
     }
 }

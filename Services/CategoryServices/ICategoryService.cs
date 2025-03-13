@@ -17,5 +17,6 @@ namespace Services.CategoryServices
         Task<CategoryResponseDTO> UpdateCategory(int id, CategoryRequestDTO request);
         Task DeleteCategory(int id);
         Task<CategoryResponseDTO> ChangeCategoryStatus(int id, CategoryStatusEnum newStatus);
+
     }
 }

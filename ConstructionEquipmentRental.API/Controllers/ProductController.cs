@@ -23,7 +23,7 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProducts(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetProducts(int? page = 1, int? size = 100)
         {
             var result = await _productService.GetProducts(page, size);
 
@@ -306,5 +306,118 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
         }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetProductsByCategory(int categoryId)
+        {
+            try
+            {
+                var result = await _productService.GetProductsByCategoryAsync(categoryId);
+
+                if (result == null)
+                {
+                    return NotFound(new ApiResponseDTO
+                    {
+                        IsSuccess = false,
+                        Code = (int)HttpStatusCode.NotFound,
+                        Message = "No category found or no products available."
+                    });
+                }
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = $"Products for Category ID {categoryId} retrieved successfully",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = ex.Message
+                });
+            }
+        }
+        [HttpGet("categories-products")]
+        public async Task<IActionResult> GetCategoriesAndTotalProduct(int? page = 1, int? size = 100)
+        {
+            try
+            {
+                var result = await _productService.GetCategoriesAndTotalProductAsync(page,size );
+
+                if (result == null)
+                {
+                    return NotFound(new ApiResponseDTO
+                    {
+                        IsSuccess = false,
+                        Code = (int)HttpStatusCode.NotFound,
+                        Message = "No category found or no products available."
+                    });
+                }
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = $"Products for Categories retrieved successfully",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("categories-with-products")]
+        public async Task<IActionResult> GetCategoriesAndTotalProductAsync(int? page, int? size)
+        {
+            try
+            {
+                // Gọi service để lấy danh sách categories và sản phẩm
+                var result = await _productService.GetCategoriesAndTotalProductAsync(page, size);
+
+                // Kiểm tra nếu kết quả rỗng
+                if (result == null || !result.Any())
+                {
+                    return NotFound(new ApiResponseDTO
+                    {
+                        IsSuccess = false,
+                        Code = (int)HttpStatusCode.NotFound,
+                        Message = "No categories found."
+                    });
+                }
+
+                // Trả về kết quả thành công
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Categories with products retrieved successfully.",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và trả về thông báo lỗi
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
     }
 }

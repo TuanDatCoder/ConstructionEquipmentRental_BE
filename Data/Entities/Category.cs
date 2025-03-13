@@ -13,5 +13,7 @@ public partial class Category
 
     public string Status { get; set; } = null!;
 
+    public string? ImageUrl { get; set; }
+
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

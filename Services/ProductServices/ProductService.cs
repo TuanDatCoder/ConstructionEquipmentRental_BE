@@ -10,6 +10,9 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Data.DTOs.OrderItem;
+using Data.DTOs.Category;
+using Repositories.CategoryRepos;
+using System.Collections.Generic;
 
 
 namespace Services.ProductServices
@@ -18,16 +21,18 @@ namespace Services.ProductServices
     {
         private readonly IMapper _mapper;
         private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IFirebaseStorageService _firebaseStorageService;
         private readonly IAuthenticationService _authenticationService;
 
 
-        public ProductService(IMapper mapper, IProductRepository productRepository, IFirebaseStorageService firebaseStorageService, IAuthenticationService authenticationService)
+        public ProductService(IMapper mapper, IProductRepository productRepository, IFirebaseStorageService firebaseStorageService, IAuthenticationService authenticationService,ICategoryRepository categoryRepository)
         {
             _mapper = mapper;
             _productRepository = productRepository;
             _firebaseStorageService = firebaseStorageService;
             _authenticationService = authenticationService;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<List<ProductResponseDTO>> GetProducts(int? page, int? size)
@@ -202,9 +207,49 @@ namespace Services.ProductServices
             return _mapper.Map<List<ProductResponseDTO>>(products);
         }
 
+        public async Task<CategoryWithProductsResponseDTO?> GetProductsByCategoryAsync(int categoryId)
+        {
+            var category = await _productRepository.GetProductsByCategoryAsync(categoryId);
 
-        
+            if (category == null)
+                return null;
+
+            return _mapper.Map<CategoryWithProductsResponseDTO>(category);
+        }
+        public async Task<List<CategoryWithProductsResponseDTO>> GetCategoriesAndTotalProductAsync(int? page, int? size)
+        {
+            try
+            {
+                var categories = await _categoryRepository.GetCategories(page, size);
+
+                
+                if (categories == null || !categories.Any())
+                {
+                    return new List<CategoryWithProductsResponseDTO>(); 
+                }
+
+                
+                var categoriesAndProduct = new List<CategoryWithProductsResponseDTO>();
+
+               
+                foreach (var category in categories)
+                {
+                    var productsByCategory = await GetProductsByCategoryAsync(category.Id);
+                    categoriesAndProduct.Add(productsByCategory);
+                }
+
+                return categoriesAndProduct;
+            }
+            catch (Exception ex)
+            {
+               
+                throw; 
+            }
+        }
 
 
     }
+
+
+
 }

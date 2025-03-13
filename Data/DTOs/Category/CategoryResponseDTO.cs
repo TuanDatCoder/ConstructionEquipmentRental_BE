@@ -16,5 +16,6 @@ namespace Data.DTOs.Category
         public string? Description { get; set; }
 
         public CategoryStatusEnum Status { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }

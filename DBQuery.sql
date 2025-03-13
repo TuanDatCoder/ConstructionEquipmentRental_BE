@@ -64,6 +64,9 @@ CREATE TABLE Category (
     Description NVARCHAR(MAX)NULL,
     Status NVARCHAR(50) DEFAULT 'ACTIVE' NOT NULL
 );
+ALTER TABLE Category
+ADD ImageUrl NVARCHAR(MAX) NULL;
+
 
 -- Tạo bảng Product
 CREATE TABLE Product (

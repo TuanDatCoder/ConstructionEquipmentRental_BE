@@ -1,4 +1,5 @@
-﻿using Data.Entities;
+﻿using Data.DTOs.Category;
+using Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Repositories.ProductRepos
         Task Delete(Product product);
         Task<List<Product>> GetProductsByStoreIdAsync(int storeId);
         Task<List<Product>> GetProductsByLessorIdAsync(int lessorId);
+        Task<Category?> GetProductsByCategoryAsync(int categoryId);
 
     }
 }
