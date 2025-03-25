@@ -22,9 +22,9 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStores(int? page = 1, int? size = 10)
+        public async Task<IActionResult> GetStores()
         {
-            var result = await _storeService.GetStores(page, size);
+            var result = await _storeService.GetStores();
 
             return Ok(new ApiResponseDTO
             {
@@ -72,7 +72,7 @@ namespace ConstructionEquipmentRental.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "LESSOR")]
-        public async Task<IActionResult> CreateStore([FromBody] StoreRequestDTO request)
+        public async Task<IActionResult> CreateStore([FromForm] StoreRequestDTO request, IFormFile? file = null)
         {
             var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             if (!ModelState.IsValid)
@@ -85,15 +85,36 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
 
-            var result = await _storeService.CreateStore(token,request);
-
-            return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
+            try
             {
-                IsSuccess = true,
-                Code = (int)HttpStatusCode.Created,
-                Message = "Store created successfully",
-                Data = result
-            });
+                Stream? fileStream = null;
+                string? fileName = null;
+
+                if (file != null && file.Length > 0)
+                {
+                    fileStream = file.OpenReadStream();
+                    fileName = file.FileName;
+                }
+
+                var result = await _storeService.CreateStore(token, request, fileStream, fileName);
+
+                return StatusCode((int)HttpStatusCode.Created, new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.Created,
+                    Message = "Store created successfully",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.InternalServerError,
+                    Message = ex.Message
+                });
+            }
         }
 
         [HttpPut("{id}")]
@@ -167,11 +188,13 @@ namespace ConstructionEquipmentRental.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> ChangeStoreStatus(int id, [FromBody] StoreStatusEnum newStatus)
         {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
             try
             {
-                var updatedProduct = await _storeService.ChangeStoreStatus(id, newStatus);
+                var updatedProduct = await _storeService.ChangeStoreStatus(token, id, newStatus);
 
                 return Ok(new ApiResponseDTO
                 {
@@ -200,5 +223,59 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
         }
+
+        [HttpGet("status")]
+        public async Task<IActionResult> GetStoresByStatus([FromQuery] StoreStatusEnum status)
+        {
+            try
+            {
+                var stores = await _storeService.GetStoresByStatus(status);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Lấy danh sách cửa hàng thành công",
+                    Data = stores
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+        [HttpGet("by-lessor")]
+        [Authorize(Roles = "LESSOR")]
+        public async Task<IActionResult> GetStoresByLessor()
+        {
+            var token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            try
+            {
+                var store = await _storeService.GetStoresByLessor(token);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = $"Store for Lessor retrieved successfully",
+                    Data = store
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+        
     }
 }

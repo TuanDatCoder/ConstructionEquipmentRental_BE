@@ -1,4 +1,5 @@
 ﻿using Data.DTOs.Account;
+using Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Services.AccountServices
     {
         Task<string> UploadProfilePictureAsync(int accountId, Stream fileStream, string fileName);
         Task<string> UploadPictureAsync(string token, Stream fileStream, string fileName);
+        Task<AccountResponseDTO> ChangeAccountStatus(int id, AccountStatusEnum newStatus);
     }
 }

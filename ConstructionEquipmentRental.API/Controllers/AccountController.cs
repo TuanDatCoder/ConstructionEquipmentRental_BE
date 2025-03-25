@@ -1,4 +1,5 @@
 ﻿using Data.DTOs;
+using Data.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.AccountServices;
@@ -94,5 +95,44 @@ namespace ConstructionEquipmentRental.API.Controllers
                 });
             }
         }
+
+        [Authorize(Roles = "ADMIN")]
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> ChangeAccountStatus(int id, [FromBody] AccountStatusEnum newStatus)
+        {
+            try
+            {
+                var updatedOrder = await _accountService.ChangeAccountStatus(id, newStatus);
+
+                return Ok(new ApiResponseDTO
+                {
+                    IsSuccess = true,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Account status updated successfully",
+                    Data = updatedOrder
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Message = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ApiResponseDTO
+                {
+                    IsSuccess = false,
+                    Code = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+
     }
 }

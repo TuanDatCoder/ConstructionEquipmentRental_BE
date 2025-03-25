@@ -1,10 +1,7 @@
-﻿using Data.DTOs.Product;
-using Data.DTOs.ProductImage;
+﻿using Data.DTOs.ProductImage;
 using Data.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Services.ProductImageServices
@@ -19,8 +16,5 @@ namespace Services.ProductImageServices
         Task<ProductImageResponseDTO> ChangeProductImageStatus(int id, ProductImageStatusEnum newStatus);
         Task<List<ProductImageResponseDTO>> UploadMultipleProductImagesAsync(string token, List<Stream> files, List<string> names, int productId);
         Task<List<ProductImageResponseDTO>> GetProductImagesByProductId(int productId);
-
-
-
     }
 }

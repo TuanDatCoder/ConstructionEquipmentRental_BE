@@ -49,6 +49,7 @@ using Services.FirebaseStorageServices;
 using Services.VnPayServices;
 using Services.PayOSServices;
 using Services.LessorServices;
+using Services.CloudinaryStorageServices;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -108,6 +109,8 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddScoped<IVnPayService, VnPayService>();
             builder.Services.AddScoped<IPayOSService, PayOSService>();
             builder.Services.AddScoped<ILessorService, LessorService>();
+
+            builder.Services.AddScoped<ICloudinaryStorageService, CloudinaryStorageService>();
 
             //-----------------------------------------DB----------------------------------------
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>

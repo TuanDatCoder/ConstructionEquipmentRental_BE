@@ -1,4 +1,5 @@
-﻿using Data.DTOs.Product;
+﻿using Data.DTOs.Order;
+using Data.DTOs.Product;
 using Data.DTOs.Store;
 using Data.Enums;
 using System;
@@ -11,11 +12,13 @@ namespace Services.StoreServices
 {
     public interface IStoreService
     {
-        Task<List<StoreResponseDTO>> GetStores(int? page, int? size);
+        Task<List<StoreResponseDTO>> GetStores();
         Task<StoreResponseDTO> GetStoreById(int id);
-        Task<StoreResponseDTO> CreateStore(String token, StoreRequestDTO request);
+        Task<StoreResponseDTO> CreateStore(string token, StoreRequestDTO request, Stream fileStream, string fileName);
         Task<StoreResponseDTO> UpdateStore(int id, StoreUpdateRequestDTO request);
         Task DeleteStore(int id);
-        Task<StoreResponseDTO> ChangeStoreStatus(int id, StoreStatusEnum newStatus);
+        Task<StoreResponseDTO> ChangeStoreStatus(string token, int id, StoreStatusEnum newStatus);
+        Task<List<StoreResponseDTO>> GetStoresByStatus(StoreStatusEnum status);
+        Task<StoreResponseDTO> GetStoresByLessor(string token);
     }
 }

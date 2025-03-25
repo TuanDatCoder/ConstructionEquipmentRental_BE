@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Data.Enums;
 
 namespace Repositories.StoreRepos
 {
@@ -21,17 +22,27 @@ namespace Repositories.StoreRepos
         }
 
 
-        public async Task<List<Store>> GetStores(int? page, int? size)
+        public async Task<List<Store>> GetStores()
         {
             try
             {
-                var pageIndex = (page.HasValue && page > 0) ? page.Value : 1;
-                var sizeIndex = (size.HasValue && size > 0) ? size.Value : 10;
-
+               
                 return await _context.Stores
                     .Include(p => p.Account)
-                    .Skip((pageIndex - 1) * sizeIndex)
-                    .Take(sizeIndex)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<List<Store>> GetStoresByStatus(StoreStatusEnum status)
+        {
+            try
+            {
+                return await _context.Stores
+                    .Include(p => p.Account)
+                    .Where(s => s.Status == status.ToString()) // Lọc theo status
                     .ToListAsync();
             }
             catch (Exception ex)
@@ -98,6 +109,13 @@ namespace Repositories.StoreRepos
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Store> GetStoresByLessorIdAsync(int lessorId)
+        {
+            return await _context.Stores
+                                 .Where(p => p.AccountId == lessorId)
+                                 .Include(p => p.Account)
+                                 .FirstOrDefaultAsync();
+        }
 
 
     }

@@ -20,7 +20,7 @@ namespace Data.DTOs.Store
 
         public TimeOnly ClosingHours { get; set; }
 
-        public string? BusinessLicense { get; set; }
+        //public string? BusinessLicense { get; set; }
 
        // public int? AccountId { get; set; }
     }
