@@ -109,7 +109,7 @@ namespace Repositories.StoreRepos
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Store> GetStoresByLessorIdAsync(int lessorId)
+        public async Task<Store?> GetStoresByLessorIdAsync(int lessorId)
         {
             return await _context.Stores
                                  .Where(p => p.AccountId == lessorId)
@@ -117,7 +117,10 @@ namespace Repositories.StoreRepos
                                  .FirstOrDefaultAsync();
         }
 
-
+        public async Task<int> GetTotalStoresAsync()
+        {
+            return await _context.Stores.CountAsync();
+        }
     }
 }
 

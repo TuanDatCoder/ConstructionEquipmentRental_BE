@@ -42,37 +42,40 @@ namespace Services.LessorServices
                 throw new UnauthorizedAccessException("Invalid account or token.");
             }
 
-
             var orders = await _orderRepository.GetOrdersByLessorIdAsync(account.Id);
+            if (orders == null || !orders.Any())
+            {
+                return new List<AnnualRevenueDTO>(); // Trả về rỗng nếu không có đơn hàng
+            }
 
             var revenueByYear = orders
                 .SelectMany(o => o.OrderItems.Select(oi => new
                 {
                     Year = o.CreatedAt.Year,
                     Month = o.CreatedAt.Month,
-                    Revenue = oi.Price * oi.Quantity
+                    Revenue = oi.Price * oi.Quantity * 0.9m // Lessor nhận 90%, admin lấy 10%
                 }))
                 .GroupBy(x => x.Year)
                 .Select(yearGroup => new AnnualRevenueDTO
                 {
                     Year = yearGroup.Key,
-                    TotalRevenue = yearGroup.Sum(x => x.Revenue),
+                    TotalRevenue = yearGroup.Sum(x => x.Revenue), // Tổng doanh thu của Lessor (90%)
                     MonthlyRevenues = yearGroup
                         .GroupBy(x => x.Month)
                         .Select(monthGroup => new MonthlyRevenueDTO
                         {
                             Year = yearGroup.Key,
                             Month = monthGroup.Key,
-                            Revenue = monthGroup.Sum(x => x.Revenue),
+                            Revenue = monthGroup.Sum(x => x.Revenue), // Doanh thu tháng của Lessor (90%)
                             PercentageChange = 0 // Sẽ tính sau
                         })
-                        .OrderBy(m => m.Month) // Sắp xếp theo tháng
+                        .OrderBy(m => m.Month)
                         .ToList()
                 })
-                .OrderBy(y => y.Year) // Sắp xếp theo năm
+                .OrderBy(y => y.Year)
                 .ToList();
 
-            // Tạo từ điển để truy xuất nhanh doanh thu theo năm và tháng
+            // Tạo từ điển để truy xuất nhanh doanh thu theo năm và tháng (đã là 90%)
             var revenueLookup = revenueByYear
                 .SelectMany(y => y.MonthlyRevenues)
                 .ToDictionary(m => (m.Year, m.Month), m => m.Revenue);
@@ -84,7 +87,6 @@ namespace Services.LessorServices
                 {
                     var currentMonth = yearData.MonthlyRevenues[i];
 
-                    // Xác định tháng trước
                     int prevYear = currentMonth.Month == 1 ? currentMonth.Year - 1 : currentMonth.Year;
                     int prevMonth = currentMonth.Month == 1 ? 12 : currentMonth.Month - 1;
 
@@ -135,29 +137,63 @@ namespace Services.LessorServices
                 throw new UnauthorizedAccessException("Invalid account or token.");
             }
 
-            // Lấy danh sách đơn hàng của Lessor
-            var orders = await _orderRepository.GetOrdersByLessorIdAsync(account.Id);
-            var totalOrders = orders.Count;
+            var currentDate = DateTime.UtcNow;
+            var currentMonth = currentDate.Month;
+            var currentYear = currentDate.Year;
 
-            // Tính tổng doanh thu
-            var totalRevenue = orders
+            var previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+            var previousYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+
+            var orders = await _orderRepository.GetOrdersByLessorIdAsync(account.Id);
+
+
+            var currentMonthOrders = orders
+                .Where(o => o.CreatedAt.Year == currentYear && o.CreatedAt.Month == currentMonth)
+                .ToList();
+            var totalOrdersCurrent = currentMonthOrders.Count;
+
+            var totalRevenueCurrent = currentMonthOrders
                 .SelectMany(o => o.OrderItems)
                 .Where(oi => oi.Product.Store.AccountId == account.Id)
-                .Sum(oi => oi.Price * oi.Quantity);
+                .Sum(oi => oi.Price * oi.Quantity * 0.9m); // Lessor nhận 90%
+
+            // Tính cho tháng trước
+            var previousMonthOrders = orders
+                .Where(o => o.CreatedAt.Year == previousYear && o.CreatedAt.Month == previousMonth)
+                .ToList();
+            var totalOrdersPrevious = previousMonthOrders.Count;
+
+            var totalRevenuePrevious = previousMonthOrders
+                .SelectMany(o => o.OrderItems)
+                .Where(oi => oi.Product.Store.AccountId == account.Id)
+                .Sum(oi => oi.Price * oi.Quantity * 0.9m); // Lessor nhận 90%
 
             // Lấy tổng stock từ bảng Product của Lessor
-            var products = await _productRepository.GetProductsByLessorIdAsync(account.Id); // await để lấy List<Product>
-            var totalEquipment = products.Sum(p => p.Stock); // Tính tổng stock từ các sản phẩm
+            var products = await _productRepository.GetProductsByLessorIdAsync(account.Id);
+            var totalEquipment = products?.Sum(p => p.Stock) ?? 0;
+
+            // Tính phần trăm thay đổi
+            double? ordersPercentageChange = totalOrdersPrevious > 0
+                ? (double)((totalOrdersCurrent - totalOrdersPrevious) * 100m / totalOrdersPrevious)
+                : null;
+
+            double? revenuePercentageChange = totalRevenuePrevious > 0
+                ? (double)((totalRevenueCurrent - totalRevenuePrevious) * 100m / totalRevenuePrevious)
+                : null;
+
+
+            double? equipmentPercentageChange = null; // Để null vì không có dữ liệu tháng trước cho stock
 
             return new LessorSummaryDTO
             {
-                TotalOrders = totalOrders,
-                TotalRevenue = totalRevenue,
-                TotalEquipment = totalEquipment
+                TotalOrders = totalOrdersCurrent,
+                TotalRevenue = totalRevenueCurrent,
+                TotalEquipment = totalEquipment,
+                TotalOrdersPercentageChange = ordersPercentageChange,
+                TotalRevenuePercentageChange = revenuePercentageChange,
+                TotalEquipmentPercentageChange = equipmentPercentageChange
             };
         }
-
-
 
 
 

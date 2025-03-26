@@ -17,5 +17,6 @@ namespace Repositories.StoreRepos
         Task Delete(Store store);
         Task<List<Store>> GetStoresByStatus(StoreStatusEnum status);
         Task<Store> GetStoresByLessorIdAsync(int lessorId);
+        Task<int> GetTotalStoresAsync();
     }
 }

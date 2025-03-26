@@ -122,5 +122,10 @@ namespace Repositories.AccountRepos
             }
 
         }
+
+        public async Task<int> GetTotalUsersAsync()
+        {
+            return await _context.Accounts.CountAsync(); 
+        }
     }
 }

@@ -17,5 +17,7 @@ namespace Repositories.AccountRepos
         Task<Account> Update(Account account);
         Task<Account> GetAccountById(int accountId);
         Task<List<Account>> GetAccounts(int? page, int? size);
+        Task<int> GetTotalUsersAsync(); 
+     
     }
 }

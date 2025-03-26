@@ -20,7 +20,7 @@ namespace Repositories.OrderRepos
 
         Task<List<Order>> GetOrdersByLessorIdAsync(int lessorId);
         Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId);
-
+      
 
     }
 }

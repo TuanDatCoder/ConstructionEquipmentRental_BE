@@ -1,55 +1,53 @@
 using ConstructionEquipmentRental.API.Middlewares;
 using Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Repositories.OrderItemRepos;
-using Repositories.OrderRepos;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Repositories.AccountRepos;
 using Repositories.BrandRepos;
+using Repositories.CartItemRepos;
+using Repositories.CartRepos;
+using Repositories.CategoryRepos;
+using Repositories.FeedbackRepos;
+using Repositories.OrderItemRepos;
+using Repositories.OrderReportRepos;
+using Repositories.OrderRepos;
+using Repositories.ProductImageRepos;
 using Repositories.ProductRepos;
 using Repositories.RefreshTokenRepos;
-using Services.BrandServices;
-using Services.Helper.MapperProfiles;
-using Services.JWTServices;
-using Services.OrderItemServices;
-using Services.OrderServices;
-using Services.ProductServices;
-using Repositories.FeedbackRepos;
-using Services.FeedbackServices;
-using Repositories.ProductImageRepos;
-using Repositories.CategoryRepos;
-using Repositories.AccountRepos;
-using Services.CategoryServices;
-using Services.ProductImageServices;
-using Services.AccountServices;
-using Services.OrderReportServices;
-using Repositories.OrderReportRepos;
-using Services.TransactionServices;
-using Repositories.TransactionRepos;
-using Repositories.WalletRepos;
-using Services.WalletServices;
-using Repositories.WalletLogRepos;
-using Services.WalletLogServices;
-
-using Microsoft.OpenApi.Models;
-using System.Reflection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Services.Helper.DecodeTokenHandler;
-using Services.EmailServices;
-using Services.AuthenticationServices;
-using Services.Helper.VerifyCode;
 using Repositories.StoreRepos;
-using Services.StoreServices;
+using Repositories.TransactionRepos;
+using Repositories.WalletLogRepos;
+using Repositories.WalletRepos;
+using Services.AccountServices;
 using Services.AdminServices;
-using Repositories.CartRepos;
-using Repositories.CartItemRepos;
-using Services.CartServices;
+using Services.AuthenticationServices;
+using Services.BrandServices;
 using Services.CartItemServices;
-using Services.FirebaseStorageServices;
-using Services.VnPayServices;
-using Services.PayOSServices;
-using Services.LessorServices;
+using Services.CartServices;
+using Services.CategoryServices;
 using Services.CloudinaryStorageServices;
+using Services.EmailServices;
+using Services.FeedbackServices;
+using Services.FirebaseStorageServices;
+using Services.Helper.DecodeTokenHandler;
+using Services.Helper.MapperProfiles;
+using Services.Helper.VerifyCode;
+using Services.JWTServices;
+using Services.LessorServices;
+using Services.OrderItemServices;
+using Services.OrderReportServices;
+using Services.OrderServices;
+using Services.PayOSServices;
+using Services.ProductImageServices;
+using Services.ProductServices;
+using Services.StoreServices;
+using Services.TransactionServices;
+using Services.VnPayServices;
+using Services.WalletLogServices;
+using Services.WalletServices;
+using System.Text;
 
 namespace ConstructionEquipmentRental.API
 {
@@ -116,7 +114,7 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddDbContext<ConstructionEquipmentRentalDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-           
+
 
 
             //-----------------------------------------CORS-----------------------------------------
@@ -168,38 +166,35 @@ namespace ConstructionEquipmentRental.API
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-         //  builder.Services.AddSwaggerGen();
 
-
-            builder.Services.AddSwaggerGen(options =>
+            builder.Services.AddSwaggerGen(option =>
             {
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                ////JWT Config
+                option.DescribeAllParametersInCamelCase();
+                option.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
                 });
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-     {
-         {
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
             new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-            new string[] {}
-         }
-     });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                options.IncludeXmlComments(xmlPath);
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
             });
 
             //++++++++++++ appsettings
@@ -221,7 +216,7 @@ namespace ConstructionEquipmentRental.API
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-                c.RoutePrefix = "swagger"; 
+                c.RoutePrefix = "swagger";
             });
 
 

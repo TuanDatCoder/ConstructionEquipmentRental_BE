@@ -32,5 +32,18 @@ namespace ConstructionEquipmentRental.API.Controllers
                 Data = result
             });
         }
+        [HttpGet("dashboard")]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetDashboardStats()
+        {
+            var stats = await _adminService.GetDashboardStatsAsync();
+            return Ok(new ApiResponseDTO
+            {
+                IsSuccess = true,
+                Code = (int)HttpStatusCode.OK,
+                Message = "Dashboard stats retrieved successfully",
+                Data = stats
+            });
+        }
     }
 }

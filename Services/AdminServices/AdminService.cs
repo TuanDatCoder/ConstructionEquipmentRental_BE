@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Data.DTOs.Account;
+using Data.DTOs.Admin;
 using Data.DTOs.Brand;
 using Data.Enums;
 using Repositories.AccountRepos;
 using Repositories.BrandRepos;
 using Repositories.OrderRepos;
+using Repositories.StoreRepos;
 using Repositories.TransactionRepos;
 using Services.BrandServices;
 using Services.EmailServices;
@@ -25,32 +27,40 @@ namespace Services.AdminServices
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IStoreRepository _storeRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapper _mapper;
         private readonly IDecodeTokenHandler _decodeToken;
 
-        public AdminService(IAccountRepository accountRepository, IOrderRepository orderRepository, ITransactionRepository transactionRepository, IMapper mapper, IDecodeTokenHandler decodeToken)
+        public AdminService(IAccountRepository accountRepository, IOrderRepository orderRepository, IStoreRepository storeRepository, ITransactionRepository transactionRepository, IMapper mapper, IDecodeTokenHandler decodeToken)
         {
             _accountRepository = accountRepository;
             _orderRepository = orderRepository;
+            _storeRepository = storeRepository;
             _transactionRepository = transactionRepository;
             _mapper = mapper;
             _decodeToken = decodeToken;
         }
+        public async Task<AdminDashboardDTO> GetDashboardStatsAsync()
+        {
+            // 1. Tính Total Revenue (tổng tiền order * 10%)
+            var orders = await _orderRepository.GetAllOrdersAsync(); 
+            var totalOrderAmount = orders?.Sum(order => order.TotalPrice) ?? 0m; // Tổng tiền tất cả order
+            var totalRevenue = totalOrderAmount * 0.1m; // 10% của tổng tiền
 
-        //public async Task<List<AccountResponseDTO>> GetAllAccountsAsync(string token, int? page, int? size)
-        //{
+            // 2. Tính Total Users (tổng số người dùng)
+            var totalUsers = await _accountRepository.GetTotalUsersAsync(); // Giả sử có phương thức này
 
-        //    var decodedToken = _decodeToken.decode(token);
+            // 3. Tính Total Stores (tổng số cửa hàng)
+            var totalStores = await _storeRepository.GetTotalStoresAsync(); 
 
-        //    if (!decodedToken.roleName.Equals(AccountRoleEnum.ADMIN.ToString()))
-        //    {
-        //        throw new ApiException(HttpStatusCode.Forbidden, "You do not have permission to perform this function");
-        //    }
-
-        //    var brands = await _accountRepository.GetAccounts(page, size);
-        //    return _mapper.Map<List<AccountResponseDTO>>(brands);
-        //}
+            return new AdminDashboardDTO
+            {
+                TotalRevenue = totalRevenue,
+                TotalUsers = totalUsers,
+                TotalStores = totalStores
+            };
+        }
 
         public async Task<List<AccountResponseDTO>> GetAllAccountsAsync(int? page, int? size)
         {

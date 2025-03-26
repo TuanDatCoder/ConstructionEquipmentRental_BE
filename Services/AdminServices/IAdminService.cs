@@ -1,4 +1,5 @@
 ﻿using Data.DTOs.Account;
+using Data.DTOs.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Services.AdminServices
 {
     public interface IAdminService
     {
-        //Task<List<AccountResponseDTO>> GetAllAccountsAsync(string token, int? page, int? size);
         Task<List<AccountResponseDTO>> GetAllAccountsAsync(int? page, int? size);
+        Task<AdminDashboardDTO> GetDashboardStatsAsync();
     }
 }

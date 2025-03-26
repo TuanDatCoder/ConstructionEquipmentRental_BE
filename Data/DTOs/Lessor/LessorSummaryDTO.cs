@@ -11,6 +11,8 @@ namespace Data.DTOs.Lessor
         public int TotalOrders { get; set; }
         public decimal TotalRevenue { get; set; }
         public int TotalEquipment { get; set; }
+        public double? TotalOrdersPercentageChange { get; set; }
+        public double? TotalRevenuePercentageChange { get; set; }
+        public double? TotalEquipmentPercentageChange { get; set; }
     }
-
 }
