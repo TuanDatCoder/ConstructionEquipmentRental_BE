@@ -146,7 +146,7 @@ namespace Services.LessorServices
 
             var orders = await _orderRepository.GetOrdersByLessorIdAsync(account.Id);
 
-
+            // Tính cho tháng hiện tại
             var currentMonthOrders = orders
                 .Where(o => o.CreatedAt.Year == currentYear && o.CreatedAt.Month == currentMonth)
                 .ToList();
@@ -172,6 +172,25 @@ namespace Services.LessorServices
             var products = await _productRepository.GetProductsByLessorIdAsync(account.Id);
             var totalEquipment = products?.Sum(p => p.Stock) ?? 0;
 
+            // Tính tổng thiết bị đang cho thuê (dựa trên đơn hàng còn hiệu lực)
+            var totalRentedEquipmentCurrent = orders
+                .Where(o => o.DateOfReceipt.ToDateTime(TimeOnly.MinValue) <= currentDate &&
+                            o.DateOfReturn.ToDateTime(TimeOnly.MaxValue) >= currentDate &&
+                            o.Status != "CANCELLED") // Giả định đơn hàng chưa hủy
+                .SelectMany(o => o.OrderItems)
+                .Where(oi => oi.Product.Store.AccountId == account.Id)
+                .Sum(oi => oi.Quantity);
+
+            // Tính tổng thiết bị đang cho thuê tháng trước
+            var lastDayOfPreviousMonth = new DateTime(previousYear, previousMonth, DateTime.DaysInMonth(previousYear, previousMonth));
+            var totalRentedEquipmentPrevious = orders
+                .Where(o => o.DateOfReceipt.ToDateTime(TimeOnly.MinValue) <= lastDayOfPreviousMonth &&
+                            o.DateOfReturn.ToDateTime(TimeOnly.MaxValue) >= lastDayOfPreviousMonth &&
+                            o.Status != "CANCELLED") // Giả định đơn hàng chưa hủy
+                .SelectMany(o => o.OrderItems)
+                .Where(oi => oi.Product.Store.AccountId == account.Id)
+                .Sum(oi => oi.Quantity);
+
             // Tính phần trăm thay đổi
             double? ordersPercentageChange = totalOrdersPrevious > 0
                 ? (double)((totalOrdersCurrent - totalOrdersPrevious) * 100m / totalOrdersPrevious)
@@ -181,21 +200,24 @@ namespace Services.LessorServices
                 ? (double)((totalRevenueCurrent - totalRevenuePrevious) * 100m / totalRevenuePrevious)
                 : null;
 
-
             double? equipmentPercentageChange = null; // Để null vì không có dữ liệu tháng trước cho stock
+
+            double? rentedEquipmentPercentageChange = totalRentedEquipmentPrevious > 0
+                ? (double)((totalRentedEquipmentCurrent - totalRentedEquipmentPrevious) * 100m / totalRentedEquipmentPrevious)
+                : null;
 
             return new LessorSummaryDTO
             {
                 TotalOrders = totalOrdersCurrent,
                 TotalRevenue = totalRevenueCurrent,
                 TotalEquipment = totalEquipment,
+                TotalRentedEquipment = totalRentedEquipmentCurrent,
                 TotalOrdersPercentageChange = ordersPercentageChange,
                 TotalRevenuePercentageChange = revenuePercentageChange,
-                TotalEquipmentPercentageChange = equipmentPercentageChange
+                TotalEquipmentPercentageChange = equipmentPercentageChange,
+                TotalRentedEquipmentPercentageChange = rentedEquipmentPercentageChange
             };
         }
-
-
 
 
 
